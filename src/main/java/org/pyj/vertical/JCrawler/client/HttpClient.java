@@ -6,69 +6,47 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
-import java.net.URLConnection;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.pyj.vertical.JCrawler.downloader.Request;
 import org.pyj.vertical.JCrawler.downloader.Response;
-import org.pyj.vertical.JCrawler.proxy.HttpProxy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HttpClient {
-	//private static final Logger log  = LoggerFactory.getLogger(HttpClient.class);
+	private static final Logger log  = LoggerFactory.getLogger(HttpClient.class);
 	
-	protected HttpURLConnection conn = null;
+	private HttpURLConnection conn = null;
 	protected Proxy proxy = Proxy.NO_PROXY;
 	
-	private void init(String url) throws IOException{
-		initConnection(url);
-		setDefaultHeader();
-	}
+	public HttpClient(){}
 	
-	private void initConnection(String _url) throws IOException{
-		URL url = new URL(_url);
-		conn = (HttpURLConnection) url.openConnection(proxy);
-	}
-	
-	private void setDefaultHeader() {
-		if(conn == null){
-			throw new NullPointerException("init HttpURLConnection first!");
-		}
-		conn.setRequestProperty("connection", "keep-alive");
-		conn.setRequestProperty("accept", "*/*");
-		conn.setRequestProperty("user-agent", "Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 5.1;SV1)");
-	}	
-	
-	private void setHeaders(Map<String, String> headers) {
-		if(headers != null && !headers.isEmpty()){
-			for(Entry<String, String> header : headers.entrySet()){
-				conn.setRequestProperty(header.getKey(), header.getValue());
-			}
-		}
-	}
-	
-	private void connect() throws IOException{
-		if(conn == null){
-			throw new NullPointerException("init HttpURLConnection first!");
-		}		
-		conn.connect();
+	public HttpClient(Proxy proxy){
+		this.proxy = proxy;
 	}
 	
 	public Response execute(Request req) throws IOException{
-System.out.println("download page:"+req.getUrl());		
-		init(req.getUrl());
+		log.info("正在抓取页面:"+req.getUrl());	
+		
+		URL url = new URL(req.getUrl());
+		conn = (HttpURLConnection) url.openConnection(proxy);
+		
+		conn.setRequestProperty("user-agent", "Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 5.1;SV1)");
 		
 		setHeaders(req.getHeaders());
 		
-		connect();
+		conn.connect();
 		
 		byte[] bytes = getResponseByByte();
 				
 		Response response = new Response();
-		response.setContent(bytes);
+		response.setContentByte	(bytes);
 		response.setResponseCode(conn.getResponseCode());
 		response.setResponseMsg(conn.getResponseMessage());
 		response.setContentType(conn.getContentType());
+		
 		return response;
 	}
 	
@@ -85,8 +63,11 @@ System.out.println("download page:"+req.getUrl());
 				baos.write(bufs, 0, len);
 			}
 			bytes = baos.toByteArray();
-//System.out.println(baos.toByteArray().length);
-//System.out.println(new String(bytes));
+			
+			if(log.isDebugEnabled()){
+				log.debug("返回报文长度:"+baos.toByteArray().length);
+				log.debug("返回内容:"+new String(bytes));
+			}
 		}catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -102,15 +83,19 @@ System.out.println("download page:"+req.getUrl());
 		return bytes;
 	}
 	
-	public void setHttpProxy(HttpProxy p){
-		this.proxy = p;
-	}
-	
-	public URLConnection getUrlConnection(){
-		return conn;
-	}
-	
-	public void setRequestProperty(String key,String value){
-		conn.setRequestProperty(key, value);
+	private void setHeaders(Map<String, String> headers) {
+		if(log.isDebugEnabled()){
+			log.debug("Request Header:");
+		}
+		if(headers != null && !headers.isEmpty()){
+			for(Entry<String, String> header : headers.entrySet()){
+				conn.setRequestProperty(header.getKey(), header.getValue());
+				
+				if(log.isDebugEnabled()){
+					log.debug(header.getKey()+":"+header.getValue() );
+				}
+			}
+		}
+		
 	}
 }

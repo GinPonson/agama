@@ -6,7 +6,7 @@ public class Response {
 	
 	private String responseMsg;
 	
-	private byte[] content;
+	private byte[] contentByte;
 	
 	private String contentType;
 
@@ -26,12 +26,12 @@ public class Response {
 		this.responseMsg = responseMsg;
 	}
 
-	public byte[] getContent() {
-		return content;
+	public byte[] getContentByte() {
+		return contentByte;
 	}
 
-	public void setContent(byte[] content) {
-		this.content = content;
+	public void setContentByte(byte[] contentByte) {
+		this.contentByte = contentByte;
 	}
 
 	public String getContentType() {

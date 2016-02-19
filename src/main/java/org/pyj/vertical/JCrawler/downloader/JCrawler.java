@@ -1,6 +1,5 @@
 package org.pyj.vertical.JCrawler.downloader;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -8,6 +7,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import javax.swing.DebugGraphics;
 
 import org.apache.commons.lang3.StringUtils;
 import org.pyj.vertical.JCrawler.processer.PageProcess;
@@ -20,15 +21,13 @@ import org.slf4j.LoggerFactory;
 
 public class JCrawler{
 	
-	//private static Logger log = LoggerFactory.getLogger(JCrawler.class);
+	private static Logger log = LoggerFactory.getLogger(JCrawler.class);
 
 	private static Status THREAD_STATUS = Status.STOP;
 
-	private int threadNum = 1;
-	
 	private Scheduler scheduler = new DuplicateURLScheduler();
 	
-	private List<Request> startRequests = new ArrayList<Request>();
+	private CrawlConfiger configer = new CrawlConfiger();
 	
 	private Lock urlLock = new ReentrantLock();
 	
@@ -42,8 +41,6 @@ public class JCrawler{
 	
 	private DataStorer dataStorer;
 	
-	private long waitTime = 3000;
-	
 	
 	public static JCrawler create(PageProcess pageProcess){
 		return new JCrawler(pageProcess);
@@ -53,17 +50,14 @@ public class JCrawler{
 		this.pageProcess = pageProcess;
 	}
 	
-	public JCrawler addRequest(String url){
-		startRequests.add(new Request(url));
+	public JCrawler persistBy(DataStorer dataStorer){
+		this.dataStorer = dataStorer;
 		return this;
 	}
 	
-	public void thread(int num){
-		this.threadNum = num;
-	}
-	
-	public void use(DataStorer dataStorer){
-		this.dataStorer = dataStorer;
+	public JCrawler setConfig(CrawlConfiger config) {
+		this.configer = config;
+		return this;
 	}
 	
 	public void run() {
@@ -96,29 +90,37 @@ public class JCrawler{
 	private void checkIfStarted() {
 		if(THREAD_STATUS == Status.STOP){
 			THREAD_STATUS = Status.PREPARED;
-			//log.info("thread prepared .....");
+			if(log.isDebugEnabled())
+				log.debug("thread prepared .....");
 		}
 		if(THREAD_STATUS == Status.STARTED){
-			//log.info("thread started !!!");
+			log.error("thread started !!!");
 			throw new RuntimeException("thread started !!!");
 		}
 	}	
 
 	private void initComponent() {
-		if(downloader == null)
+		if(downloader == null){
 			downloader = new HttpDownloader();
+		}
 		
-		if(dataStorer == null)
+		if(configer.getProxy() != null){
+			downloader.setHttpProxy(configer.getProxy());
+		}
+		
+		if(dataStorer == null){
 			dataStorer = new ConsoleDataStorer();
+		}
 		
-		if(executor == null)
-			executor = Executors.newFixedThreadPool(threadNum);
+		if(executor == null){
+			executor = Executors.newFixedThreadPool(configer.getThreadNum());
+		}
 		
-		if(!startRequests.isEmpty()){
-			for(Request request : startRequests)
+		if(!configer.getStartRequests().isEmpty()){
+			for(Request request : configer.getStartRequests())
 				scheduler.push(request);
 		} else {
-			//log.warn("request is empty!!");
+			log.warn("there is no request!!");
 		}
 		
 		THREAD_STATUS = Status.PREPARED;
@@ -128,7 +130,7 @@ public class JCrawler{
 	private void watiURL() {
 		urlLock.lock();
 		try {
-			waitCondition.await(waitTime, TimeUnit.MILLISECONDS);
+			waitCondition.await(configer.getSleepTime(), TimeUnit.MILLISECONDS);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} finally {
@@ -169,10 +171,6 @@ public class JCrawler{
 		this.scheduler = scheduler;
 	}
 
-	public void setStartRequests(List<Request> startRequests) {
-		this.startRequests = startRequests;
-	}
-
 	public void setExecutor(ExecutorService executor) {
 		this.executor = executor;
 	}
@@ -184,7 +182,8 @@ public class JCrawler{
 	public void setDownloader(Downloader downloader){
 		this.downloader = downloader;
 	}
-	
+
+
 	private enum Status{
 		STOP(0),PREPARED(1),STARTED(2),SHUTDOWN(3);
 		

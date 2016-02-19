@@ -1,6 +1,7 @@
 package org.pyj.vertical.JCrawler.downloader;
 
 import java.io.IOException;
+import java.net.Proxy;
 import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,12 +14,14 @@ import org.pyj.vertical.JCrawler.client.HttpClient;
 
 public class HttpDownloader implements Downloader{
 
+	private Proxy proxy = Proxy.NO_PROXY;
+	
 	@Override
 	public Page download(Request req) {
 		HttpClient client = null;
 		Page page = null;
 		try {
-			client = new HttpClient();
+			client = new HttpClient(proxy);
 			Response res = client.execute(req);
 			if(res.getResponseCode() == 200)
 				page = handleResponse(res);
@@ -27,6 +30,12 @@ public class HttpDownloader implements Downloader{
 		} 
 		return page;
 	}
+	
+	@Override
+	public void setHttpProxy(Proxy p) {
+		this.proxy = p;		
+	}
+	
 	private Page handleResponse(Response res) throws IOException {
 		Page page = new Page();
 		page.setText(getContent(res));
@@ -36,11 +45,11 @@ public class HttpDownloader implements Downloader{
 	
 	private String getContent(Response res) throws IOException {
 		String content ;
-		String charset = getCharset(res.getContentType(),res.getContent());
+		String charset = getCharset(res.getContentType(),res.getContentByte());
 		if(charset != null)
-			content = new String(res.getContent(),charset);
+			content = new String(res.getContentByte(),charset);
 		else
-			content = new String(res.getContent());
+			content = new String(res.getContentByte());
 		return content;
 	}
 	
@@ -79,4 +88,5 @@ public class HttpDownloader implements Downloader{
         }
         return null;
     }
+
 }
