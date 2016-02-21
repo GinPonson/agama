@@ -15,8 +15,14 @@ public class CrawlConfiger {
 	//请求集
 	private Set<Request> startRequests = new HashSet<Request>();
 	
-	//默认睡眠时间
+	//每次抓取默认间隔时间
 	private int sleepTime = 3000;
+	
+	//空队列等待时间
+	private int waitTime = 3000;
+	
+	//重试次数
+	private int retryTime = 5;
 	
 	private int threadNum = 1;
 	
@@ -66,6 +72,22 @@ public class CrawlConfiger {
 
 	public void setThreadNum(int threadNum) {
 		this.threadNum = threadNum;
+	}
+
+	public int getWaitTime() {
+		return waitTime;
+	}
+
+	public void setWaitTime(int waitTime) {
+		this.waitTime = waitTime;
+	}
+
+	public int getRetryTime() {
+		return retryTime;
+	}
+
+	public void setRetryTime(int retryTime) {
+		this.retryTime = retryTime;
 	}
 	
 	

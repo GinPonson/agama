@@ -8,8 +8,6 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import javax.swing.DebugGraphics;
-
 import org.apache.commons.lang3.StringUtils;
 import org.pyj.vertical.JCrawler.processer.PageProcess;
 import org.pyj.vertical.JCrawler.scheduler.DuplicateURLScheduler;
@@ -41,6 +39,8 @@ public class JCrawler{
 	
 	private DataStorer dataStorer;
 	
+	private int retryTime;
+	
 	
 	public static JCrawler create(PageProcess pageProcess){
 		return new JCrawler(pageProcess);
@@ -57,6 +57,7 @@ public class JCrawler{
 	
 	public JCrawler setConfig(CrawlConfiger config) {
 		this.configer = config;
+		this.retryTime = config.getRetryTime();
 		return this;
 	}
 	
@@ -67,7 +68,7 @@ public class JCrawler{
 		
 		THREAD_STATUS = Status.STARTED;
 		
-		while(Status.SHUTDOWN != THREAD_STATUS || !executor.isShutdown()){
+		while(Status.SHUTDOWN != THREAD_STATUS && !executor.isShutdown() && retryTime > 0){
 			Request request = scheduler.poll();
 			if(request == null){
 				watiURL();
@@ -79,12 +80,20 @@ public class JCrawler{
 						process(finRequest);			
 						signalCondition();
 						
+						try {
+							Thread.sleep(configer.getSleepTime());
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						
+						resetRetryTime();
 					}
 					
 				});
 			}
 		}
 		
+		close();
 	}
 	
 	private void checkIfStarted() {
@@ -131,6 +140,11 @@ public class JCrawler{
 		urlLock.lock();
 		try {
 			waitCondition.await(configer.getSleepTime(), TimeUnit.MILLISECONDS);
+			retryTime --;
+			if(log.isDebugEnabled()){
+				log.debug("第"+(configer.getRetryTime()-retryTime)+
+						"次重试,"+configer.getRetryTime()+"次后关闭.");
+			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} finally {
@@ -165,6 +179,14 @@ public class JCrawler{
 			for(String request : requests){
 				scheduler.push(new Request(request));
 			}
+	}
+	
+	private void close() {
+		executor.shutdown();
+	}
+	
+	private void resetRetryTime(){
+		this.retryTime = configer.getRetryTime();
 	}
 
 	public void setScheduler(Scheduler scheduler) {
