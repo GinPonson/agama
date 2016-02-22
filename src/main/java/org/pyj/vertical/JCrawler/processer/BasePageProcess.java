@@ -9,13 +9,13 @@ public abstract class BasePageProcess implements PageProcess{
 	
 	private Document document;
 	
-	public abstract void process();
+	public abstract void processPage(Page page);
 	
 	@Override
 	public void process(Page page) {
 		document = Jsoup.parse(page.getText());
 		
-		process();
+		processPage(page);
 		
 	}
 	

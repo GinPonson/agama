@@ -31,7 +31,8 @@ public class JCrawler{
 	
 	private Condition waitCondition = urlLock.newCondition();
 	
-	private ExecutorService executor;
+	//private ExecutorService executor;
+	private ThreadPool threadPool;
 	
 	private Downloader downloader;
 	
@@ -68,25 +69,21 @@ public class JCrawler{
 		
 		THREAD_STATUS = Status.STARTED;
 		
-		while(Status.SHUTDOWN != THREAD_STATUS && !executor.isShutdown() && retryTime > 0){
+		while(Status.SHUTDOWN != THREAD_STATUS && !threadPool.isShutdown() ){
 			Request request = scheduler.poll();
 			if(request == null){
+				if(threadPool.getThreadAlive() == 0){
+					break;
+				}
 				watiURL();
 			} else {
 				final Request finRequest = request;
-				executor.execute(new Runnable() {					
+				threadPool.execute(new Runnable() {					
 					@Override
 					public void run() {
 						process(finRequest);			
 						signalCondition();
 						
-						try {
-							Thread.sleep(configer.getSleepTime());
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						
-						resetRetryTime();
 					}
 					
 				});
@@ -121,8 +118,8 @@ public class JCrawler{
 			dataStorer = new ConsoleDataStorer();
 		}
 		
-		if(executor == null){
-			executor = Executors.newFixedThreadPool(configer.getThreadNum());
+		if(threadPool == null){
+			threadPool = new ThreadPool(configer.getThreadNum());
 		}
 		
 		if(!configer.getStartRequests().isEmpty()){
@@ -139,11 +136,8 @@ public class JCrawler{
 	private void watiURL() {
 		urlLock.lock();
 		try {
-			waitCondition.await(configer.getSleepTime(), TimeUnit.MILLISECONDS);
-			retryTime --;
-			if(log.isDebugEnabled()){
-				log.debug("第"+(configer.getRetryTime()-retryTime)+
-						"次重试,"+configer.getRetryTime()+"次后关闭.");
+			if(threadPool.getThreadAlive() != 0){
+				waitCondition.await(configer.getSleepTime(), TimeUnit.MILLISECONDS);
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -172,6 +166,12 @@ public class JCrawler{
 		
 		dataStorer.process(page.getFields());
 		
+		try {
+			Thread.sleep(configer.getSleepTime());
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 	private void addScheuleRequest(List<String> requests) {
@@ -182,7 +182,7 @@ public class JCrawler{
 	}
 	
 	private void close() {
-		executor.shutdown();
+		threadPool.shutdown();
 	}
 	
 	private void resetRetryTime(){
@@ -191,10 +191,6 @@ public class JCrawler{
 
 	public void setScheduler(Scheduler scheduler) {
 		this.scheduler = scheduler;
-	}
-
-	public void setExecutor(ExecutorService executor) {
-		this.executor = executor;
 	}
 
 	public void setPageProcess(PageProcess pageProcess) {
