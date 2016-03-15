@@ -5,13 +5,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jsoup.Jsoup;
+
 public class Page {
 	
+	/**
+     * store output fields
+     */
+    private Map<String,String> fields = new HashMap<String,String>();
+
+    /**
+     * store crawl url
+     */
+    private List<String> requests = new ArrayList<String>();
+
+    /**
+     * text
+     */
 	private String text;
-	
-	private Map<String,String> fields = new HashMap<String,String>();
-	
-	private List<String> requests = new ArrayList<>();
+
+
+    private Html html;
 
 	public String getText() {
 		return text;
@@ -36,6 +50,13 @@ public class Page {
 	public void setRequests(List<String> requests) {
 		this.requests = requests;
 	}
-	
-	
+
+    public Html getHtml() {
+        if(text == null){
+            throw new NullPointerException();
+        }
+        html = new Html(Jsoup.parse(text));
+        return html;
+    }
+
 }
