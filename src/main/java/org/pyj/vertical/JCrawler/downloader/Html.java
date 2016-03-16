@@ -19,10 +19,21 @@ public class Html {
         List<String> links = new ArrayList<>();
         Elements elements = document.select("a");
         for(Element element : elements){
-            links.add(element.text());
+            links.add(element.attr("href"));
         }
         return  links;
     }
     
-     
+    public List<String> absLinks(){
+    	List<String> absLinks = new ArrayList<>();
+    	Elements elements = document.select("a");
+        for(Element element : elements){
+        	absLinks.add(element.absUrl("href"));
+        }
+        return absLinks;
+    }
+    
+    public String toString(){
+    	return document.html();
+    }
 }

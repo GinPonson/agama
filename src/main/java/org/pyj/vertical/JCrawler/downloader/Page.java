@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jsoup.Jsoup;
+import org.pyj.vertical.JCrawler.util.UrlUtils;
 
 public class Page {
 	
@@ -22,17 +23,20 @@ public class Page {
     /**
      * text
      */
-	private String text;
-
+	private String rawText;
+	
+	private String domain;
+	
+	private String url;
 
     private Html html;
 
-	public String getText() {
-		return text;
+	public String getRawText() {
+		return rawText;
 	}
 
-	public void setText(String text) {
-		this.text = text;
+	public void setRawText(String rawText) {
+		this.rawText = rawText;
 	}
 
 	public Map<String, String> getFields() {
@@ -50,12 +54,31 @@ public class Page {
 	public void setRequests(List<String> requests) {
 		this.requests = requests;
 	}
+	
+    public String getDomain() {
+		return domain;
+	}
 
-    public Html getHtml() {
-        if(text == null){
+	public void setDomain(String domain) {
+		this.domain = domain;
+	}
+	
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public Html getHtml() {
+        if(rawText == null){
             throw new NullPointerException();
         }
-        html = new Html(Jsoup.parse(text));
+        if(domain == null || "".equals(domain)){
+        	domain = UrlUtils.getDefaultDomain(url);
+        }
+        html = new Html(Jsoup.parse(rawText,domain));
         return html;
     }
 

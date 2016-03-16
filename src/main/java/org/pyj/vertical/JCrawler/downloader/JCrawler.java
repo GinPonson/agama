@@ -159,7 +159,7 @@ public class JCrawler{
 		
 		Page page = downloader.download(request);
 		
-		if(StringUtils.isNotBlank(page.getText()))
+		if(StringUtils.isNotBlank(page.getRawText()))
 			pageProcess.process(page);
 		
 		addScheuleRequest(page.getRequests());

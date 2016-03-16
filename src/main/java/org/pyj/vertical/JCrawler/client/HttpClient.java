@@ -3,13 +3,16 @@ package org.pyj.vertical.JCrawler.client;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.InflaterInputStream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.pyj.vertical.JCrawler.downloader.Request;
 import org.pyj.vertical.JCrawler.downloader.Response;
 import org.slf4j.Logger;
@@ -55,7 +58,7 @@ public class HttpClient {
 		ByteArrayOutputStream baos = null;
 		byte[] bytes = null;
 		try{
-			bis = new BufferedInputStream(conn.getInputStream());
+			bis = new BufferedInputStream(getInputStream());
 			baos = new ByteArrayOutputStream();
 			int len = 0;
 			byte[] bufs = new byte[1024*4];
@@ -77,12 +80,32 @@ public class HttpClient {
 				if(baos != null)
 					baos.close();
 			} catch (IOException e) {
+				log.error("流关闭错误！");
 				e.printStackTrace();
 			}			
 		}		
 		return bytes;
 	}
 	
+	private InputStream getInputStream() {
+		String contentEncoding = conn.getContentEncoding();
+		try {
+			if(StringUtils.isNotBlank(contentEncoding)){
+				if("gzip".equalsIgnoreCase(contentEncoding)){
+					return new GZIPInputStream(conn.getInputStream());
+				} else if("deflate".equalsIgnoreCase(contentEncoding)){
+					return new InflaterInputStream(conn.getInputStream());
+				} else {
+					return conn.getInputStream();
+				}
+			}
+		}catch(IOException e){
+			log.error("获取输入流错误！");
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	private void setHeaders(Map<String, String> headers) {
 		if(log.isDebugEnabled()){
 			log.debug("Request Header:");

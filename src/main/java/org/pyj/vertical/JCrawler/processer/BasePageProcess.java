@@ -13,8 +13,8 @@ public abstract class BasePageProcess implements PageProcess{
 	
 	@Override
 	public void process(Page page) {
-		document = Jsoup.parse(page.getText());
-		
+		document = Jsoup.parse(page.getRawText());
+
 		processPage(page);
 		
 	}

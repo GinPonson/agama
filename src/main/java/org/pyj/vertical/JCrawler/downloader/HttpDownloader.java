@@ -3,14 +3,13 @@ package org.pyj.vertical.JCrawler.downloader;
 import java.io.IOException;
 import java.net.Proxy;
 import java.nio.charset.Charset;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.pyj.vertical.JCrawler.client.HttpClient;
+import org.pyj.vertical.JCrawler.util.UrlUtils;
 
 public class HttpDownloader implements Downloader{
 
@@ -23,8 +22,11 @@ public class HttpDownloader implements Downloader{
 		try {
 			client = new HttpClient(proxy);
 			Response res = client.execute(req);
-			if(res.getResponseCode() == 200)
+			if(res.getResponseCode() == 200){
 				page = handleResponse(res);
+				page.setDomain(req.getDomain());
+				page.setUrl(req.getUrl());
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} 
@@ -38,7 +40,7 @@ public class HttpDownloader implements Downloader{
 	
 	private Page handleResponse(Response res) throws IOException {
 		Page page = new Page();
-		page.setText(getContent(res));
+		page.setRawText(getContent(res));
 		
 		return page;
 	}	
@@ -58,7 +60,7 @@ public class HttpDownloader implements Downloader{
 		if(contentType != null && !"".equals(contentType)){
 			//考虑a = 1之间的空格，可以用正则text/html;charset=utf-8
 			if(contentType.indexOf("charset") != -1)
-				return matchCharset(contentType);		
+				return UrlUtils.matchCharset(contentType);		
 		}
 		Charset charset = Charset.defaultCharset();
 		String content = new String(contentByte , charset.name());
@@ -68,7 +70,7 @@ public class HttpDownloader implements Downloader{
 			//<meta http-equiv="content-type" content="text/html;charset=utf-8">
 			String metaContent = element.attr("content");
 			if(metaContent != null && !"".equals(metaContent))
-				return matchCharset(metaContent);
+				return UrlUtils.matchCharset(metaContent);
 			//<meta charset="utf-8">
 			String metaCharset = element.attr("charset");
 			if(metaCharset != null && !"".equals(metaCharset))
@@ -77,16 +79,6 @@ public class HttpDownloader implements Downloader{
 		return null;
 	}
 
-	public static final Pattern patternForCharset = Pattern.compile("charset\\s*=\\s*['\"]*([^\\s;'\"]*)");
-	public static String matchCharset(String contentType) {
-        Matcher matcher = patternForCharset.matcher(contentType);
-        if (matcher.find()) {
-            String charset = matcher.group(1);
-            if (Charset.isSupported(charset)) {
-                return charset;
-            }
-        }
-        return null;
-    }
+	
 
 }
