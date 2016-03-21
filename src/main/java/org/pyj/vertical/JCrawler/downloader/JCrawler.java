@@ -1,8 +1,6 @@
 package org.pyj.vertical.JCrawler.downloader;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -81,7 +79,9 @@ public class JCrawler{
 				threadPool.execute(new Runnable() {					
 					@Override
 					public void run() {
-						process(finRequest);			
+						if(!isOutOfDepth(finRequest)){
+							process(finRequest);
+						}
 						signalCondition();
 						
 					}
@@ -104,6 +104,16 @@ public class JCrawler{
 			throw new RuntimeException("thread started !!!");
 		}
 	}	
+	
+	private boolean isOutOfDepth(Request request){
+		if(configer.getDepth() == -1){
+			return false;
+		} else if(configer.getDepth() >= request.getCurDepth()){
+			return false;
+		} else {
+			return true;
+		}
+	}
 
 	private void initComponent() {
 		if(downloader == null){
@@ -137,7 +147,7 @@ public class JCrawler{
 		urlLock.lock();
 		try {
 			if(threadPool.getThreadAlive() != 0){
-				waitCondition.await(configer.getSleepTime(), TimeUnit.MILLISECONDS);
+				waitCondition.await(configer.getWaitTime(), TimeUnit.MILLISECONDS);
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -159,26 +169,37 @@ public class JCrawler{
 		
 		Page page = downloader.download(request);
 		
-		if(StringUtils.isNotBlank(page.getRawText()))
+		if(StringUtils.isNotBlank(page.getRawText())){
 			pageProcess.process(page);
-		
-		addScheuleRequest(page.getRequests());
-		
-		dataStorer.process(page.getFields());
-		
+			
+			addScheuleRequest(page.getRequests(),request.getCurDepth());
+			
+			dataStorer.process(page.getFields());
+		}
+			
 		try {
+			if(log.isDebugEnabled()){
+				log.debug("Thread:"+Thread.currentThread().getName()+" is sleeping");
+			}
+			
 			Thread.sleep(configer.getSleepTime());
+			
+			if(log.isDebugEnabled()){
+				log.debug("Thread:"+Thread.currentThread().getName()+" finished sleepping");
+			}
+			
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		
 	}
 
-	private void addScheuleRequest(List<String> requests) {
-		if(!requests.isEmpty())
+	private void addScheuleRequest(List<String> requests,int curDepth) {
+		if(!requests.isEmpty()){
 			for(String request : requests){
-				scheduler.push(new Request(request));
+				scheduler.push(new Request(request,curDepth++));
 			}
+		}
 	}
 	
 	private void close() {

@@ -4,13 +4,31 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Request {
+	
+	/**
+	 * request url
+	 */
 	private String url;
 	
+	/**
+	 * request method
+	 */
 	private String method;
 	
+	/**
+	 * domain
+	 */
 	private String domain;
 	
+	/**
+	 * request header
+	 */
 	private Map<String,String> headers = new HashMap<String,String>();
+	
+	/**
+	 * current crawle depth
+	 */
+	private int curDepth = 1;
 	
 	private int priority;
 	
@@ -19,6 +37,12 @@ public class Request {
 	public Request(String url) {
 		super();
 		this.url = url;
+	}
+	
+	public Request(String url,int curDepth) {
+		super();
+		this.url = url;
+		this.curDepth = curDepth;
 	}
 
 	public String getUrl() {
@@ -60,6 +84,15 @@ public class Request {
 	public void setPriority(int priority) {
 		this.priority = priority;
 	}
+
+	public int getCurDepth() {
+		return curDepth;
+	}
+
+	public void setCurDepth(int curDepth) {
+		this.curDepth = curDepth;
+	}
+
 	
-	
+
 }

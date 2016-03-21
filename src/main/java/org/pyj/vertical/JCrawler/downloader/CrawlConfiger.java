@@ -12,19 +12,35 @@ public class CrawlConfiger {
 	
 	private HttpProxy proxy;
 	
-	//请求集
+	/**
+	 * 请求集
+	 */
 	private Set<Request> startRequests = new HashSet<Request>();
 	
-	//每次抓取默认间隔时间
+	/**
+	 * 每次抓取默认间隔时间
+	 */
 	private int sleepTime = 3000;
 	
-	//空队列等待时间
+	/**
+	 * 空队列等待时间
+	 */
 	private int waitTime = 3000;
 	
-	//重试次数
+	/**
+	 * 重试次数
+	 */
 	private int retryTime = 5;
 	
+	/**
+	 * 爬虫线程数量
+	 */
 	private int threadNum = 1;
+	
+	/**
+	 * 抓取深度
+	 */
+	private int depth = -1;
 	
 	public CrawlConfiger(){}
 	
@@ -88,6 +104,14 @@ public class CrawlConfiger {
 
 	public void setRetryTime(int retryTime) {
 		this.retryTime = retryTime;
+	}
+
+	public int getDepth() {
+		return depth;
+	}
+
+	public void setDepth(int depth) {
+		this.depth = depth;
 	}
 	
 	

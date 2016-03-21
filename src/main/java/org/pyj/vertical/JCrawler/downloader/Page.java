@@ -25,10 +25,19 @@ public class Page {
      */
 	private String rawText;
 	
+	/**
+	 * website domain
+	 */
 	private String domain;
 	
+	/**
+	 * this is page url
+	 */
 	private String url;
 
+	/**
+	 * parse to html
+	 */
     private Html html;
 
 	public String getRawText() {
