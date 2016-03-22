@@ -9,6 +9,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.pyj.vertical.JCrawler.client.HttpClient;
+import org.pyj.vertical.JCrawler.site.Page;
+import org.pyj.vertical.JCrawler.site.Request;
+import org.pyj.vertical.JCrawler.site.Response;
 import org.pyj.vertical.JCrawler.util.UrlUtils;
 
 public class HttpDownloader implements Downloader{

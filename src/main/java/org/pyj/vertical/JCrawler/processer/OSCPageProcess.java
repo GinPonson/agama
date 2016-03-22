@@ -2,10 +2,10 @@ package org.pyj.vertical.JCrawler.processer;
 
 import java.util.List;
 
-import org.pyj.vertical.JCrawler.downloader.CrawlConfiger;
-import org.pyj.vertical.JCrawler.downloader.JCrawler;
-import org.pyj.vertical.JCrawler.downloader.Page;
+import org.pyj.vertical.JCrawler.core.CrawlConfiger;
+import org.pyj.vertical.JCrawler.core.JCrawler;
 import org.pyj.vertical.JCrawler.entity.BiliBiliEntity;
+import org.pyj.vertical.JCrawler.site.Page;
 
 public class OSCPageProcess implements PageProcess{
 
@@ -31,7 +31,7 @@ public class OSCPageProcess implements PageProcess{
 			for(int i = 0; i < 1; i++){
 				TagNode t = (TagNode)os[i];
 				Object[] os1 = t.evaluateXPath("//a[@class='title']");
-				System.out.println(((TagNode)os1[0]).getText());
+				System.out.println(os1[0]);
 			}
 		} catch (XPatherException e) {
 			e.printStackTrace();

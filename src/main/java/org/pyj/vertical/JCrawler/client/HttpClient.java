@@ -13,8 +13,8 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 
 import org.apache.commons.lang3.StringUtils;
-import org.pyj.vertical.JCrawler.downloader.Request;
-import org.pyj.vertical.JCrawler.downloader.Response;
+import org.pyj.vertical.JCrawler.site.Request;
+import org.pyj.vertical.JCrawler.site.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

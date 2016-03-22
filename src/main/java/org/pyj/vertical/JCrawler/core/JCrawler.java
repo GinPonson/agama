@@ -1,4 +1,4 @@
-package org.pyj.vertical.JCrawler.downloader;
+package org.pyj.vertical.JCrawler.core;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -7,9 +7,13 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.lang3.StringUtils;
+import org.pyj.vertical.JCrawler.downloader.Downloader;
+import org.pyj.vertical.JCrawler.downloader.HttpDownloader;
 import org.pyj.vertical.JCrawler.processer.PageProcess;
 import org.pyj.vertical.JCrawler.scheduler.DuplicateURLScheduler;
 import org.pyj.vertical.JCrawler.scheduler.Scheduler;
+import org.pyj.vertical.JCrawler.site.Page;
+import org.pyj.vertical.JCrawler.site.Request;
 import org.pyj.vertical.JCrawler.sorter.ConsoleDataStorer;
 import org.pyj.vertical.JCrawler.sorter.DataStorer;
 import org.slf4j.Logger;

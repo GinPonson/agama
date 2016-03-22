@@ -17,7 +17,7 @@ public class ReflectUtils {
 	
 	private static final Logger log = LoggerFactory.getLogger(ReflectUtils.class);
 
-	public static <T>Map<String, String> nodeAnnotations(Class<T> target){
+	public static <T>Map<String, String> elementAnno(Class<T> target){
 		Map<String, String> map = new HashMap<>();
     	for(Field field : target.getDeclaredFields()){
 			if(field.isAnnotationPresent(DescendantElement.class)){
@@ -28,14 +28,14 @@ public class ReflectUtils {
     	return map;
 	}
 
-	public static <T>T getInstance(Class<T> clazz,Map<String, Object> valueMap) {
+	public static <T>T createInstance(Class<T> clazz,Map<String, Object> valueMap) {
 		T target = null;
 		try {
 			target = clazz.newInstance();
 			for(Map.Entry<String, Object> fieldValue : valueMap.entrySet()){
 				String fieldName = fieldValue.getKey();
 				String methodName = getMethodName("set",fieldName);
-				Class<?> fieldType = getfieldTypeMap(clazz).get(fieldName);
+				Class<?> fieldType = getFieldTypeMap(clazz).get(fieldName);
 				Method method = clazz.getMethod(methodName,fieldType);
 				method.invoke(target,fieldValue.getValue());
 			}
@@ -97,7 +97,7 @@ public class ReflectUtils {
 				fieldName.substring(1, fieldName.length());
 	}
 	
-	public static <T>Map<String,Class<?>> getfieldTypeMap(Class<T> clazz){
+	public static <T>Map<String,Class<?>> getFieldTypeMap(Class<T> clazz){
 		Map<String,Class<?>> fieldTypeMap = new HashMap<>();
 		for(Field field : clazz.getDeclaredFields()){
 			fieldTypeMap.put(field.getName(), field.getType());

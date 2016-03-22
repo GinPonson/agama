@@ -16,6 +16,9 @@ public class BiliBiliEntity {
 	@DescendantElement(xpath="//div[@class='v-desc']")
 	private String desc;
 	
+	@DescendantElement(xpath="//img/@data-img")
+	private String img;
+	
 	@DescendantElement(xpath="//span[@class='v-info-i gk']")
 	private long gk;
 	
@@ -95,7 +98,15 @@ public class BiliBiliEntity {
 		this.upDate = upDate;
 	}
 	
+	public String getImg() {
+		return img;
+	}
+
+	public void setImg(String img) {
+		this.img = img;
+	}
+
 	public String toString(){
-		return "标题:"+title+",描述:"+desc+",观看"+gk+",弹幕"+dm+",收藏"+sc+",up主"+up+",up时间"+upDate;
+		return "标题:"+title+",描述:"+desc+",观看"+gk+",弹幕"+dm+",收藏"+sc+",up主"+up+",up时间"+upDate +",\n封面:"+img;
 	}
 }

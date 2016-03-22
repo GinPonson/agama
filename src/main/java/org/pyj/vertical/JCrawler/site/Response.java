@@ -1,4 +1,4 @@
-package org.pyj.vertical.JCrawler.downloader;
+package org.pyj.vertical.JCrawler.site;
 
 public class Response {
 	

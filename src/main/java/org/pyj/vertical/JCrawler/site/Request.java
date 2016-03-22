@@ -1,4 +1,4 @@
-package org.pyj.vertical.JCrawler.downloader;
+package org.pyj.vertical.JCrawler.site;
 
 import java.util.HashMap;
 import java.util.Map;

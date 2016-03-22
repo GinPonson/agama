@@ -1,9 +1,10 @@
-package org.pyj.vertical.JCrawler.downloader;
+package org.pyj.vertical.JCrawler.core;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import org.pyj.vertical.JCrawler.proxy.HttpProxy;
+import org.pyj.vertical.JCrawler.site.Request;
 
 public class CrawlConfiger {
 	

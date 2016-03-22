@@ -7,7 +7,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.pyj.vertical.JCrawler.downloader.Request;
+import org.pyj.vertical.JCrawler.site.Request;
 
 public class DuplicateURLScheduler implements Scheduler{
 

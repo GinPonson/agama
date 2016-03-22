@@ -10,11 +10,11 @@ import java.util.UUID;
 
 public class IOUtils {
 	
-	public static void saveAsFile(String dist,String url){
-		saveAsFile(dist, null, url);
+	public static void saveAsImg(String dist,String url){
+		saveAsImg(dist, null, url);
 	}
 	
-	public static void saveAsFile(String dist,String filename,String url){
+	public static void saveAsImg(String dist,String filename,String url){
 		BufferedInputStream bis = null;
 		FileOutputStream fios = null;
 		try {

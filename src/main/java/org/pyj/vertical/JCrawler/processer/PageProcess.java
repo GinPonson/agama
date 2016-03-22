@@ -1,6 +1,6 @@
 package org.pyj.vertical.JCrawler.processer;
 
-import org.pyj.vertical.JCrawler.downloader.Page;
+import org.pyj.vertical.JCrawler.site.Page;
 
 public interface PageProcess {
 	
