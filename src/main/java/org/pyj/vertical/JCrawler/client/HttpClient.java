@@ -88,22 +88,25 @@ public class HttpClient {
 	}
 	
 	private InputStream getInputStream() {
+		InputStream input = null;
 		String contentEncoding = conn.getContentEncoding();
 		try {
 			if(StringUtils.isNotBlank(contentEncoding)){
 				if("gzip".equalsIgnoreCase(contentEncoding)){
-					return new GZIPInputStream(conn.getInputStream());
+					input = new GZIPInputStream(conn.getInputStream());
 				} else if("deflate".equalsIgnoreCase(contentEncoding)){
-					return new InflaterInputStream(conn.getInputStream());
+					input =  new InflaterInputStream(conn.getInputStream());
 				} else {
-					return conn.getInputStream();
+					input = conn.getInputStream();
 				}
+			} else {
+				input = conn.getInputStream();
 			}
 		}catch(IOException e){
 			log.error("获取输入流错误！");
 			e.printStackTrace();
 		}
-		return null;
+		return input;
 	}
 
 	private void setHeaders(Map<String, String> headers) {

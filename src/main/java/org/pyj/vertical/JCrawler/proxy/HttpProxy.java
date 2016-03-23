@@ -8,13 +8,21 @@ import java.net.SocketAddress;
 
 public class HttpProxy extends Proxy{
 	
+	private String host;
+	
+	private int port;
+	
 	public HttpProxy(Type type, String host, int port) {
 		super(type, new InetSocketAddress(host, port));
+		this.host = host;
+		this.port = port;
 	}
 	
 	public HttpProxy(Type type, String host, int port,String username,String password) {
 		super(type, new InetSocketAddress(host, port));
 		Authenticator.setDefault(new MyAuthenticator(username, password));
+		this.host = host;
+		this.port = port;
 	}
 	
 	public HttpProxy(Type type, SocketAddress sa) {
@@ -25,7 +33,17 @@ public class HttpProxy extends Proxy{
 		Authenticator.setDefault(new MyAuthenticator(username, password));
 	}
 	
-	
+	public String getHost() {
+		return host;
+	}
+
+	public int getPort() {
+		return port;
+	}
+
+
+
+
 	static class MyAuthenticator extends Authenticator {        
 		   private String user = "";        
 		   private String password = "";        

@@ -6,7 +6,7 @@ import org.pyj.vertical.JCrawler.site.Page;
 import org.pyj.vertical.JCrawler.site.Request;
 
 public interface Downloader {
-	public Page download(Request req);
+	public abstract Page download(Request req);
 	
-	public void setHttpProxy(Proxy p);
+	public abstract void setHttpProxy(Proxy p);
 }

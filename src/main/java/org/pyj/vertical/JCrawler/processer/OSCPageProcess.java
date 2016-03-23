@@ -11,7 +11,7 @@ public class OSCPageProcess implements PageProcess{
 
 	public void process(Page page) {
 		//System.out.println(page.getHtml().toString());
-		System.out.println(page.getHtml().targetHtml(".vd-list-cnt"));
+		//System.out.println(page.getHtml().targetHtml(".vd-list-cnt"));
 		/*for(String link : page.getHtml().absLinks(".vd-list-cnt")){
 			System.out.println(link);
 		}*/
@@ -21,7 +21,7 @@ public class OSCPageProcess implements PageProcess{
 			System.out.println(b.toString());
 		}
 
-		//page.getRequests().addAll(page.getHtml().absLinks(".pagelistbox .p"));
+		page.getRequests().addAll(page.getHtml().xpath("//div[@class='pagelistbox']/a/@href"));
 		
 		/*HtmlCleaner hc = new HtmlCleaner();
 		TagNode tn = hc.clean(page.getRawText());
@@ -38,6 +38,18 @@ public class OSCPageProcess implements PageProcess{
 		}*/
 	}
 	
+	 /*public void CaptureScreenshot(String fileName, WebDriver driver) {
+		 154         String dirName = "d:/screenshot";
+		 155         if (!(new File(dirName).isDirectory())) {
+		 156             new File(dirName).mkdir();
+		 157         }
+		 158         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmmss");
+		 159         String time = sdf.format(new Date());
+		 160         TakesScreenshot tsDriver = (TakesScreenshot) driver;
+		 161         File image = new File(dirName + File.separator + time + "_" + fileName==null?"":fileName + ".png");
+		 162         tsDriver.getScreenshotAs(OutputType.FILE).renameTo(image);
+		 163     }
+	 */
 	public static void main(String[] args) {
 		//HttpProxy proxy = new HttpProxy(Type.HTTP, "10.228.110.21", 80, "panyongjian", "pan240409F");
 		//Request request = new Request("http://weibo.cn/gztq");

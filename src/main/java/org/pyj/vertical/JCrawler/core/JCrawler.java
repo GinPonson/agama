@@ -9,6 +9,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.apache.commons.lang3.StringUtils;
 import org.pyj.vertical.JCrawler.downloader.Downloader;
 import org.pyj.vertical.JCrawler.downloader.HttpDownloader;
+import org.pyj.vertical.JCrawler.downloader.SeleniumDownloader;
 import org.pyj.vertical.JCrawler.processer.PageProcess;
 import org.pyj.vertical.JCrawler.scheduler.DuplicateURLScheduler;
 import org.pyj.vertical.JCrawler.scheduler.Scheduler;
@@ -121,7 +122,11 @@ public class JCrawler{
 
 	private void initComponent() {
 		if(downloader == null){
-			downloader = new HttpDownloader();
+			if(configer.isAjaxModel()){
+				downloader = new SeleniumDownloader();
+			} else {
+				downloader = new HttpDownloader();
+			}
 		}
 		
 		if(configer.getProxy() != null){

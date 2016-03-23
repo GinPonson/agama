@@ -43,6 +43,8 @@ public class CrawlConfiger {
 	 */
 	private int depth = -1;
 	
+	private boolean isAjaxModel = false;
+	
 	public CrawlConfiger(){}
 	
 	public CrawlConfiger(String url){
@@ -114,6 +116,15 @@ public class CrawlConfiger {
 	public void setDepth(int depth) {
 		this.depth = depth;
 	}
+
+	public boolean isAjaxModel() {
+		return isAjaxModel;
+	}
+
+	public void setAjaxModel(boolean isAjaxModel) {
+		this.isAjaxModel = isAjaxModel;
+	}
+	
 	
 	
 }
