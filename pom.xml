@@ -2,12 +2,12 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.pyj.vertical</groupId>
-  <artifactId>JCrawler</artifactId>
+  <groupId>net.osc.gin</groupId>
+  <artifactId>agama</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>JCrawler</name>
+  <name>agama</name>
   <url>http://maven.apache.org</url>
   
   <!-- 指定 ocs Maven仓库 -->
@@ -68,24 +68,44 @@
       <scope>test</scope>
     </dependency>
     
-    <!--  -->
+    <!--jsoup  -->
     <dependency>
 		<groupId>org.jsoup</groupId>
 		<artifactId>jsoup</artifactId>
 		<version>1.8.2</version>
 	</dependency>
-	<!--  -->
+	<!-- htmlcleaner -->
 	<dependency>
 		<groupId>net.sourceforge.htmlcleaner</groupId>
 		<artifactId>htmlcleaner</artifactId>
 		<version>2.16</version>
 	</dependency>
-	<!--  -->
+	<!--selenium  -->
 	<dependency>
-		<groupId>org.seleniumhq.selenium</groupId>
-		<artifactId>selenium-java</artifactId>
-		<version>2.53.0</version>
-	</dependency>
+          <groupId>org.seleniumhq.selenium</groupId>
+          <artifactId>selenium-java</artifactId>
+          <version>2.53.0</version>
+      </dependency>
+      <dependency>
+          <groupId>com.codeborne</groupId>
+          <artifactId>phantomjsdriver</artifactId>
+          <exclusions>
+          	<exclusion>
+          		<groupId>org.seleniumhq.selenium</groupId>
+          		<artifactId>selenium-remote-driver</artifactId>
+          	</exclusion>
+          	<exclusion>
+          		<groupId>org.seleniumhq.selenium</groupId>
+          		<artifactId>selenium-java</artifactId>
+          	</exclusion>
+          </exclusions>
+          <version>1.2.1</version>
+      </dependency>
+      <dependency>
+          <groupId>com.google.code.gson</groupId>
+          <artifactId>gson</artifactId>
+          <version>2.6.2</version>
+      </dependency>
 	
 	<!-- 加入slf4j依赖包 -->
 	<dependency>
@@ -116,7 +136,7 @@
   
   
   <build>
-		<finalName>JCrawler</finalName>
+		<finalName>agama</finalName>
 		<plugins>
 			<!-- 编译的时候使用JDK7和UTF8编码 -->
 			<plugin>
