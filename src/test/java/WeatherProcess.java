@@ -10,7 +10,10 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -20,6 +23,25 @@ import org.openqa.selenium.support.ui.Select;
 
 public class WeatherProcess {
 
+	public static void CaptureScreenshot(String fileName, WebDriver driver) {
+		String dirName = "d://dn//screenshot";
+		
+		if (!(new File(dirName).isDirectory())) {
+			new File(dirName).mkdir();
+		}
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmmss");
+	    String time = sdf.format(new Date());
+	    TakesScreenshot tsDriver = (TakesScreenshot) driver;
+	    File image = new File(dirName + File.separator + time + "_" + (fileName==null?"":fileName + ".png"));
+	    System.out.println(image.getName());
+	    File file = tsDriver.getScreenshotAs(OutputType.FILE);
+	    System.out.println(file);
+	    try {
+			FileUtils.copyFile(file, image);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	public static void main(String[] args) throws IOException {
         //如果火狐浏览器没有默认安装在C盘，需要制定其路径
@@ -71,8 +93,9 @@ public class WeatherProcess {
         }
         fos.close();
         sr.close();
+        CaptureScreenshot("1",driver);
         System.out.println(wn.getText());
-         driver.close();
+         driver.quit();
 	}
 	
 	

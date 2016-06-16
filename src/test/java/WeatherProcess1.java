@@ -11,8 +11,10 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
@@ -21,6 +23,26 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.Select;
 
 public class WeatherProcess1 {
+	
+	public static void CaptureScreenshot(String fileName, WebDriver driver) {
+		String dirName = "d://dn//screenshot";
+		
+		if (!(new File(dirName).isDirectory())) {
+			new File(dirName).mkdir();
+		}
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmmss");
+	    String time = sdf.format(new Date());
+	    TakesScreenshot tsDriver = (TakesScreenshot) driver;
+	    File image = new File(dirName + File.separator + time + "_" + (fileName==null?"":fileName + ".png"));
+	    System.out.println(image.getName());
+	    File file = tsDriver.getScreenshotAs(OutputType.FILE);
+	    System.out.println(file);
+	    try {
+			FileUtils.copyFile(file, image);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	
 	public static void main(String[] args) throws IOException {
@@ -78,6 +100,7 @@ public class WeatherProcess1 {
         }
         fos.close();
         sr.close();
+        CaptureScreenshot("1",driver);
         System.out.println(wn.getText());
         driver.quit();
 	}
