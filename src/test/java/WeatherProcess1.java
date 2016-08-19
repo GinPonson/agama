@@ -26,7 +26,7 @@ public class WeatherProcess1 {
 	
 	public static void CaptureScreenshot(String fileName, WebDriver driver) {
 		String dirName = "d://dn//screenshot";
-		
+System.out.println(fileName);		
 		if (!(new File(dirName).isDirectory())) {
 			new File(dirName).mkdir();
 		}
@@ -36,7 +36,7 @@ public class WeatherProcess1 {
 	    File image = new File(dirName + File.separator + time + "_" + (fileName==null?"":fileName + ".png"));
 	    System.out.println(image.getName());
 	    File file = tsDriver.getScreenshotAs(OutputType.FILE);
-	    System.out.println(file);
+System.out.println(file);
 	    try {
 			FileUtils.copyFile(file, image);
 		} catch (IOException e) {
@@ -75,6 +75,7 @@ public class WeatherProcess1 {
         WebElement wn = driver.findElement(By.className("dDisasterAlarm"));
         StringBuilder sb = new StringBuilder(wn.getText().replace("\n", "\r\n"));
 
+System.out.println("~~~~~~~~");    
         List<WebElement> btn2 = driver.findElements(By.className("dClick"));
         for(int i = 1 ;i< btn2.size();i++){
             WebElement element = btn2.get(i);
@@ -83,7 +84,9 @@ public class WeatherProcess1 {
             WebElement wn2 = driver.findElement(By.className("dDisasterAlarm"));
             sb.append(wn2.getText().replace("\n", "\r\n"));
         }
-
+System.out.println("~~~~~~~~");        
+        CaptureScreenshot("1",driver);
+        
         String time = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         String path = "D://dn//"+time;
         File file = new File(path);
@@ -100,7 +103,7 @@ public class WeatherProcess1 {
         }
         fos.close();
         sr.close();
-        CaptureScreenshot("1",driver);
+        
         System.out.println(wn.getText());
         driver.quit();
 	}

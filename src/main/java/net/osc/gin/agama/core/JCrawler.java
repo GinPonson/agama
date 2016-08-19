@@ -25,7 +25,7 @@ public class JCrawler{
 	
 	private static Logger log = LoggerFactory.getLogger(JCrawler.class);
 
-	private static Status THREAD_STATUS = Status.STOP;
+	private static Status THREAD_STATUS = Status.STOPPED;
 
 	private Scheduler scheduler = new DuplicateURLScheduler();
 	
@@ -100,7 +100,7 @@ public class JCrawler{
 	}
 	
 	private void checkIfStarted() {
-		if(THREAD_STATUS == Status.STOP){
+		if(THREAD_STATUS == Status.STOPPED){
 			THREAD_STATUS = Status.PREPARED;
 			if(log.isDebugEnabled())
 				log.debug("thread prepared .....");
@@ -111,16 +111,6 @@ public class JCrawler{
 		}
 	}	
 	
-	private boolean isOutOfDepth(Request request){
-		if(configer.getDepth() == -1){
-			return false;
-		} else if(configer.getDepth() >= request.getCurDepth()){
-			return false;
-		} else {
-			return true;
-		}
-	}
-
 	private void initComponent() {
 		if(downloader == null){
 			if(configer.isAjaxModel()){
@@ -211,6 +201,16 @@ public class JCrawler{
 			}
 		}
 	}
+
+    private boolean isOutOfDepth(Request request){
+        if(configer.getDepth() == -1){
+            return false;
+        } else if(configer.getDepth() >= request.getCurDepth()){
+            return false;
+        } else {
+            return true;
+        }
+    }
 	
 	private void close() {
 		threadPool.shutdown();
@@ -234,7 +234,7 @@ public class JCrawler{
 
 
 	private enum Status{
-		STOP(0),PREPARED(1),STARTED(2),SHUTDOWN(3);
+		STOPPED(0),PREPARED(1),STARTED(2),SHUTDOWN(3);
 		
 		int statusNum;
 		
