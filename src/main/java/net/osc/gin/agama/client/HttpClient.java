@@ -24,13 +24,7 @@ public class HttpClient {
 	
 	private HttpURLConnection conn = null;
 	protected Proxy proxy = Proxy.NO_PROXY;
-	
-	public HttpClient(){}
-	
-	public HttpClient(Proxy proxy){
-		this.proxy = proxy;
-	}
-	
+
 	public Response execute(Request req) throws IOException{
 		log.info("正在抓取页面:"+req.getUrl());	
 		
@@ -43,16 +37,30 @@ public class HttpClient {
 		
 		conn.connect();
 		
-		byte[] bytes = getResponseByByte();
-				
 		Response response = new Response();
-		response.setContentByte	(bytes);
+		response.setContentByte	(getResponseByByte());
 		response.setResponseCode(conn.getResponseCode());
 		response.setResponseMsg(conn.getResponseMessage());
 		response.setContentType(conn.getContentType());
 		
 		return response;
 	}
+
+    private void setHeaders(Map<String, String> headers) {
+        if(log.isDebugEnabled()){
+            log.debug("Request Header:");
+        }
+        if(headers != null && !headers.isEmpty()){
+            for(Entry<String, String> header : headers.entrySet()){
+                conn.setRequestProperty(header.getKey(), header.getValue());
+
+                if(log.isDebugEnabled()){
+                    log.debug(header.getKey()+":"+header.getValue() );
+                }
+            }
+        }
+
+    }
 	
 	private byte[] getResponseByByte(){
 		BufferedInputStream bis = null;
@@ -110,19 +118,11 @@ public class HttpClient {
 		return input;
 	}
 
-	private void setHeaders(Map<String, String> headers) {
-		if(log.isDebugEnabled()){
-			log.debug("Request Header:");
-		}
-		if(headers != null && !headers.isEmpty()){
-			for(Entry<String, String> header : headers.entrySet()){
-				conn.setRequestProperty(header.getKey(), header.getValue());
-				
-				if(log.isDebugEnabled()){
-					log.debug(header.getKey()+":"+header.getValue() );
-				}
-			}
-		}
-		
-	}
+    public Proxy getProxy() {
+        return proxy;
+    }
+
+    public void setProxy(Proxy proxy) {
+        this.proxy = proxy;
+    }
 }

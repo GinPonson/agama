@@ -17,45 +17,43 @@ import net.osc.gin.agama.util.UrlUtils;
 
 public class HttpDownloader implements Downloader{
 
-	private Proxy proxy = Proxy.NO_PROXY;
-	
+    private HttpClient client = new HttpClient();
+
 	@Override
-	public Page download(Request req) {
-		HttpClient client = null;
+	public Page download(Request request) {
 		Page page = null;
 		try {
-			client = new HttpClient(proxy);
-			Response res = client.execute(req);
-			if(res.getResponseCode() == 200){
-				page = handleResponse(res);
-				page.setDomain(req.getDomain());
-				page.setUrl(req.getUrl());
+			Response response = client.execute(request);
+			if(response.getResponseCode() == 200){
+				page = handleResponse(response);
+				page.setDomain(request.getDomain());
+				page.setUrl(request.getUrl());
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-		} 
+		}
 		return page;
 	}
 	
 	@Override
 	public void setHttpProxy(Proxy p) {
-		this.proxy = p;		
+        client.setProxy(p);
 	}
 	
-	private Page handleResponse(Response res) throws IOException {
+	private Page handleResponse(Response response) throws IOException {
 		Page page = new Page();
-		page.setRawText(getContent(res));
+		page.setRawText(getContent(response));
 		
 		return page;
 	}	
 	
-	private String getContent(Response res) throws IOException {
+	private String getContent(Response response) throws IOException {
 		String content ;
-		String charset = getCharset(res.getContentType(),res.getContentByte());
+		String charset = getCharset(response.getContentType(), response.getContentByte());
 		if(charset != null)
-			content = new String(res.getContentByte(),charset);
+			content = new String(response.getContentByte(),charset);
 		else
-			content = new String(res.getContentByte());
+			content = new String(response.getContentByte());
 		return content;
 	}
 	
