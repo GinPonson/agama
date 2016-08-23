@@ -25,9 +25,7 @@ public class HttpDownloader implements Downloader{
 		try {
 			Response response = client.execute(request);
 			if(response.getResponseCode() == 200){
-				page = handleResponse(response);
-				page.setDomain(request.getDomain());
-				page.setUrl(request.getUrl());
+				page = handleResponse(request,response);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -40,10 +38,12 @@ public class HttpDownloader implements Downloader{
         client.setProxy(p);
 	}
 	
-	private Page handleResponse(Response response) throws IOException {
+	private Page handleResponse(Request request,Response response) throws IOException {
 		Page page = new Page();
 		page.setRawText(getContent(response));
-		
+        page.setDomain(request.getDomain());
+        page.setUrl(request.getUrl());
+
 		return page;
 	}	
 	
@@ -76,7 +76,7 @@ public class HttpDownloader implements Downloader{
 			//<meta charset="utf-8">
 			String metaCharset = element.attr("charset");
 			if(metaCharset != null && !"".equals(metaCharset))
-				return metaCharset;
+				return metaCharset.trim();
 		}
 		return null;
 	}

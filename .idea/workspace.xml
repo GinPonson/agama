@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="790b9471-3061-4884-b4c4-38e069dd0ef0" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/osc/gin/agama/client/HttpClient.java" afterPath="$PROJECT_DIR$/src/main/java/net/osc/gin/agama/client/HttpClient.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/osc/gin/agama/downloader/HttpDownloader.java" afterPath="$PROJECT_DIR$/src/main/java/net/osc/gin/agama/downloader/HttpDownloader.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="agama.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -65,11 +63,11 @@
       <file leaf-file-name="HttpDownloader.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/net/osc/gin/agama/downloader/HttpDownloader.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.64285713">
-              <caret line="67" column="59" selection-start-line="67" selection-start-column="59" selection-end-line="67" selection-end-column="59" />
+            <state vertical-scroll-proportion="0.35714287">
+              <caret line="28" column="13" selection-start-line="28" selection-start-column="13" selection-end-line="28" selection-end-column="13" />
               <folding>
-                <element signature="e#961#962#0" expanded="true" />
-                <element signature="e#992#993#0" expanded="true" />
+                <element signature="e#893#894#0" expanded="true" />
+                <element signature="e#924#925#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -802,12 +800,12 @@
       <updated>1471574454507</updated>
       <workItem from="1471574461955" duration="7960000" />
       <workItem from="1471828047523" duration="6214000" />
-      <workItem from="1471915532078" duration="11416000" />
+      <workItem from="1471915532078" duration="11837000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="25590000" />
+    <option name="totallyTimeSpent" value="26011000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1179,11 +1177,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/osc/gin/agama/downloader/HttpDownloader.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.64285713">
-          <caret line="67" column="59" selection-start-line="67" selection-start-column="59" selection-end-line="67" selection-end-column="59" />
+        <state vertical-scroll-proportion="0.35714287">
+          <caret line="28" column="13" selection-start-line="28" selection-start-column="13" selection-end-line="28" selection-end-column="13" />
           <folding>
-            <element signature="e#961#962#0" expanded="true" />
-            <element signature="e#992#993#0" expanded="true" />
+            <element signature="e#893#894#0" expanded="true" />
+            <element signature="e#924#925#0" expanded="true" />
           </folding>
         </state>
       </provider>
