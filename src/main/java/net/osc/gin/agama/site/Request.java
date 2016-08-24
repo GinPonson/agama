@@ -16,11 +16,6 @@ public class Request {
 	private String method;
 	
 	/**
-	 * domain
-	 */
-	private String domain;
-	
-	/**
 	 * request header
 	 */
 	private Map<String,String> headers = new HashMap<String,String>();
@@ -59,14 +54,6 @@ public class Request {
 
 	public void setMethod(String method) {
 		this.method = method;
-	}
-
-	public String getDomain() {
-		return domain;
-	}
-
-	public void setDomain(String domain) {
-		this.domain = domain;
 	}
 
 	public Map<String, String> getHeaders() {

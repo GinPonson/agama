@@ -25,12 +25,7 @@ public class Page {
      * text
      */
 	private String rawText;
-	
-	/**
-	 * website domain
-	 */
-	private String domain;
-	
+
 	/**
 	 * this is page url
 	 */
@@ -65,14 +60,6 @@ public class Page {
 		this.requests = requests;
 	}
 	
-    public String getDomain() {
-		return domain;
-	}
-
-	public void setDomain(String domain) {
-		this.domain = domain;
-	}
-	
 	public String getUrl() {
 		return url;
 	}
@@ -85,9 +72,7 @@ public class Page {
         if(rawText == null){
             throw new NullPointerException();
         }
-        if(domain == null || "".equals(domain)){
-        	domain = UrlUtils.getDefaultDomain(url);
-        }
+        String domain = UrlUtils.getDefaultDomain(url);
         html = new Html(Jsoup.parse(rawText,domain));
         return html;
     }

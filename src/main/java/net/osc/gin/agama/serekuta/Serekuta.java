@@ -4,16 +4,16 @@ import java.util.List;
 
 public interface Serekuta {
 
-	public List<String> list();
+	List<String> list();
 	
-	public List<String> list(String regex);
+	List<String> list(String regex);
 	
-	public String text();
+	String text();
 	
-	public String attr(String attr);
+	String attr(String attr);
 	
-	public Serekuta first();
+	Serekuta first();
 	
-	public Serekuta last();
+	Serekuta last();
 	
 }

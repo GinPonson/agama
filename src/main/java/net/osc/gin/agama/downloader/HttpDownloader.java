@@ -41,7 +41,6 @@ public class HttpDownloader implements Downloader{
 	private Page handleResponse(Request request,Response response) throws IOException {
 		Page page = new Page();
 		page.setRawText(getContent(response));
-        page.setDomain(request.getDomain());
         page.setUrl(request.getUrl());
 
 		return page;

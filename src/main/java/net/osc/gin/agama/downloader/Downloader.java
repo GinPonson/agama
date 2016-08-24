@@ -6,7 +6,7 @@ import net.osc.gin.agama.site.Page;
 import net.osc.gin.agama.site.Request;
 
 public interface Downloader {
-	public abstract Page download(Request req);
+	Page download(Request req);
 	
-	public abstract void setHttpProxy(Proxy p);
+	void setHttpProxy(Proxy p);
 }
