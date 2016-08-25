@@ -43,7 +43,7 @@ public class JsoupSerekuta  implements Serekuta{
             if("a".equals(element.tagName())){
                 list.add(UrlUtils.toAsbLink(domain,element.text()));
             } else {
-                list.add(element.parents()text());
+                list.add(element.parents().text());
             }
 		}
 		return list;

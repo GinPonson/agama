@@ -2,18 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="790b9471-3061-4884-b4c4-38e069dd0ef0" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/osc/gin/agama/core/CrawlConfiger.java" afterPath="$PROJECT_DIR$/src/main/java/net/osc/gin/agama/core/CrawlConfiger.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/osc/gin/agama/site/Html.java" afterPath="$PROJECT_DIR$/src/main/java/net/osc/gin/agama/site/Html.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/osc/gin/agama/proxy/HttpProxy.java" afterPath="$PROJECT_DIR$/src/main/java/net/osc/gin/agama/proxy/HttpProxy.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/osc/gin/agama/core/JCrawler.java" afterPath="$PROJECT_DIR$/src/main/java/net/osc/gin/agama/core/JCrawler.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/osc/gin/agama/serekuta/JsoupSerekuta.java" afterPath="$PROJECT_DIR$/src/main/java/net/osc/gin/agama/serekuta/JsoupSerekuta.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/osc/gin/agama/serekuta/Serekuta.java" afterPath="$PROJECT_DIR$/src/main/java/net/osc/gin/agama/serekuta/Serekuta.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/osc/gin/agama/processer/WeatherProcess.java" afterPath="$PROJECT_DIR$/src/main/java/net/osc/gin/agama/processer/WeatherProcess.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/WeatherProcess1.java" afterPath="$PROJECT_DIR$/src/test/java/WeatherProcess1.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/osc/gin/agama/serekuta/XpathSerekuta.java" afterPath="$PROJECT_DIR$/src/main/java/net/osc/gin/agama/serekuta/XpathSerekuta.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/phantomjsdriver.log" afterPath="$PROJECT_DIR$/phantomjsdriver.log" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MOVED" beforePath="D:\IntelliJIDEA\workspace\agama\src\main\java\net\osc\gin\agama\downloader\SeleniumDownloader.java" afterPath="$PROJECT_DIR$/src/main/java/net/osc/gin/agama/downloader/PhantomDownloader.java" />
     </list>
     <ignored path="agama.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -69,15 +58,15 @@
       <file leaf-file-name="JsoupSerekuta.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/net/osc/gin/agama/serekuta/JsoupSerekuta.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.8333333">
-              <caret line="76" column="34" selection-start-line="76" selection-start-column="34" selection-end-line="76" selection-end-column="34" />
+            <state vertical-scroll-proportion="0.71428573">
+              <caret line="75" column="26" selection-start-line="75" selection-start-column="26" selection-end-line="75" selection-end-column="26" />
               <folding>
                 <element signature="e#345#346#0" expanded="true" />
                 <element signature="e#376#377#0" expanded="true" />
-                <element signature="e#1269#1270#0" expanded="true" />
-                <element signature="e#1298#1299#0" expanded="true" />
-                <element signature="e#1346#1347#0" expanded="true" />
-                <element signature="e#1379#1380#0" expanded="true" />
+                <element signature="e#1270#1271#0" expanded="true" />
+                <element signature="e#1299#1300#0" expanded="true" />
+                <element signature="e#1347#1348#0" expanded="true" />
+                <element signature="e#1380#1381#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -1273,12 +1262,12 @@
       <workItem from="1471915532078" duration="12124000" />
       <workItem from="1471999151791" duration="7729000" />
       <workItem from="1472085421404" duration="4940000" />
-      <workItem from="1472091153984" duration="10493000" />
+      <workItem from="1472091153984" duration="10786000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="49460000" />
+    <option name="totallyTimeSpent" value="49753000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1290,8 +1279,8 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1296" height="1000" extended-state="1" />
-    <editor active="true" />
+    <frame x="-8" y="-8" width="1296" height="1000" extended-state="6" />
+    <editor active="false" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32911393" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32911393" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -1788,15 +1777,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/osc/gin/agama/serekuta/JsoupSerekuta.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.8333333">
-          <caret line="76" column="34" selection-start-line="76" selection-start-column="34" selection-end-line="76" selection-end-column="34" />
+        <state vertical-scroll-proportion="0.71428573">
+          <caret line="75" column="26" selection-start-line="75" selection-start-column="26" selection-end-line="75" selection-end-column="26" />
           <folding>
             <element signature="e#345#346#0" expanded="true" />
             <element signature="e#376#377#0" expanded="true" />
-            <element signature="e#1269#1270#0" expanded="true" />
-            <element signature="e#1298#1299#0" expanded="true" />
-            <element signature="e#1346#1347#0" expanded="true" />
-            <element signature="e#1379#1380#0" expanded="true" />
+            <element signature="e#1270#1271#0" expanded="true" />
+            <element signature="e#1299#1300#0" expanded="true" />
+            <element signature="e#1347#1348#0" expanded="true" />
+            <element signature="e#1380#1381#0" expanded="true" />
           </folding>
         </state>
       </provider>
