@@ -23,27 +23,33 @@ public class JsoupSerekuta  implements Serekuta{
 		domain = baseUri;
 	}
 
+    public JsoupSerekuta find(String nodeExp){
+        Elements es = elements.select(nodeExp);
+        return new JsoupSerekuta(es,domain);
+    }
+
+    public JsoupSerekuta regex(String pattern){
+        Elements es = new Elements();
+        for(Element element : elements){
+            es.addAll(element.getElementsMatchingText(pattern));
+        }
+        return new JsoupSerekuta(es,domain);
+    }
+
 	@Override
 	public List<String> list() {
 		List<String> list = new ArrayList<>();
 		for(Element element : elements){
-			list.add(UrlUtils.toAsbLink(domain,element.text()));
+            if("a".equals(element.tagName())){
+                list.add(UrlUtils.toAsbLink(domain,element.text()));
+            } else {
+                list.add(element.parents()text());
+            }
 		}
 		return list;
 	}
-	
-	@Override
-	public List<String> list(String regex) {
-		List<String> list = new ArrayList<>();
-		for(Element element : elements){
-			if(element.text().matches(regex)){
-				list.add(UrlUtils.toAsbLink(domain,element.text()));
-			}
-		}
-		return list;
-	}
-	
-	@Override
+
+    @Override
 	public String text() {
 		return elements.text();
 	}
@@ -54,18 +60,22 @@ public class JsoupSerekuta  implements Serekuta{
 	}
 
 	@Override
-	public Serekuta first() {
+	public JsoupSerekuta first() {
 		Elements es = new Elements();
 		es.add(elements.first());
-		return new JsoupSerekuta(es);
+		return new JsoupSerekuta(es,domain);
 	}
 
 	@Override
-	public Serekuta last() {
+	public JsoupSerekuta last() {
 		Elements es = new Elements();
 		es.add(elements.last());
 		return new JsoupSerekuta(es);
 	}
 
-
+    public JsoupSerekuta parent() {
+        Elements es = new Elements();
+        es.addAll(elements.parents());
+        return new JsoupSerekuta(es);
+    }
 }

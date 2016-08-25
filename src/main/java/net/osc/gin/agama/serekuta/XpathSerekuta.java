@@ -31,7 +31,7 @@ public class XpathSerekuta implements Serekuta{
 		return list;
 	}
 	
-	@Override
+	/*@Override
 	public List<String> list(String regex) {
 		List<String> list = new ArrayList<>();
 		for(TagNode tagNode : tagNodes){
@@ -40,7 +40,7 @@ public class XpathSerekuta implements Serekuta{
 			}
 		}
 		return list;
-	}
+	}*/
 	
 	@Override
 	public String attr(String attr) {

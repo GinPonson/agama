@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import net.osc.gin.agama.downloader.Downloader;
 import net.osc.gin.agama.downloader.HttpDownloader;
-import net.osc.gin.agama.downloader.SeleniumDownloader;
+import net.osc.gin.agama.downloader.PhantomDownloader;
 import net.osc.gin.agama.processer.PageProcess;
 import net.osc.gin.agama.scheduler.DuplicateURLScheduler;
 import net.osc.gin.agama.scheduler.Scheduler;
@@ -114,7 +114,7 @@ public class JCrawler{
 	private void initComponent() {
 		if(downloader == null){
 			if(configer.isAjaxModel()){
-				downloader = new SeleniumDownloader();
+				downloader = new PhantomDownloader(configer.getDriverPath());
 			} else {
 				downloader = new HttpDownloader();
 			}

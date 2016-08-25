@@ -9,10 +9,11 @@ import java.net.SocketAddress;
 public class HttpProxy extends Proxy{
 	
 	private String host;
-	
 	private int port;
-	
-	public HttpProxy(Type type, String host, int port) {
+    private String user = "";
+    private String password = "";
+
+    public HttpProxy(Type type, String host, int port) {
 		super(type, new InetSocketAddress(host, port));
 		this.host = host;
 		this.port = port;
@@ -41,19 +42,22 @@ public class HttpProxy extends Proxy{
 		return port;
 	}
 
+    public String getUser() {
+        return user;
+    }
 
+    public String getPassword() {
+        return password;
+    }
 
-
-	static class MyAuthenticator extends Authenticator {        
-		   private String user = "";        
-		   private String password = "";        
-		   public MyAuthenticator(String user, String password) {            
-		      this.user = user;            
-		      this.password = password;        
-		   }        
-		   protected PasswordAuthentication getPasswordAuthentication() {            
-		      return new PasswordAuthentication(user, password.toCharArray());        
-		   }    
+    class MyAuthenticator extends Authenticator {
+       public MyAuthenticator(String username, String pwd) {
+          user = username;
+          password = pwd;
+       }
+       protected PasswordAuthentication getPasswordAuthentication() {
+          return new PasswordAuthentication(user, password.toCharArray());
+       }
 	}
 
 }

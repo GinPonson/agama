@@ -22,9 +22,7 @@ import net.osc.gin.agama.util.ReflectUtils;
 
 public class Html {
 	
-	private static Logger log = LoggerFactory.getLogger(Html.class);
-
-    private static final HtmlCleaner HTML_CLEANER = new HtmlCleaner(); 
+    private static final HtmlCleaner HTML_CLEANER = new HtmlCleaner();
     
     private Document document;
     
@@ -43,12 +41,12 @@ public class Html {
         return xpath("//img/@src");
     }
     
-    public Serekuta select(String selector){
+    public JsoupSerekuta select(String selector){
     	Elements elements = document.select(selector);
     	return new JsoupSerekuta(elements,document.baseUri());
     }
     
-    public Serekuta xpath(String xpath){
+    public XpathSerekuta xpath(String xpath){
     	TagNode[] tagNodes = XpathUtils.evaluate(pageTagNode, xpath);
     	return new XpathSerekuta(tagNodes,document.baseUri());
     }

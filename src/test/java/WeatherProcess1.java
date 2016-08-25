@@ -67,7 +67,7 @@ System.out.println(file);
          
         Select selectShen = new Select(driver.findElement(By.id("pro")));
         selectShen.selectByValue("10128");
-
+System.out.println(driver.getPageSource());
         WebElement btn = driver.findElement(By.id("Submit"));
         btn.click();
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);

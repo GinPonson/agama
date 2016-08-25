@@ -4,9 +4,9 @@ import java.util.List;
 
 public interface Serekuta {
 
+    //Serekuta find(String nodeExp);
+
 	List<String> list();
-	
-	List<String> list(String regex);
 	
 	String text();
 	
