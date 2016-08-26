@@ -4,13 +4,15 @@ import java.util.List;
 
 public interface Serekuta {
 
-    //Serekuta find(String nodeExp);
+    Serekuta find(String nodeExp);
 
-	List<String> list();
-	
 	String text();
+
+    List<String> texts();
 	
 	String attr(String attr);
+
+    List<String> attrs(String attr);
 	
 	Serekuta first();
 	

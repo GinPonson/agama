@@ -14,12 +14,17 @@ public class WeatherProcess implements PageProcess{
 	public void process(Page page) {
 		System.out.println(page.getRawText());
 
-        System.out.println(page.getHtml().select("#grade").find("option[value=\"01\"]").list());
+        System.out.println(page.getHtml().select("#pro").find("option[value=10101]").texts());
+
+        System.out.println(page.getHtml().select("#kind").parent().attr("name"));
+
+        System.out.println(page.getHtml().select(".list").find("a").attrs("href"));
+
+        System.out.println(page.getHtml().imgs().text());
     }
 
 	public static void main(String[] args) {
 		HttpProxy proxy = new HttpProxy(Proxy.Type.HTTP, "10.228.110.21", 80, "panyongjian", "pan240409F");
-		//Request request = new Request("http://weibo.cn/gztq");
 		CrawlConfiger config = new CrawlConfiger("http://www.weather.com.cn/alarm/newalarmlist.shtml");
 		config.setProxy(proxy);
 		config.setDepth(4);

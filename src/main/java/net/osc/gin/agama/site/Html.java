@@ -30,6 +30,7 @@ public class Html {
     
     public Html(Document doc) {
         this.document = doc;
+        //格式化html以便xpath操作,因为有些标签是不对称的
     	pageTagNode = HTML_CLEANER.clean(this.toString());
     }
     

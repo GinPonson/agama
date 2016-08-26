@@ -23,6 +23,7 @@ public class JsoupSerekuta  implements Serekuta{
 		domain = baseUri;
 	}
 
+    @Override
     public JsoupSerekuta find(String nodeExp){
         Elements es = elements.select(nodeExp);
         return new JsoupSerekuta(es,domain);
@@ -36,28 +37,33 @@ public class JsoupSerekuta  implements Serekuta{
         return new JsoupSerekuta(es,domain);
     }
 
-	@Override
-	public List<String> list() {
+    @Override
+    public String text() {
+        return elements.text();
+    }
+
+    @Override
+    public List<String> texts() {
 		List<String> list = new ArrayList<>();
 		for(Element element : elements){
-            if("a".equals(element.tagName())){
-                list.add(UrlUtils.toAsbLink(domain,element.text()));
-            } else {
-                list.add(element.parents().text());
-            }
+            list.add(element.text());
 		}
 		return list;
 	}
 
-    @Override
-	public String text() {
-		return elements.text();
-	}
-	
 	@Override
 	public String attr(String attr) {
 		return elements.attr(attr);
 	}
+
+    @Override
+    public List<String> attrs(String attr) {
+        List<String> list = new ArrayList<>();
+        for(Element element : elements){
+            list.add(element.attr(attr));
+        }
+        return list;
+    }
 
 	@Override
 	public JsoupSerekuta first() {
