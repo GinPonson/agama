@@ -23,7 +23,7 @@ public class OSCPageProcess implements PageProcess{
 			System.out.println(b.toString());
 		}
 
-		page.getRequests().addAll(page.getHtml().xpath("//div[@class='pagelistbox']/a/@href").list());
+		page.getRequests().addAll(page.getHtml().xpath("//div[@class='pagelistbox']/a/@href").texts());
 		
 	}
 

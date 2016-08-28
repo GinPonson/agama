@@ -2,6 +2,8 @@ package net.osc.gin.agama.util;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import net.osc.gin.agama.site.TagNodes;
+import net.osc.gin.agama.site.TextNode;
 import org.htmlcleaner.DomSerializer;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
@@ -21,11 +23,11 @@ public class XpathUtils {
 		return document;
 	}
 	
-	public static TagNode[] evaluate(TagNode tagNode,String xpath){
-		TagNode[] tagNodes = null;
+	public static TagNodes evaluate(TagNode tagNode,String xpath){
+		TagNodes tagNodes = null;
 		try {
 			Object[] res = tagNode.evaluateXPath(xpath);
-			tagNodes = toTagNdes(res);
+			tagNodes = new TagNodes(toTagNdes(res));
 		} catch (XPatherException e) {
 			e.printStackTrace();
 		}
@@ -39,7 +41,7 @@ public class XpathUtils {
 			if(arg instanceof TagNode){
 				tagNodes[i] = (TagNode) arg;
 			} else {
-				TagNode node = new net.osc.gin.agama.site.TagNode(arg);
+				TagNode node = new TextNode(arg);
 				tagNodes[i] = node;
 			}
 		}

@@ -48,7 +48,7 @@ public class Html {
     }
     
     public XpathSerekuta xpath(String xpath){
-    	TagNode[] tagNodes = XpathUtils.evaluate(pageTagNode, xpath);
+    	TagNodes tagNodes = XpathUtils.evaluate(pageTagNode, xpath);
     	return new XpathSerekuta(tagNodes,document.baseUri());
     }
     
@@ -65,7 +65,7 @@ public class Html {
 
     	List<T> resList = new ArrayList<>();
     	
-    	TagNode[] tagNodes = XpathUtils.evaluate(pageTagNode,"".equals(ancestor)?"//html":ancestor);
+    	TagNodes tagNodes = XpathUtils.evaluate(pageTagNode,"".equals(ancestor)?"//html":ancestor);
     	for(TagNode tagNode : tagNodes){
     		T instance = ReflectUtils.newInstance(target);
     		
@@ -73,10 +73,10 @@ public class Html {
     			
     			if(field.isAnnotationPresent(Xpath.class)){
     				String xpath = field.getAnnotation(Xpath.class).value();
-    				TagNode[] nodes = XpathUtils.evaluate(tagNode,xpath);
+    				TagNodes nodes = XpathUtils.evaluate(tagNode,xpath);
     				
-    				if(nodes.length > 0){
-    					String dataText = nodes[0].getText().toString().trim();
+    				if(nodes.size() > 0){
+    					String dataText = nodes.get(0).getText().toString().trim();
     					Object data = TypeConverter.convert(dataText, field.getType());
     					ReflectUtils.invokeSetter(field.getName(), instance, data);
     				}
