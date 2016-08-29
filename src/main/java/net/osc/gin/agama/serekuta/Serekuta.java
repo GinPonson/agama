@@ -17,5 +17,7 @@ public interface Serekuta {
 	Serekuta first();
 	
 	Serekuta last();
+
+    Serekuta parent();
 	
 }

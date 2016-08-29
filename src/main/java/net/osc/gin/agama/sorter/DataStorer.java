@@ -4,5 +4,5 @@ import java.util.Map;
 
 public interface DataStorer {
 
-	public void process(Map<String,String> fields);
+	void store(Map<String, String> fields);
 }

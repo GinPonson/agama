@@ -79,6 +79,7 @@ public class JsoupSerekuta  implements Serekuta{
 		return new JsoupSerekuta(es);
 	}
 
+    @Override
     public JsoupSerekuta parent() {
         Elements es = new Elements();
         es.addAll(elements.parents());

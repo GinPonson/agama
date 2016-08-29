@@ -1,9 +1,6 @@
 package net.osc.gin.agama.site;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.jsoup.Jsoup;
 
@@ -14,12 +11,12 @@ public class Page {
 	/**
      * store output fields
      */
-    private Map<String,String> fields = new HashMap<String,String>();
+    private Map<String,String> fields = new TreeMap<>();
 
     /**
      * store crawl url
      */
-    private List<String> requests = new ArrayList<String>();
+    private List<String> requests = new ArrayList<>();
 
     /**
      * text
@@ -52,7 +49,7 @@ public class Page {
 		this.fields = fields;
 	}
 
-	public List<String> getRequests() {
+    public List<String> getRequests() {
 		return requests;
 	}
 

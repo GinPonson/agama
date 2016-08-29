@@ -34,30 +34,34 @@ public class XpathSerekuta implements Serekuta{
 
     @Override
     public String text() {
-        String text = "";
-        for(TagNode tagNode : tagNodes){
-            text += tagNode.getText().toString();
-        }
-        return text;
+        return tagNodes.text();
     }
 
     @Override
     public List<String> texts() {
         List<String> list = new ArrayList<>();
         for(TagNode tagNode : tagNodes){
-            list.add(UrlUtils.toAsbLink(domain,tagNode.getText().toString()));
+            list.add(tagNode.getText().toString());
         }
         return list;
     }
 
     @Override
     public String attr(String attr) {
-        return tagNodes[0].getAttributeByName(attr);
+        return tagNodes.attr(attr);
     }
 
     @Override
     public List<String> attrs(String attr) {
-        return tagNodes[0].getAttributeByName(attr);
+        List<String> attrs = new ArrayList<>();
+        for(TagNode tagNode : tagNodes){
+            if(tagNode instanceof TextNode){
+                attrs.add(tagNode.getText().toString()) ;
+            } else {
+                attrs.add(tagNode.getAttributeByName(attr));
+            }
+        }
+        return attrs;
     }
 
     @Override
@@ -71,6 +75,15 @@ public class XpathSerekuta implements Serekuta{
     public XpathSerekuta last() {
         TagNodes nodes = new TagNodes();
         nodes.add(tagNodes.get(tagNodes.size()-1));
+        return new XpathSerekuta(nodes,domain);
+    }
+
+    @Override
+    public XpathSerekuta parent(){
+        TagNodes nodes = new TagNodes();
+        for(TagNode tagNode : tagNodes){
+            nodes.add(tagNode.getParent());
+        }
         return new XpathSerekuta(nodes,domain);
     }
 }

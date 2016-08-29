@@ -50,4 +50,10 @@ public class ReflectUtils {
 		return res;
 	}
 
+
+    public static <T>Object getValue(String fieldName,Object instance){
+        Method method = getSetter(fieldName, instance.getClass());
+        Object res = invokeMethod(instance, method,null);
+        return res;
+    }
 }

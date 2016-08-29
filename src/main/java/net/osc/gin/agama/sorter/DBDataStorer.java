@@ -1,11 +1,12 @@
 package net.osc.gin.agama.sorter;
 
+import java.util.List;
 import java.util.Map;
 
 public class DBDataStorer implements DataStorer{
 
 	@Override
-	public void process(Map<String, String> fields) {
+	public void store(Map<String, String> fields) {
 		
 	}
 

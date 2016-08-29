@@ -174,7 +174,7 @@ public class JCrawler{
 			
 			addScheuleRequest(page.getRequests(),request.getCurDepth());
 			
-			dataStorer.process(page.getFields());
+			dataStorer.store(page.getFields());
 		}
 			
 		try {

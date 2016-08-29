@@ -8,6 +8,8 @@ import net.osc.gin.agama.core.JCrawler;
 import net.osc.gin.agama.entity.BiliBiliEntity;
 import net.osc.gin.agama.proxy.HttpProxy;
 import net.osc.gin.agama.site.Page;
+import net.osc.gin.agama.sorter.FileDataStorer;
+import net.osc.gin.agama.util.BeanUtils;
 
 public class OSCPageProcess implements PageProcess{
 
@@ -24,7 +26,8 @@ public class OSCPageProcess implements PageProcess{
 		}
 
 		page.getRequests().addAll(page.getHtml().xpath("//div[@class='pagelistbox']/a/@href").texts());
-		
+
+        page.setFields(BeanUtils.toCSVRecord(page));
 	}
 
 	public static void main(String[] args) {
@@ -34,6 +37,6 @@ public class OSCPageProcess implements PageProcess{
 		config.setProxy(proxy);
 		config.setDepth(1);
 		config.setThreadNum(2);
-		JCrawler.create(new OSCPageProcess()).setConfig(config).run();
+		JCrawler.create(new OSCPageProcess()).persistBy(new FileDataStorer("D:\\test.csv")).setConfig(config).run();
 	}
 }
