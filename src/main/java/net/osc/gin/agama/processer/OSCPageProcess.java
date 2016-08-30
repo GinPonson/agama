@@ -2,6 +2,8 @@ package net.osc.gin.agama.processer;
 
 import java.net.Proxy;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import net.osc.gin.agama.core.CrawlConfiger;
 import net.osc.gin.agama.core.JCrawler;
@@ -27,7 +29,9 @@ public class OSCPageProcess implements PageProcess{
 
 		page.getRequests().addAll(page.getHtml().xpath("//div[@class='pagelistbox']/a/@href").texts());
 
-        page.setFields(BeanUtils.toCSVRecord(page));
+        for(BiliBiliEntity biliEntity : lists){
+            page.getRecords().add(BeanUtils.toCSVRecord(biliEntity));
+        }
 	}
 
 	public static void main(String[] args) {

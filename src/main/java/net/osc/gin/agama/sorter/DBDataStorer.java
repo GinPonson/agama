@@ -6,7 +6,7 @@ import java.util.Map;
 public class DBDataStorer implements DataStorer{
 
 	@Override
-	public void store(Map<String, String> fields) {
+	public void store(List<Map<String, String>> records) {
 		
 	}
 

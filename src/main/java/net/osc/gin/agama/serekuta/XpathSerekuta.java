@@ -48,18 +48,24 @@ public class XpathSerekuta implements Serekuta{
 
     @Override
     public String attr(String attr) {
-        return tagNodes.attr(attr);
+        if("href".equals(attr) || "src".equals(attr))
+            return UrlUtils.toAsbLink(domain,tagNodes.attr(attr));
+        else
+            return tagNodes.attr(attr);
     }
 
     @Override
     public List<String> attrs(String attr) {
         List<String> attrs = new ArrayList<>();
         for(TagNode tagNode : tagNodes){
+            String attribute = "";
             if(tagNode instanceof TextNode){
-                attrs.add(tagNode.getText().toString()) ;
+                attribute = tagNode.getText().toString() ;
             } else {
-                attrs.add(tagNode.getAttributeByName(attr));
+                attribute = tagNode.getAttributeByName(attr);
             }
+            if("href".equals(attr) || "src".equals(attr))
+                attrs.add(UrlUtils.toAsbLink(domain,attribute));
         }
         return attrs;
     }

@@ -6,9 +6,6 @@ import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.TreeMap;
 
-/**
- * Created by FSTMP on 2016/8/29.
- */
 public class BeanUtils {
 
     public static Map<String,String> toCSVRecord(Object record){
@@ -17,7 +14,8 @@ public class BeanUtils {
         for(Field field : clazz.getDeclaredFields()){
             if(field.isAnnotationPresent(CSV.class)){
                 CSV csv = field.getAnnotation(CSV.class);
-                map.put(csv.title(),ReflectUtils.getValue(field.getName(),record).toString());
+                Object value = ReflectUtils.getValue(field.getName(), record);
+                map.put(csv.title(),value == null ? null : value.toString());
             }
         }
         return map;

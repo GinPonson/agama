@@ -11,7 +11,7 @@ public class Page {
 	/**
      * store output fields
      */
-    private Map<String,String> fields = new TreeMap<>();
+    private List<Map<String,String>> records = new ArrayList<>();
 
     /**
      * store crawl url
@@ -41,13 +41,13 @@ public class Page {
 		this.rawText = rawText;
 	}
 
-	public Map<String, String> getFields() {
-		return fields;
-	}
+    public List<Map<String, String>> getRecords() {
+        return records;
+    }
 
-	public void setFields(Map<String, String> fields) {
-		this.fields = fields;
-	}
+    public void setRecords(List<Map<String, String>> records) {
+        this.records = records;
+    }
 
     public List<String> getRequests() {
 		return requests;

@@ -9,8 +9,6 @@ import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import net.osc.gin.agama.annotation.Xpath;
 import net.osc.gin.agama.serekuta.JsoupSerekuta;
@@ -78,7 +76,7 @@ public class Html {
     				if(nodes.size() > 0){
     					String dataText = nodes.get(0).getText().toString().trim();
     					Object data = TypeConverter.convert(dataText, field.getType());
-    					ReflectUtils.invokeSetter(field.getName(), instance, data);
+    					ReflectUtils.setValue(field.getName(), instance, data);
     				}
     				
     			}

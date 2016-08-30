@@ -53,14 +53,22 @@ public class JsoupSerekuta  implements Serekuta{
 
 	@Override
 	public String attr(String attr) {
-		return elements.attr(attr);
+        if("href".equals(attr) || "src".equals(attr))
+            return UrlUtils.toAsbLink(domain,elements.attr(attr));
+        else
+            return elements.attr(attr);
 	}
 
     @Override
     public List<String> attrs(String attr) {
         List<String> list = new ArrayList<>();
         for(Element element : elements){
-            list.add(element.attr(attr));
+            String attribute = "";
+            if("href".equals(attr) || "src".equals(attr))
+                attribute = UrlUtils.toAsbLink(domain,element.attr(attr));
+            else
+                attribute = element.attr(attr);
+            list.add(attribute);
         }
         return list;
     }

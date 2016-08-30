@@ -22,7 +22,7 @@ public class ReflectUtils {
 	public static <T> Object invokeMethod(Object instance,Method method,Object...args){
 		Object res = null;
 		try {
-			method.invoke(instance, args);
+            res = method.invoke(instance, args);
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
@@ -43,17 +43,28 @@ public class ReflectUtils {
 		}
 		return method;
 	}
+
+    public static <T> Method getGetter(String fieldName,Class<T> clazz){
+        Method method = null;
+        try {
+            PropertyDescriptor fieldDesc = new PropertyDescriptor(fieldName,clazz);
+            method = fieldDesc.getReadMethod();
+        } catch (IntrospectionException e) {
+            e.printStackTrace();
+        }
+        return method;
+    }
 	
-	public static <T> Object invokeSetter(String fieldName,Object instance,Object...args){
+	public static <T> Object setValue(String fieldName, Object instance, Object... args){
 		Method method = getSetter(fieldName, instance.getClass());
 		Object res = invokeMethod(instance, method,args);
 		return res;
 	}
 
 
-    public static <T>Object getValue(String fieldName,Object instance){
-        Method method = getSetter(fieldName, instance.getClass());
-        Object res = invokeMethod(instance, method,null);
+    public static <T>Object getValue(String fieldName,Object instance,Object...args){
+        Method method = getGetter(fieldName, instance.getClass());
+        Object res = invokeMethod(instance, method,args);
         return res;
     }
 }

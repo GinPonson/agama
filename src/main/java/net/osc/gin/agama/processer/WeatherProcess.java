@@ -2,6 +2,8 @@ package net.osc.gin.agama.processer;
 
 import java.net.Proxy;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import net.osc.gin.agama.core.CrawlConfiger;
 import net.osc.gin.agama.core.JCrawler;
@@ -27,14 +29,16 @@ public class WeatherProcess implements PageProcess{
 
         System.out.println(page.getHtml().xpath("//div[@class='friendLink']//a").attrs("href"));
 
-        page.getFields().put("文本", page.getHtml().xpath("//div[@class='friendLink']/p").first().find("/a").first().text());
+        Map<String,String> map = new TreeMap<>();
+        map.put("文本", page.getHtml().xpath("//div[@class='friendLink']/p").first().find("/a").first().text());
+        map.put("链接", page.getHtml().xpath("//div[@class='friendLink']/p").first().find("/a").first().attr("href"));
+        map.put("打开方式", page.getHtml().xpath("//div[@class='friendLink']/p").first().find("/a").first().attr("target"));
+        page.getRecords().add(map);
 
-        page.getFields().put("链接",page.getHtml().xpath("//div[@class='friendLink']/p").first().find("/a").first().attr("href"));
 
-        page.getFields().put("打开方式",page.getHtml().xpath("//div[@class='friendLink']/p").first().find("/a").first().attr("target"));
     }
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 		HttpProxy proxy = new HttpProxy(Proxy.Type.HTTP, "10.228.110.21", 80, "panyongjian", "pan240409F");
 		CrawlConfiger config = new CrawlConfiger("http://www.weather.com.cn/alarm/newalarmlist.shtml");
 		config.setProxy(proxy);

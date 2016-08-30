@@ -13,16 +13,16 @@ public class FileDataStorer implements DataStorer{
 
     private File file ;
 
+    public FileDataStorer(String fileName){
+        this(new File(fileName));
+    }
+
     public FileDataStorer(File file){
         this.file = file;
     }
 
-    public FileDataStorer(String fileName){
-        this.file = new File(fileName);
-    }
-
 	@Override
-	public void store(Map<String, String> fields) {
+	public void store(List<Map<String, String>> records) {
         OutputStreamWriter writer = null;
         CSVPrinter csvPrinter = null;
         boolean isInitedHead = false;
@@ -35,15 +35,17 @@ public class FileDataStorer implements DataStorer{
             writer = new OutputStreamWriter(fileOutputStream, Charset.forName("GBK"));
             csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT);
 
-            if(!isInitedHead){
-                csvPrinter.printRecord(fields.keySet());
+            if(!isInitedHead && !records.isEmpty()){
+                csvPrinter.printRecord(records.get(0).keySet());
             }
 
-            List<String> record = new ArrayList<>();
-            for(String id : fields.keySet()){
-                record.add(fields.get(id));
+            for(Map<String,String> rawRecord : records){
+                List<String> record = new ArrayList<>();
+                for(String title : rawRecord.keySet()){
+                    record.add(rawRecord.get(title));
+                }
+                csvPrinter.printRecord(record);
             }
-            csvPrinter.printRecord(record);
 
             csvPrinter.flush();
             writer.flush();

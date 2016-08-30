@@ -1,8 +1,11 @@
 package net.osc.gin.agama.sorter;
 
+import java.util.List;
 import java.util.Map;
 
 public interface DataStorer {
 
-	void store(Map<String, String> fields);
+	void store(List<Map<String, String>> records);
+
+   // void store(List<Object> records);
 }
