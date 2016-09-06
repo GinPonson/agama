@@ -5,7 +5,7 @@ import com.github.gin.qcsv.annotation.CSV;
 
 
 @Xpath("//div[@class='post_item']")
-public class CNBlog {
+public class CNBlog extends HtmlEntity{
 
     private int id;
 

@@ -2,11 +2,10 @@ package com.github.gin.agama.processer;
 
 import com.github.gin.agama.core.CrawlConfiger;
 import com.github.gin.agama.core.JCrawler;
-import com.github.gin.agama.sorter.FileDataStorer;
-import com.github.gin.agama.util.BeanUtils;
 import com.github.gin.agama.entity.CNBlog;
 import com.github.gin.agama.proxy.HttpProxy;
 import com.github.gin.agama.site.Page;
+import com.github.gin.agama.sorter.FileDataStorer;
 
 import java.net.Proxy;
 import java.util.List;
@@ -21,11 +20,9 @@ public class CNBlogProcess implements PageProcess{
 
         List<CNBlog> lists = page.getHtml().toEntityList(CNBlog.class);
 
-        page.getRequests().addAll(page.getHtml().xpath("//div[@class='pager']/a").attrs("href"));
+        //page.getRequests().addAll(page.getHtml().xpath("//div[@class='pager']/a").attrs("href"));
 
-        for(CNBlog cnBlog : lists){
-            page.getRecords().add(BeanUtils.toCSVRecord(cnBlog));
-        }
+        page.getRecords().addAll(lists);
     }
 
     public static void main(String[] args) {

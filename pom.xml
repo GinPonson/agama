@@ -141,7 +141,7 @@
       <dependency>
           <groupId>com.github.gin</groupId>
           <artifactId>qcsv</artifactId>
-          <version>1.0</version>
+          <version>1.01</version>
       </dependency>
 	
   </dependencies>

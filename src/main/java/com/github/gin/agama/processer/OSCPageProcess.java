@@ -1,15 +1,14 @@
 package com.github.gin.agama.processer;
 
-import java.net.Proxy;
-import java.util.List;
-
 import com.github.gin.agama.core.CrawlConfiger;
 import com.github.gin.agama.core.JCrawler;
 import com.github.gin.agama.entity.BiliBiliEntity;
 import com.github.gin.agama.proxy.HttpProxy;
 import com.github.gin.agama.site.Page;
 import com.github.gin.agama.sorter.FileDataStorer;
-import com.github.gin.agama.util.BeanUtils;
+
+import java.net.Proxy;
+import java.util.List;
 
 public class OSCPageProcess implements PageProcess{
 
@@ -28,7 +27,7 @@ public class OSCPageProcess implements PageProcess{
 		page.getRequests().addAll(page.getHtml().xpath("//div[@class='pagelistbox']/a/@href").texts());
 
         for(BiliBiliEntity biliEntity : lists){
-            page.getRecords().add(BeanUtils.toCSVRecord(biliEntity));
+            //page.getRecords().add(BeanUtils.toCSVRecord(biliEntity));
         }
 	}
 

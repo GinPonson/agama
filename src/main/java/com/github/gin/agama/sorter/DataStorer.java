@@ -1,11 +1,9 @@
 package com.github.gin.agama.sorter;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Collection;
 
-public interface DataStorer {
+public interface DataStorer<HtmlEntity> {
 
-	void store(List<Map<String, String>> records);
+	void store(Collection<HtmlEntity> records);
 
-   // void store(List<Object> records);
 }

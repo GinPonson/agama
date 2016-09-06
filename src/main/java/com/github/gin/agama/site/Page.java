@@ -2,6 +2,7 @@ package com.github.gin.agama.site;
 
 import java.util.*;
 
+import com.github.gin.agama.entity.HtmlEntity;
 import com.github.gin.agama.util.UrlUtils;
 import org.jsoup.Jsoup;
 
@@ -10,7 +11,7 @@ public class Page {
 	/**
      * store output fields
      */
-    private List<Map<String,String>> records = new ArrayList<>();
+    private List<HtmlEntity> records = new ArrayList<>();
 
     /**
      * store crawl url
@@ -40,11 +41,11 @@ public class Page {
 		this.rawText = rawText;
 	}
 
-    public List<Map<String, String>> getRecords() {
+    public List<HtmlEntity> getRecords() {
         return records;
     }
 
-    public void setRecords(List<Map<String, String>> records) {
+    public void setRecords(List<HtmlEntity> records) {
         this.records = records;
     }
 

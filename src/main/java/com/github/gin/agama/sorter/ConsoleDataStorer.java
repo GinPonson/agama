@@ -1,15 +1,15 @@
 package com.github.gin.agama.sorter;
 
-import java.util.List;
-import java.util.Map;
+import com.github.gin.agama.entity.HtmlEntity;
 
-public class ConsoleDataStorer implements DataStorer{
+import java.util.Collection;
 
-	@Override
-	public void store(List<Map<String, String>> records) {
-		/*for(Map.Entry<String, String> field: fields.entrySet()){
-			System.out.println(field.getKey() + ":" + field.getValue());
-		}*/
-	}
+public class ConsoleDataStorer implements DataStorer<HtmlEntity >{
 
+    @Override
+    public void store(Collection<HtmlEntity> records) {
+        for(HtmlEntity t : records){
+            System.out.println(t.toString());
+        }
+    }
 }

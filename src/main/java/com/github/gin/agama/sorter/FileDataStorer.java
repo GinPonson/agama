@@ -1,15 +1,15 @@
 package com.github.gin.agama.sorter;
 
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVPrinter;
+import com.github.gin.agama.entity.HtmlEntity;
+import com.github.gin.qcsv.util.CSVExportUtil;
 
-import java.io.*;
+import java.io.File;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.Collection;
 
-public class FileDataStorer implements DataStorer{
+public class FileDataStorer implements DataStorer<HtmlEntity>{
 
     private File file ;
 
@@ -21,46 +21,9 @@ public class FileDataStorer implements DataStorer{
         this.file = file;
     }
 
-	@Override
-	public void store(List<Map<String, String>> records) {
-        OutputStreamWriter writer = null;
-        CSVPrinter csvPrinter = null;
-        boolean isInitedHead = false;
-        try {
-            if(file.exists()){
-               isInitedHead = true;
-            }
-
-            FileOutputStream fileOutputStream = new FileOutputStream(file,true);
-            writer = new OutputStreamWriter(fileOutputStream, Charset.forName("GBK"));
-            csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT);
-
-            if(!isInitedHead && !records.isEmpty()){
-                csvPrinter.printRecord(records.get(0).keySet());
-            }
-
-            for(Map<String,String> rawRecord : records){
-                List<String> record = new ArrayList<>();
-                for(String title : rawRecord.keySet()){
-                    record.add(rawRecord.get(title));
-                }
-                csvPrinter.printRecord(record);
-            }
-
-            csvPrinter.flush();
-            writer.flush();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                writer.close();
-                csvPrinter.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+    @Override
+    public void store(Collection<HtmlEntity> records) {
+        if(records.iterator().hasNext())
+            CSVExportUtil.exportCSV(file, records.iterator().next().getClass(), records, Charset.forName("GBK"));
     }
-
 }

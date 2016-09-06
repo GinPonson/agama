@@ -6,7 +6,7 @@ import com.github.gin.agama.annotation.Xpath;
 import com.github.gin.qcsv.annotation.CSV;
 
 @Xpath("//div[@class='l-item']")
-public class BiliBiliEntity {
+public class BiliBiliEntity extends HtmlEntity{
 
 	private int id;
 

@@ -31,7 +31,7 @@ public class WeatherProcess implements PageProcess{
         map.put("文本", page.getHtml().xpath("//div[@class='friendLink']/p").first().find("/a").first().text());
         map.put("链接", page.getHtml().xpath("//div[@class='friendLink']/p").first().find("/a").first().attr("href"));
         map.put("打开方式", page.getHtml().xpath("//div[@class='friendLink']/p").first().find("/a").first().attr("target"));
-        page.getRecords().add(map);
+        //page.getRecords().add(map);
 
 
     }
