@@ -8,7 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.UUID;
 
-public class IOUtils {
+public class ImgUtils {
 	
 	public static void saveAsImg(String dist,String url){
 		saveAsImg(dist, null, url);

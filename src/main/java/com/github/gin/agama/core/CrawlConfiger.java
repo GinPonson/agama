@@ -45,8 +45,6 @@ public class CrawlConfiger {
 	
 	private boolean isAjaxModel = false;
 
-    private String driverPath;
-	
 	public CrawlConfiger(){}
 	
 	public CrawlConfiger(String url){
@@ -126,12 +124,4 @@ public class CrawlConfiger {
 	public void setAjaxModel(boolean isAjaxModel) {
 		this.isAjaxModel = isAjaxModel;
 	}
-
-    public String getDriverPath() {
-        return driverPath;
-    }
-
-    public void setDriverPath(String driverPath) {
-        this.driverPath = driverPath;
-    }
 }

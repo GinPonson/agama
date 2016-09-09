@@ -6,13 +6,14 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.github.gin.agama.downloader.PhantomDownloader;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.gin.agama.downloader.Downloader;
 import com.github.gin.agama.downloader.HttpDownloader;
-import com.github.gin.agama.downloader.PhantomDownloader;
+import com.github.gin.agama.downloader.AbstractPhantomDownloader;
 import com.github.gin.agama.processer.PageProcess;
 import com.github.gin.agama.scheduler.DuplicateURLScheduler;
 import com.github.gin.agama.scheduler.Scheduler;
@@ -114,7 +115,7 @@ public class JCrawler{
 	private void initComponent() {
 		if(downloader == null){
 			if(configer.isAjaxModel()){
-				downloader = new PhantomDownloader(configer.getDriverPath());
+				downloader = new PhantomDownloader();
 			} else {
 				downloader = new HttpDownloader();
 			}
@@ -228,8 +229,9 @@ public class JCrawler{
 		this.pageProcess = pageProcess;
 	}
 
-	public void setDownloader(Downloader downloader){
+	public JCrawler setDownloader(Downloader downloader){
 		this.downloader = downloader;
+        return this;
 	}
 
 
