@@ -26,9 +26,9 @@ public class CNBlogProcess implements PageProcess{
     }
 
     public static void main(String[] args) {
-        HttpProxy proxy = new HttpProxy(Proxy.Type.HTTP, "10.228.110.21", 80, "panyongjian", "pan240409F");
+        //HttpProxy proxy = new HttpProxy(Proxy.Type.HTTP, "10.228.110.21", 80, "panyongjian", "pan240409F");
         CrawlConfiger config = new CrawlConfiger("http://www.cnblogs.com/");
-        config.setProxy(proxy);
+        //config.setProxy(proxy);
         //config.setDepth(1);
         config.setThreadNum(2);
         //config.setAjaxModel(true);
