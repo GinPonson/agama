@@ -70,12 +70,17 @@ System.out.println(file);
 System.out.println(driver.getPageSource());
         WebElement btn = driver.findElement(By.id("Submit"));
         btn.click();
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+       // driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         WebElement wn = driver.findElement(By.className("dDisasterAlarm"));
         StringBuilder sb = new StringBuilder(wn.getText().replace("\n", "\r\n"));
 
-System.out.println("~~~~~~~~");    
+System.out.println("~~~~~~~~");
         List<WebElement> btn2 = driver.findElements(By.className("dClick"));
         for(int i = 1 ;i< btn2.size();i++){
             WebElement element = btn2.get(i);
@@ -84,7 +89,7 @@ System.out.println("~~~~~~~~");
             WebElement wn2 = driver.findElement(By.className("dDisasterAlarm"));
             sb.append(wn2.getText().replace("\n", "\r\n"));
         }
-System.out.println("~~~~~~~~");        
+System.out.println("~~~~~~~~");
         CaptureScreenshot("1",driver);
         
         String time = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
@@ -103,7 +108,7 @@ System.out.println("~~~~~~~~");
         }
         fos.close();
         sr.close();
-        
+
         System.out.println(wn.getText());
         driver.quit();
 	}

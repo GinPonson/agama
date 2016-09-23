@@ -25,7 +25,12 @@ public class WeatherDownloader extends AbstractPhantomDownloader {
 
         WebElement submitBtn = webDriver.findElement(By.id("Submit"));
         submitBtn.click();
-        webDriver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         WebElement disasterAlarm = webDriver.findElement(By.className("dDisasterAlarm"));
         StringBuilder sb = new StringBuilder(disasterAlarm.getText().replace("\n", "\r\n"));
