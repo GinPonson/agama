@@ -18,11 +18,11 @@ public class CNBlogProcess implements PageProcess{
     public void process(Page page) {
         System.out.println(page.getHtml());
 
-        List<CNBlog> lists = page.getHtml().toEntityList(CNBlog.class);
+        //List<CNBlog> lists = page.getHtml().toEntityList(CNBlog.class);
 
         //page.getRequests().addAll(page.getHtml().xpath("//div[@class='pager']/a").attrs("href"));
 
-        page.getRecords().addAll(lists);
+        //page.getRecords().addAll(lists);
     }
 
     public static void main(String[] args) {

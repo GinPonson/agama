@@ -3,8 +3,10 @@ package com.github.gin.agama.site;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import com.github.gin.agama.annotation.ChildItem;
 import com.github.gin.agama.serekuta.JsoupSerekuta;
 import com.github.gin.agama.serekuta.Serekuta;
 import com.github.gin.agama.util.ReflectUtils;
@@ -50,42 +52,82 @@ public class Html {
     	return new XpathSerekuta(tagNodes,document.baseUri());
     }
     
-    /**
-     * 转换相应对象
-     * @param target
-     * @return List<T>
-     */
-    public <T>List<T> toEntityList(Class<T> target){
-    	String ancestor = "";
-    	if(target.isAnnotationPresent(Xpath.class)){
-    		ancestor = target.getAnnotation(Xpath.class).value();
-    	}
+	/**
+	 * 转换相应对象
+	 * @param target
+	 * @return List<T>
+	 */
+	public <T>T toEntity(Class<T> target){
+		T instance = ReflectUtils.newInstance(target);
 
-    	List<T> resList = new ArrayList<>();
-    	
-    	TagNodes tagNodes = XpathUtils.evaluate(pageTagNode,"".equals(ancestor)?"//html":ancestor);
-    	for(TagNode tagNode : tagNodes){
-    		T instance = ReflectUtils.newInstance(target);
-    		
-    		for(Field field : target.getDeclaredFields()){
-    			
-    			if(field.isAnnotationPresent(Xpath.class)){
-    				String xpath = field.getAnnotation(Xpath.class).value();
-    				TagNodes nodes = XpathUtils.evaluate(tagNode,xpath);
-    				
-    				if(nodes.size() > 0){
-    					String dataText = nodes.get(0).getText().toString().trim();
-    					Object data = TypeConverter.convert(dataText, field.getType());
-    					ReflectUtils.setValue(field.getName(), instance, data);
-    				}
-    				
-    			}
-    		}
-    		resList.add(instance);
-    	}
+		for(Field field : target.getDeclaredFields()){
+			//字段有xpath注解时，需要解析html并保存到字段中
+			if(field.isAnnotationPresent(Xpath.class)){
+				//1、根据xpath解析html
+				String xpath = field.getAnnotation(Xpath.class).value();
+				TagNodes nodes = XpathUtils.evaluate(pageTagNode,xpath);
 
-    	return resList;
-    }
+				//2、将解析的数据注入字段中
+				if(!nodes.isEmpty()){
+					//有集合需要解析
+					if(field.isAnnotationPresent(ChildItem.class) &&
+							ReflectUtils.getValue(field.getName(),instance) instanceof Collection){
+						Class childitem = field.getAnnotation(ChildItem.class).value();
+						Collection childitems = toEntityList(childitem,nodes);
+
+						ReflectUtils.setValue(field.getName(), instance, childitems);
+					} else {
+						//不需要解析集合的情况
+						String dataText = nodes.get(0).getText().toString().trim();
+						Object data = TypeConverter.convert(dataText, field.getType());
+						ReflectUtils.setValue(field.getName(), instance, data);
+					}
+				}
+			}
+		}
+
+		return instance;
+	}
+
+	/**
+	 * 转换相应对象
+	 * @param target
+	 * @return List<T>
+	 */
+	public <T>List<T> toEntityList(Class<T> target,TagNodes tagNodes){
+		List<T> resList = new ArrayList<>();
+
+		for(TagNode tagNode : tagNodes){
+			T instance = ReflectUtils.newInstance(target);
+
+			for(Field field : target.getDeclaredFields()){
+
+				if(field.isAnnotationPresent(Xpath.class)){
+					String xpath = field.getAnnotation(Xpath.class).value();
+					TagNodes nodes = XpathUtils.evaluate(tagNode,xpath);
+
+					if(!nodes.isEmpty()){
+						//有集合需要解析
+						if(field.isAnnotationPresent(ChildItem.class) &&
+								ReflectUtils.getValue(field.getName(),instance) instanceof Collection){
+							Class childitem = field.getAnnotation(ChildItem.class).value();
+							Collection childitems = toEntityList(childitem,nodes);
+
+							ReflectUtils.setValue(field.getName(), instance, childitems);
+						} else {
+							//不需要解析集合的情况
+							String dataText = nodes.get(0).getText().toString().trim();
+							Object data = TypeConverter.convert(dataText, field.getType());
+							ReflectUtils.setValue(field.getName(), instance, data);
+						}
+					}
+				}
+			}
+			resList.add(instance);
+		}
+
+		return resList;
+	}
     
     public Document getDocument(){
     	return document;
