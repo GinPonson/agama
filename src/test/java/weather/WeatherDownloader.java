@@ -1,5 +1,6 @@
-package com.github.gin.agama.downloader;
+package weather;
 
+import com.github.gin.agama.downloader.AbstractPhantomDownloader;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.Select;

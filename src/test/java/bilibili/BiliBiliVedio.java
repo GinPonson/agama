@@ -12,6 +12,9 @@ public class BiliBiliVedio extends HtmlEntity {
 	@Xpath("//a[@class='title']")
 	private String title;
 
+	@Xpath("//a/@href")
+	private String href;
+
 	@Xpath("//div[@class='v-desc']")
 	private String desc;
 
@@ -47,6 +50,14 @@ public class BiliBiliVedio extends HtmlEntity {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public String getHref() {
+		return href;
+	}
+
+	public void setHref(String href) {
+		this.href = href;
 	}
 
 	public String getDesc() {
@@ -106,6 +117,6 @@ public class BiliBiliVedio extends HtmlEntity {
 	}
 
 	public String toString(){
-		return "标题:"+title+",描述:"+desc+",观看"+gk+",弹幕"+dm+",收藏"+sc+",up主"+up+",up时间"+upDate +",\n封面:"+img;
+		return "标题:"+title+",描述:"+desc+",观看"+gk+",弹幕"+dm+",收藏"+sc+",up主"+up+",up时间"+upDate +",\n封面:"+img+",\n地址:"+href;
 	}
 }
