@@ -1,17 +1,11 @@
-package com.github.gin.agama.processer;
+package bilibili;
 
 import com.github.gin.agama.core.CrawlConfiger;
 import com.github.gin.agama.core.JCrawler;
-import com.github.gin.agama.entity.BiliBili;
-import com.github.gin.agama.entity.BiliBiliVedio;
-import com.github.gin.agama.proxy.HttpProxy;
+import com.github.gin.agama.processer.PageProcess;
 import com.github.gin.agama.site.Page;
-import com.github.gin.agama.sorter.FileDataStorer;
 
-import java.net.Proxy;
-import java.util.List;
-
-public class OSCPageProcess implements PageProcess{
+public class BiliBiliProcess implements PageProcess {
 
 	public void process(Page page) {
 		//System.out.println(page.getHtml().toString());
@@ -37,6 +31,6 @@ public class OSCPageProcess implements PageProcess{
 		config.setDepth(1);
 		config.setThreadNum(2);
 		config.setAjaxModel(true);
-		JCrawler.create(new OSCPageProcess()).setConfig(config).run();
+		JCrawler.create(new BiliBiliProcess()).setConfig(config).run();
 	}
 }

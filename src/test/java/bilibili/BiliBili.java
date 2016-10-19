@@ -1,7 +1,8 @@
-package com.github.gin.agama.entity;
+package bilibili;
 
 import com.github.gin.agama.annotation.ChildItem;
 import com.github.gin.agama.annotation.Xpath;
+import com.github.gin.agama.entity.HtmlEntity;
 
 import java.util.ArrayList;
 import java.util.List;

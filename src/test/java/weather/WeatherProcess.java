@@ -1,17 +1,16 @@
-package com.github.gin.agama.processer;
+package weather;
+
+import com.github.gin.agama.core.CrawlConfiger;
+import com.github.gin.agama.core.JCrawler;
+import com.github.gin.agama.processer.PageProcess;
+import com.github.gin.agama.proxy.HttpProxy;
+import com.github.gin.agama.site.Page;
 
 import java.net.Proxy;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.github.gin.agama.core.CrawlConfiger;
-import com.github.gin.agama.core.JCrawler;
-import com.github.gin.agama.downloader.WeatherDownloader;
-import com.github.gin.agama.proxy.HttpProxy;
-import com.github.gin.agama.site.Page;
-import com.github.gin.agama.sorter.FileDataStorer;
-
-public class WeatherProcess implements PageProcess{
+public class WeatherProcess implements PageProcess {
 
 	public void process(Page page) {
 		System.out.println(page.getRawText());
@@ -45,7 +44,6 @@ public class WeatherProcess implements PageProcess{
 		config.setThreadNum(2);
 		config.setAjaxModel(true);
         //config.setDriverPath("D:/download/phantomjs-2.1.1-windows/bin/phantomjs.exe");
-		JCrawler.create(new WeatherProcess()).persistBy(new FileDataStorer("D:\\test.csv"))
-                .setDownloader(new WeatherDownloader()).setConfig(config).run();
+		JCrawler.create(new WeatherProcess()).setDownloader(new WeatherDownloader()).setConfig(config).run();
 	}
 }

@@ -1,11 +1,11 @@
-package com.github.gin.agama.entity;
+package bilibili;
+
+import com.github.gin.agama.annotation.Xpath;
+import com.github.gin.agama.entity.HtmlEntity;
 
 import java.util.Date;
 
-import com.github.gin.agama.annotation.Xpath;
-import com.github.gin.qcsv.annotation.CSV;
-
-public class BiliBiliVedio extends HtmlEntity{
+public class BiliBiliVedio extends HtmlEntity {
 
 	private int id;
 

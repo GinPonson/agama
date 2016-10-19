@@ -1,19 +1,14 @@
-package com.github.gin.agama.processer;
+package cnblog;
 
 import com.github.gin.agama.core.CrawlConfiger;
 import com.github.gin.agama.core.JCrawler;
-import com.github.gin.agama.entity.CNBlog;
-import com.github.gin.agama.proxy.HttpProxy;
+import com.github.gin.agama.processer.PageProcess;
 import com.github.gin.agama.site.Page;
-import com.github.gin.agama.sorter.FileDataStorer;
-
-import java.net.Proxy;
-import java.util.List;
 
 /**
  * Created by FSTMP on 2016/8/30.
  */
-public class CNBlogProcess implements PageProcess{
+public class CNBlogProcess implements PageProcess {
     @Override
     public void process(Page page) {
         System.out.println(page.getHtml());
@@ -33,6 +28,6 @@ public class CNBlogProcess implements PageProcess{
         config.setThreadNum(2);
         //config.setAjaxModel(true);
         //config.setDriverPath("D:/download/phantomjs-2.1.1-windows/bin/phantomjs.exe");
-        JCrawler.create(new CNBlogProcess()).persistBy(new FileDataStorer("D:\\cnblog.csv")).setConfig(config).run();
+        JCrawler.create(new CNBlogProcess()).setConfig(config).run();
     }
 }

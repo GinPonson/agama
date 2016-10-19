@@ -1,43 +1,35 @@
-package com.github.gin.agama.entity;
+package cnblog;
 
 import com.github.gin.agama.annotation.Xpath;
-import com.github.gin.qcsv.annotation.CSV;
+import com.github.gin.agama.entity.HtmlEntity;
 
 
 //@Xpath("//div[@class='post_item']")
-public class CNBlog extends HtmlEntity{
+public class CNBlog extends HtmlEntity {
 
     private int id;
 
-    @CSV(name = "标题")
     @Xpath("//a[@class='titlelnk']")
     private String title;
 
-    @CSV(name = "概要")
     @Xpath("//p[@class='post_item_summary']")
     private String summary;
 
-    @CSV(name = "发布人")
     @Xpath("//a[@class='lightblue']")
     private String poster;
 
-    @CSV(name = "文章链接")
     @Xpath("//a[@class='titlelnk']/@href")
     private String href;
 
-    @CSV(name = "发布时间")
     @Xpath("//div[@class='post_item_foot']")
     private String postTime;
 
-    @CSV(name = "阅读数")
     @Xpath("//span[@class='article_view']")
     private String read;
 
-    @CSV(name = "推荐数")
     @Xpath("//span[@class='diggnum']")
     private String diggnum;
 
-    @CSV(name = "评论数")
     @Xpath("//span[@class='article_comment']")
     private String comment;
 
