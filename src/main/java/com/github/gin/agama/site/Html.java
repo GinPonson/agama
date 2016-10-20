@@ -19,8 +19,12 @@ import org.jsoup.select.Elements;
 import com.github.gin.agama.annotation.Xpath;
 import com.github.gin.agama.serekuta.XpathSerekuta;
 import com.github.gin.agama.site.converter.TypeConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Html {
+
+    private Logger logger = LoggerFactory.getLogger(Html.class);
 	
     private static final HtmlCleaner HTML_CLEANER = new HtmlCleaner();
     
@@ -70,8 +74,10 @@ public class Html {
 				//2、将解析的数据注入字段中
 				if(!nodes.isEmpty()){
 					//有集合需要解析
-					if(field.isAnnotationPresent(ChildItem.class) &&
-							ReflectUtils.getValue(field.getName(),instance) instanceof Collection){
+					if(ReflectUtils.getValue(field.getName(),instance) instanceof Collection){
+                        if(!field.isAnnotationPresent(ChildItem.class))
+                            throw new RuntimeException("请在集合字段上添加ChildItem注解");
+
 						Class childitem = field.getAnnotation(ChildItem.class).value();
 						Collection childitems = toEntityList(childitem,nodes);
 
@@ -79,6 +85,10 @@ public class Html {
 					} else {
 						//不需要解析集合的情况
 						String dataText = nodes.get(0).getText().toString().trim();
+
+                        if(logger.isDebugEnabled())
+                            logger.debug("字段名:"+ field.getName() +",字段类型:"+ field.getType() +",字段值:"+dataText);
+
 						Object data = TypeConverter.convert(dataText, field.getType());
 						ReflectUtils.setValue(field.getName(), instance, data);
 					}

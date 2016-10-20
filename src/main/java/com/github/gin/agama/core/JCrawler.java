@@ -2,6 +2,7 @@ package com.github.gin.agama.core;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -173,7 +174,7 @@ public class JCrawler{
 		if(StringUtils.isNotBlank(page.getRawText())){
 			pageProcess.process(page);
 			
-			addScheuleRequest(page.getRequests(),request.getCurDepth());
+			addScheuleRequest(page.getRequests(),autoIncrement(request.getCurDepth()));
 			
 			dataStorer.store(page.getRecords());
 		}
@@ -195,10 +196,15 @@ public class JCrawler{
 		
 	}
 
-	private void addScheuleRequest(List<String> requests,int curDepth) {
+    private int autoIncrement(int curDepth){
+        AtomicInteger atomicInteger = new AtomicInteger(curDepth);
+        return atomicInteger.incrementAndGet();
+    }
+
+	private void addScheuleRequest(List<String> requests,int depth) {
 		if(!requests.isEmpty()){
 			for(String request : requests){
-				scheduler.push(new Request(request,++curDepth));
+				scheduler.push(new Request(request,depth));
 			}
 		}
 	}

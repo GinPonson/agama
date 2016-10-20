@@ -26,7 +26,7 @@ public class HttpClient {
 	protected Proxy proxy = Proxy.NO_PROXY;
 
 	public Response execute(Request req) throws IOException{
-		log.info("正在抓取页面:"+req.getUrl());	
+		log.info(Thread.currentThread().getName()+"正在抓取页面:"+req.getUrl());
 		
 		URL url = new URL(req.getUrl());
 		conn = (HttpURLConnection) url.openConnection(proxy);
@@ -78,7 +78,6 @@ public class HttpClient {
 			
 			if(log.isDebugEnabled()){
 				log.debug("返回报文长度:"+baos.toByteArray().length);
-				log.debug("返回内容:"+new String(bytes));
 			}
 		}catch (Exception e) {
 			e.printStackTrace();

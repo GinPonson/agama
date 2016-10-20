@@ -3,7 +3,10 @@ package cnblog;
 import com.github.gin.agama.core.CrawlConfiger;
 import com.github.gin.agama.core.JCrawler;
 import com.github.gin.agama.processer.PageProcess;
+import com.github.gin.agama.proxy.HttpProxy;
 import com.github.gin.agama.site.Page;
+
+import java.net.Proxy;
 
 /**
  * Created by FSTMP on 2016/8/30.
@@ -11,23 +14,21 @@ import com.github.gin.agama.site.Page;
 public class CNBlogProcess implements PageProcess {
     @Override
     public void process(Page page) {
-        System.out.println(page.getHtml());
+        CNBlog cnBlog = page.getHtml().toEntity(CNBlog.class);
 
-        //List<CNBlog> lists = page.getHtml().toEntityList(CNBlog.class);
+        page.getRequests().addAll(page.getHtml().xpath("//div[@class='pager']/a").attrs("href"));
 
-        //page.getRequests().addAll(page.getHtml().xpath("//div[@class='pager']/a").attrs("href"));
-
-        //page.getRecords().addAll(lists);
+        for(BlogItem blogItems : cnBlog.getBlogItemses()){
+            System.out.println(blogItems);
+        }
     }
 
     public static void main(String[] args) {
-        //HttpProxy proxy = new HttpProxy(Proxy.Type.HTTP, "10.228.110.21", 80, "panyongjian", "pan240409F");
+        HttpProxy proxy = new HttpProxy(Proxy.Type.HTTP, "10.228.110.21", 80, "panyongjian", "pan240409F");
         CrawlConfiger config = new CrawlConfiger("http://www.cnblogs.com/");
-        //config.setProxy(proxy);
-        //config.setDepth(1);
+        config.setProxy(proxy);
+        config.setDepth(2);
         config.setThreadNum(2);
-        //config.setAjaxModel(true);
-        //config.setDriverPath("D:/download/phantomjs-2.1.1-windows/bin/phantomjs.exe");
         JCrawler.create(new CNBlogProcess()).setConfig(config).run();
     }
 }

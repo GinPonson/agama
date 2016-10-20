@@ -4,7 +4,7 @@ import com.github.gin.agama.entity.HtmlEntity;
 
 import java.util.Collection;
 
-public class ConsoleDataStorer implements DataStorer<HtmlEntity >{
+public class ConsoleDataStorer implements DataStorer{
 
     @Override
     public void store(Collection<HtmlEntity> records) {
