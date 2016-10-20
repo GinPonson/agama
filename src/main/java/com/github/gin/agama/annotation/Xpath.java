@@ -8,7 +8,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Documented
-@Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value={ElementType.FIELD})
 public @interface Xpath {
