@@ -36,7 +36,7 @@ public class CrawlConfiger {
 	/**
 	 * 爬虫线程数量
 	 */
-	private int threadNum = 1;
+	private int threadNum = 2;
 	
 	/**
 	 * 抓取深度

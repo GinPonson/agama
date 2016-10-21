@@ -1,5 +1,8 @@
 package cnblog;
 
+import com.github.gin.agama.annotation.Agama;
+import com.github.gin.agama.annotation.Config;
+import com.github.gin.agama.annotation.Proxy;
 import com.github.gin.agama.annotation.Xpath;
 
 /**
@@ -18,6 +21,9 @@ public class BlogItem {
     @Xpath("//a[@class='lightblue']")
     private String poster;
 
+    @Agama(processer = BlogDetailProcess.class,
+            //configs = {@Config(key = "depth",val = "2"),@Config(key = "threadNum",val = "2")},
+            proxy = {@Proxy(host = "10.228.110.21",port = 80,username = "panyongjian",password = "pan240409F")})
     @Xpath("//a[@class='titlelnk']/@href")
     private String href;
 

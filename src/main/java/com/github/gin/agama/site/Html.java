@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.github.gin.agama.annotation.ChildItem;
+import com.github.gin.agama.exception.AgamaException;
 import com.github.gin.agama.serekuta.JsoupSerekuta;
 import com.github.gin.agama.serekuta.Serekuta;
 import com.github.gin.agama.util.ReflectUtils;
@@ -76,7 +77,7 @@ public class Html {
 					//有集合需要解析
 					if(ReflectUtils.getValue(field.getName(),instance) instanceof Collection){
                         if(!field.isAnnotationPresent(ChildItem.class))
-                            throw new RuntimeException("请在集合字段上添加ChildItem注解");
+                            throw new AgamaException("请在集合字段上添加ChildItem注解");
 
 						Class childitem = field.getAnnotation(ChildItem.class).value();
 						Collection childitems = toEntityList(childitem,nodes);

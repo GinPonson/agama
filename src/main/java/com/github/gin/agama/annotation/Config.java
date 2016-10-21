@@ -7,9 +7,10 @@ import java.lang.annotation.*;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
 public @interface Config {
 
-    String key();
+    String key() default "";
 
-    String val();
+    String val() default "";
 }
