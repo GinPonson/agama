@@ -9,10 +9,8 @@ import com.github.gin.agama.proxy.HttpProxy;
 public class CrawlConfiger {
 	
 	//代理池
-	//private Set<HttpProxy> proxyPool = new HashSet<HttpProxy>();
-	
 	private HttpProxy proxy;
-	
+    //private Set<HttpProxy> proxyPool = new HashSet<>();
 	/**
 	 * 请求集
 	 */
@@ -69,7 +67,15 @@ public class CrawlConfiger {
 		this.proxy = proxy;
 	}
 
-	public Set<Request> getStartRequests() {
+    /*public Set<HttpProxy> getProxyPool() {
+        return proxyPool;
+    }
+
+    public void setProxyPool(Set<HttpProxy> proxyPool) {
+        this.proxyPool = proxyPool;
+    }*/
+
+    public Set<Request> getStartRequests() {
 		return startRequests;
 	}
 
@@ -117,11 +123,11 @@ public class CrawlConfiger {
 		this.depth = depth;
 	}
 
-	public boolean isAjaxModel() {
-		return isAjaxModel;
-	}
+    public boolean isAjaxModel() {
+        return isAjaxModel;
+    }
 
-	public void setAjaxModel(boolean isAjaxModel) {
-		this.isAjaxModel = isAjaxModel;
-	}
+    public void setIsAjaxModel(boolean isAjaxModel) {
+        this.isAjaxModel = isAjaxModel;
+    }
 }

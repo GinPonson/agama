@@ -6,8 +6,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.github.gin.agama.annotation.Agama;
 import com.github.gin.agama.annotation.ChildItem;
+import com.github.gin.agama.core.CrawlerContainer;
+import com.github.gin.agama.core.CrawlerFactory;
+import com.github.gin.agama.core.JCrawler;
 import com.github.gin.agama.exception.AgamaException;
+import com.github.gin.agama.processer.PageProcess;
 import com.github.gin.agama.serekuta.JsoupSerekuta;
 import com.github.gin.agama.serekuta.Serekuta;
 import com.github.gin.agama.util.ReflectUtils;
@@ -92,6 +97,20 @@ public class Html {
 
 						Object data = TypeConverter.convert(dataText, field.getType());
 						ReflectUtils.setValue(field.getName(), instance, data);
+
+                        if(field.isAnnotationPresent(Agama.class)){
+                            Agama agama = field.getAnnotation(Agama.class);
+                            JCrawler crawler = CrawlerContainer.get(agama.entity());
+
+                            if(crawler == null){
+                                crawler = CrawlerFactory.create(agama).crawl(data.toString());
+                                synchronized (Html.class){
+                                    CrawlerContainer.put(agama.entity(),crawler);
+                                }
+                            }
+
+                        }
+
 					}
 				}
 			}

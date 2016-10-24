@@ -47,15 +47,19 @@ public class JCrawler{
 	private DataStorer dataStorer;
 	
 	private int retryTime;
-	
+
+    public JCrawler(PageProcess pageProcess){
+        this.pageProcess = pageProcess;
+    }
 	
 	public static JCrawler create(PageProcess pageProcess){
 		return new JCrawler(pageProcess);
 	}
-	
-	public JCrawler(PageProcess pageProcess){
-		this.pageProcess = pageProcess;
-	}
+
+    public JCrawler crawl(String url){
+        scheduler.push(new Request(url));
+        return this;
+    }
 	
 	public JCrawler persistBy(DataStorer dataStorer){
 		this.dataStorer = dataStorer;
@@ -67,6 +71,50 @@ public class JCrawler{
 		this.retryTime = config.getRetryTime();
 		return this;
 	}
+
+    private void checkIfStarted() {
+        if(THREAD_STATUS == Status.STOPPED){
+            THREAD_STATUS = Status.PREPARED;
+            if(log.isDebugEnabled())
+                log.debug("thread prepared .....");
+        }
+        if(THREAD_STATUS == Status.STARTED){
+            log.error("thread started !!!");
+            throw new RuntimeException("thread started !!!");
+        }
+    }
+
+    private void initComponent() {
+        if(downloader == null){
+            if(configer.isAjaxModel()){
+                downloader = new PhantomDownloader();
+            } else {
+                downloader = new HttpDownloader();
+            }
+        }
+
+        if(configer.getProxy() != null){
+            downloader.setHttpProxy(configer.getProxy());
+        }
+
+        if(dataStorer == null){
+            dataStorer = new ConsoleDataStorer();
+        }
+
+        if(threadPool == null){
+            threadPool = new ThreadPool(configer.getThreadNum());
+        }
+
+        if(!configer.getStartRequests().isEmpty()){
+            for(Request request : configer.getStartRequests())
+                scheduler.push(request);
+        } else {
+            log.warn("there is no request!!");
+        }
+
+        THREAD_STATUS = Status.PREPARED;
+
+    }
 	
 	public void run() {
 		checkIfStarted();
@@ -101,50 +149,6 @@ public class JCrawler{
 		close();
 	}
 	
-	private void checkIfStarted() {
-		if(THREAD_STATUS == Status.STOPPED){
-			THREAD_STATUS = Status.PREPARED;
-			if(log.isDebugEnabled())
-				log.debug("thread prepared .....");
-		}
-		if(THREAD_STATUS == Status.STARTED){
-			log.error("thread started !!!");
-			throw new RuntimeException("thread started !!!");
-		}
-	}	
-	
-	private void initComponent() {
-		if(downloader == null){
-			if(configer.isAjaxModel()){
-				downloader = new PhantomDownloader();
-			} else {
-				downloader = new HttpDownloader();
-			}
-		}
-		
-		if(configer.getProxy() != null){
-			downloader.setHttpProxy(configer.getProxy());
-		}
-		
-		if(dataStorer == null){
-			dataStorer = new ConsoleDataStorer();
-		}
-		
-		if(threadPool == null){
-			threadPool = new ThreadPool(configer.getThreadNum());
-		}
-		
-		if(!configer.getStartRequests().isEmpty()){
-			for(Request request : configer.getStartRequests())
-				scheduler.push(request);
-		} else {
-			log.warn("there is no request!!");
-		}
-		
-		THREAD_STATUS = Status.PREPARED;
-			
-	}
-
 	private void watiURL() {
 		urlLock.lock();
 		try {
