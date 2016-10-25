@@ -1,12 +1,17 @@
 package com.github.gin.agama.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class ReflectUtils {
-	
+
+    private static Logger logger = LoggerFactory.getLogger(ReflectUtils.class);
+
 	public static <T> T newInstance(Class<T> clazz){
 		T instance = null;
 		try {

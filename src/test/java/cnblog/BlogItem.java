@@ -1,6 +1,5 @@
 package cnblog;
 
-import com.github.gin.agama.annotation.Agama;
 import com.github.gin.agama.annotation.Xpath;
 
 /**
@@ -20,7 +19,6 @@ public class BlogItem {
     private String poster;
 
     @Xpath("//a[@class='titlelnk']/@href")
-    @Agama(entity = BlogDetail.class,processer = BlogDetailProcess.class)
     private String href;
 
     @Xpath("//div[@class='post_item_foot']")

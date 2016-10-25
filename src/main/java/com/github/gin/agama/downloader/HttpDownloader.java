@@ -32,12 +32,7 @@ public class HttpDownloader implements Downloader{
 		}
 		return page;
 	}
-	
-	@Override
-	public void setHttpProxy(Proxy p) {
-        client.setProxy(p);
-	}
-	
+
 	private Page handleResponse(Request request,Response response) throws IOException {
 		Page page = new Page();
 		page.setRawText(getContent(response));

@@ -7,10 +7,7 @@ import com.github.gin.agama.site.Request;
 import com.github.gin.agama.proxy.HttpProxy;
 
 public class CrawlConfiger {
-	
-	//代理池
-	private HttpProxy proxy;
-    //private Set<HttpProxy> proxyPool = new HashSet<>();
+
 	/**
 	 * 请求集
 	 */
@@ -48,32 +45,10 @@ public class CrawlConfiger {
 	public CrawlConfiger(String url){
 		startRequests.add(new Request(url));
 	}
-	
-	public CrawlConfiger(HttpProxy proxy,String url){
-		this.proxy = proxy;
-		startRequests.add(new Request(url));
-	}
-	
-	public CrawlConfiger(HttpProxy proxy,Request request){
-		this.proxy = proxy;
+
+	public CrawlConfiger(Request request){
 		startRequests.add(request);
 	}
-
-	public HttpProxy getProxy() {
-		return proxy;
-	}
-
-	public void setProxy(HttpProxy proxy) {
-		this.proxy = proxy;
-	}
-
-    /*public Set<HttpProxy> getProxyPool() {
-        return proxyPool;
-    }
-
-    public void setProxyPool(Set<HttpProxy> proxyPool) {
-        this.proxyPool = proxyPool;
-    }*/
 
     public Set<Request> getStartRequests() {
 		return startRequests;

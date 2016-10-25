@@ -12,5 +12,5 @@ import java.lang.annotation.Target;
 @Target(value={ElementType.FIELD,ElementType.TYPE})
 public @interface Xpath {
 
-	String value() default "";
+	String value();
 }

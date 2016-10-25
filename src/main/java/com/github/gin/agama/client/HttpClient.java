@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 
+import com.github.gin.agama.proxy.ProxyPool;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,13 +24,12 @@ public class HttpClient {
 	private static final Logger log  = LoggerFactory.getLogger(HttpClient.class);
 	
 	private HttpURLConnection conn = null;
-	protected Proxy proxy = Proxy.NO_PROXY;
 
 	public Response execute(Request req) throws IOException{
 		log.info(Thread.currentThread().getName()+"正在抓取页面:"+req.getUrl());
 		
 		URL url = new URL(req.getUrl());
-		conn = (HttpURLConnection) url.openConnection(proxy);
+		conn = (HttpURLConnection) url.openConnection(ProxyPool.getProxy());
 		
 		conn.setRequestProperty("user-agent", "Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 5.1;SV1)");
 		
@@ -117,11 +117,4 @@ public class HttpClient {
 		return input;
 	}
 
-    public Proxy getProxy() {
-        return proxy;
-    }
-
-    public void setProxy(Proxy proxy) {
-        this.proxy = proxy;
-    }
 }

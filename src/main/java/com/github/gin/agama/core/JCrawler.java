@@ -8,6 +8,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import com.github.gin.agama.downloader.PhantomDownloader;
+import com.github.gin.agama.exception.AgamaException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ public class JCrawler{
 	
 	private static Logger log = LoggerFactory.getLogger(JCrawler.class);
 
-	private static Status THREAD_STATUS = Status.STOPPED;
+	private Status THREAD_STATUS = Status.STOPPED;
 
 	private Scheduler scheduler = new DuplicateURLScheduler();
 	
@@ -36,8 +37,7 @@ public class JCrawler{
 	private Lock urlLock = new ReentrantLock();
 	
 	private Condition waitCondition = urlLock.newCondition();
-	
-	//private ExecutorService executor;
+
 	private ThreadPool threadPool;
 	
 	private Downloader downloader;
@@ -80,7 +80,7 @@ public class JCrawler{
         }
         if(THREAD_STATUS == Status.STARTED){
             log.error("thread started !!!");
-            throw new RuntimeException("thread started !!!");
+            throw new AgamaException("thread started !!!");
         }
     }
 
@@ -91,10 +91,6 @@ public class JCrawler{
             } else {
                 downloader = new HttpDownloader();
             }
-        }
-
-        if(configer.getProxy() != null){
-            downloader.setHttpProxy(configer.getProxy());
         }
 
         if(dataStorer == null){
@@ -108,8 +104,6 @@ public class JCrawler{
         if(!configer.getStartRequests().isEmpty()){
             for(Request request : configer.getStartRequests())
                 scheduler.push(request);
-        } else {
-            log.warn("there is no request!!");
         }
 
         THREAD_STATUS = Status.PREPARED;

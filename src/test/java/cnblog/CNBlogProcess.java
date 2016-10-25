@@ -4,6 +4,7 @@ import com.github.gin.agama.core.CrawlConfiger;
 import com.github.gin.agama.core.JCrawler;
 import com.github.gin.agama.processer.PageProcess;
 import com.github.gin.agama.proxy.HttpProxy;
+import com.github.gin.agama.proxy.ProxyPool;
 import com.github.gin.agama.site.Page;
 
 import java.net.Proxy;
@@ -25,8 +26,9 @@ public class CNBlogProcess implements PageProcess {
 
     public static void main(String[] args) {
         HttpProxy proxy = new HttpProxy(Proxy.Type.HTTP, "10.228.110.21", 80, "panyongjian", "pan240409F");
+        ProxyPool.addProxy(proxy);
         CrawlConfiger config = new CrawlConfiger("http://www.cnblogs.com/");
-        config.setProxy(proxy);
+        //config.setProxy(proxy);
         config.setDepth(1);
         config.setThreadNum(2);
         JCrawler.create(new CNBlogProcess()).setConfig(config).run();

@@ -1,8 +1,8 @@
 package com.github.gin.agama.downloader;
 
-import java.net.Proxy;
-import java.util.ArrayList;
-
+import com.github.gin.agama.proxy.HttpProxy;
+import com.github.gin.agama.proxy.ProxyPool;
+import com.github.gin.agama.site.Page;
 import com.github.gin.agama.site.Request;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
@@ -11,8 +11,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.gin.agama.proxy.HttpProxy;
-import com.github.gin.agama.site.Page;
+import java.util.ArrayList;
 
 
 public abstract class AbstractPhantomDownloader implements Downloader{
@@ -27,11 +26,14 @@ public abstract class AbstractPhantomDownloader implements Downloader{
         System.setProperty("phantomjs.binary.path", driverPath);
 
         capabilities = DesiredCapabilities.phantomjs();
+
     }
 
 	@Override
     public Page download(Request req) {
-		log.info("正在抓取页面:" + req.getUrl());
+		log.info(Thread.currentThread().getName() + "正在抓取页面:" + req.getUrl());
+
+        setHttp();
 
         WebDriver driver = new PhantomJSDriver(capabilities);
         driver.get(req.getUrl());
@@ -49,14 +51,12 @@ public abstract class AbstractPhantomDownloader implements Downloader{
 
     public abstract void opration(WebDriver webDriver);
 
-    @Override
-	public void setHttpProxy(Proxy p) {
-        HttpProxy proxy = (HttpProxy) p;
+    public void setHttp(){
+        HttpProxy proxy = ProxyPool.getProxy();
         ArrayList<String> cliArgsCap = new ArrayList<>();
         cliArgsCap.add("--proxy=http://"+proxy.getHost()+":"+proxy.getPort());
-        cliArgsCap.add("--proxy-auth="+proxy.getUser()+":"+proxy.getPassword());
+        cliArgsCap.add("--proxy-auth=" + proxy.getUser() + ":" + proxy.getPassword());
         cliArgsCap.add("--proxy-type=http");
         capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, cliArgsCap);
-	}
-
+    }
 }
