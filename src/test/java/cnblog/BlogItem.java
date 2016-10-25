@@ -5,6 +5,7 @@ import com.github.gin.agama.annotation.Xpath;
 /**
  * Created by FSTMP on 2016/10/20.
  */
+@Xpath("//div[@class='post_item']")
 public class BlogItem {
 
     private int id;

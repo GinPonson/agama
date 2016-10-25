@@ -8,6 +8,7 @@ import com.github.gin.agama.proxy.ProxyPool;
 import com.github.gin.agama.site.Page;
 
 import java.net.Proxy;
+import java.util.List;
 
 /**
  * Created by FSTMP on 2016/8/30.
@@ -15,18 +16,18 @@ import java.net.Proxy;
 public class CNBlogProcess implements PageProcess {
     @Override
     public void process(Page page) {
-        CNBlog cnBlog = page.getHtml().toEntity(CNBlog.class);
-
+        //CNBlog cnBlog = page.getHtml().toEntity(CNBlog.class);
+        List<BlogItem> cnBlog = page.getHtml().toEntityList(BlogItem.class);
         page.getRequests().addAll(page.getHtml().xpath("//div[@class='pager']/a").attrs("href"));
 
-        for(BlogItem blogItems : cnBlog.getBlogItemses()){
+        for(BlogItem blogItems : cnBlog){
             System.out.println(blogItems);
         }
     }
 
     public static void main(String[] args) {
         HttpProxy proxy = new HttpProxy(Proxy.Type.HTTP, "10.228.110.21", 80, "panyongjian", "pan240409F");
-        ProxyPool.addProxy(proxy);
+        //ProxyPool.addProxy(proxy);
         CrawlConfiger config = new CrawlConfiger("http://www.cnblogs.com/");
         //config.setProxy(proxy);
         config.setDepth(1);

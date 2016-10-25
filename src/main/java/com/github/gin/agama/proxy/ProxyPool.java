@@ -1,5 +1,6 @@
 package com.github.gin.agama.proxy;
 
+import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,18 +10,19 @@ import java.util.List;
  */
 public class ProxyPool {
 
-    private static List<HttpProxy> proxypool = new ArrayList<>();
+    private static List<Proxy> proxypool = new ArrayList<>();
 
-    public static void addProxy(HttpProxy httpProxy){
+    public static void addProxy(Proxy httpProxy){
         proxypool.add(httpProxy);
     }
 
-    public static HttpProxy getProxy(){
-        if(!proxypool.isEmpty()){
+    public static Proxy getProxy(){
+        if(proxypool.isEmpty()){
+            return Proxy.NO_PROXY;
+        } else {
             Collections.shuffle(proxypool);
             return proxypool.get(0);
         }
-        return null;
     }
 
 }

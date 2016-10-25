@@ -11,6 +11,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.Proxy;
 import java.util.ArrayList;
 
 
@@ -52,11 +53,14 @@ public abstract class AbstractPhantomDownloader implements Downloader{
     public abstract void opration(WebDriver webDriver);
 
     public void setHttp(){
-        HttpProxy proxy = ProxyPool.getProxy();
-        ArrayList<String> cliArgsCap = new ArrayList<>();
-        cliArgsCap.add("--proxy=http://"+proxy.getHost()+":"+proxy.getPort());
-        cliArgsCap.add("--proxy-auth=" + proxy.getUser() + ":" + proxy.getPassword());
-        cliArgsCap.add("--proxy-type=http");
-        capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, cliArgsCap);
+        Proxy proxy = ProxyPool.getProxy();
+        if(proxy instanceof HttpProxy){
+            HttpProxy httpProxy = (HttpProxy) proxy;
+            ArrayList<String> cliArgsCap = new ArrayList<>();
+            cliArgsCap.add("--proxy=http://"+httpProxy.getHost()+":"+httpProxy.getPort());
+            cliArgsCap.add("--proxy-auth=" + httpProxy.getUser() + ":" + httpProxy.getPassword());
+            cliArgsCap.add("--proxy-type=http");
+            capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, cliArgsCap);
+        }
     }
 }
