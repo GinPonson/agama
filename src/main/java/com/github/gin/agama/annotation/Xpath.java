@@ -13,4 +13,6 @@ import java.lang.annotation.Target;
 public @interface Xpath {
 
 	String value();
+
+    String content() default "text";
 }

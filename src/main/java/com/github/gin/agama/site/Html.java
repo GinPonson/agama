@@ -90,8 +90,12 @@ public class Html {
 
                         ReflectUtils.setValue(field.getName(), instance, childitems);
                     } else {
+                        String dataText = "";
                         //不需要解析集合的情况
-                        String dataText = nodes.get(0).getText().toString().trim();
+                        if(field.getAnnotation(Xpath.class).content().equals("html"))
+                            dataText = XpathUtils.getHtmlText(nodes.get(0)).toString().trim();
+                        else
+                            dataText = nodes.get(0).getText().toString().trim();
 
                         Object data = TypeConverter.convert(dataText, field.getType());
                         ReflectUtils.setValue(field.getName(), instance, data);
@@ -111,7 +115,7 @@ public class Html {
         String xpath = target.getAnnotation(Xpath.class).value();
         TagNodes tagNodes = XpathUtils.evaluate(pageTagNode, xpath);
 
-        return toEntityList(target,tagNodes);
+        return toEntityList(target, tagNodes);
     }
 
 	private <T>List<T> toEntityList(Class<T> target,TagNodes tagNodes){

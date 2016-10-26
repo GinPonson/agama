@@ -30,7 +30,7 @@ public class BiliBiliProcess implements PageProcess {
 		//config.setProxy(proxy);
 		config.setDepth(1);
 		config.setThreadNum(2);
-		config.setIsAjaxModel(true);
+		config.setAjaxModel(true);
 		JCrawler.create(new BiliBiliProcess()).setConfig(config).run();
 	}
 }

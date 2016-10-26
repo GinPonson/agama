@@ -8,30 +8,27 @@ import com.github.gin.agama.proxy.ProxyPool;
 import com.github.gin.agama.site.Page;
 
 import java.net.Proxy;
-import java.util.List;
 
 /**
- * Created by FSTMP on 2016/8/30.
+ * Created by FSTMP on 2016/10/21.
  */
-public class CNBlogProcess implements PageProcess {
+public class BlogDetailProcess implements PageProcess {
+
     @Override
     public void process(Page page) {
-        //CNBlog cnBlog = page.getHtml().toEntity(CNBlog.class);
-        List<BlogItem> cnBlog = page.getHtml().toEntityList(BlogItem.class);
-        page.getRequests().addAll(page.getHtml().xpath("//div[@class='pager']/a").attrs("href"));
+        BlogDetail blogDetail = page.getHtml().toEntity(BlogDetail.class);
 
-        for(BlogItem blogItems : cnBlog){
-            System.out.println(blogItems);
-        }
+        System.out.println(blogDetail);
     }
 
     public static void main(String[] args) {
         HttpProxy proxy = new HttpProxy(Proxy.Type.HTTP, "10.228.110.21", 80, "panyongjian", "pan240409F");
         ProxyPool.addProxy(proxy);
-        CrawlConfiger config = new CrawlConfiger("http://www.cnblogs.com/");
+        CrawlConfiger config = new CrawlConfiger("http://www.cnblogs.com/ycwang16/p/5995702.html");
         //config.setProxy(proxy);
         config.setDepth(1);
         config.setThreadNum(2);
-        JCrawler.create(new CNBlogProcess()).setConfig(config).run();
+        //config.setAjaxModel(true);
+        JCrawler.create(new BlogDetailProcess()).setConfig(config).run();
     }
 }

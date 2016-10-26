@@ -43,7 +43,7 @@ public class WeatherProcess implements PageProcess {
 		CrawlConfiger config = new CrawlConfiger("http://www.weather.com.cn/alarm/newalarmlist.shtml");
 		config.setDepth(4);
 		config.setThreadNum(2);
-		config.setIsAjaxModel(true);
+		config.setAjaxModel(true);
         //config.setDriverPath("D:/download/phantomjs-2.1.1-windows/bin/phantomjs.exe");
 		JCrawler.create(new WeatherProcess()).setDownloader(new WeatherDownloader()).setConfig(config).run();
 	}

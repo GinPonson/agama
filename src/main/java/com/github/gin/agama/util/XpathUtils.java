@@ -1,28 +1,31 @@
 package com.github.gin.agama.util;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
 
 import com.github.gin.agama.site.TagNodes;
 import com.github.gin.agama.site.TextNode;
-import org.htmlcleaner.DomSerializer;
-import org.htmlcleaner.HtmlCleaner;
-import org.htmlcleaner.TagNode;
-import org.htmlcleaner.XPatherException;
+import org.htmlcleaner.*;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.util.Map;
 
 public class XpathUtils {
 
-	public static Document toW3cDom(HtmlCleaner cleaner,String html){
-		Document document = null;
-		TagNode tagNode = cleaner.clean(html);
-		try {
-			document = new DomSerializer(cleaner.getProperties()).createDOM(tagNode);
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
-		}
-		return document;
-	}
-	
+    public static Document toW3cDom(TagNode tagNode){
+        Document document = null;
+        try {
+            document = new DomSerializer(new CleanerProperties()).createDOM(tagNode);
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        }
+        return document;
+    }
+
 	public static TagNodes evaluate(TagNode tagNode,String xpath){
 		TagNodes tagNodes = null;
 		try {
@@ -47,4 +50,23 @@ public class XpathUtils {
 		}
 		return tagNodes;
 	}
+
+    public static CharSequence getHtmlText(TagNode tagNode) {
+        StringBuilder text = new StringBuilder();
+        for (Object item :tagNode.getAllChildren()) {
+            if (item instanceof ContentNode) {
+                text.append(((ContentNode) item).getContent());
+            } else if (item instanceof TagNode) {
+                String tag = ((TagNode) item).getName();
+                String perfixTag = tag;
+                for(Map.Entry<String,String> entry : ((TagNode) item).getAttributes().entrySet() ){
+                    perfixTag += " "+entry.getKey()+"='"+entry.getValue()+"'";
+                }
+                CharSequence subtext = getHtmlText(((TagNode) item));
+                text.append("<"+perfixTag+">"+subtext+"</"+tag+">");
+            }
+        }
+
+        return text;
+    }
 }

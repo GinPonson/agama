@@ -102,7 +102,7 @@ public class CrawlConfiger {
         return isAjaxModel;
     }
 
-    public void setIsAjaxModel(boolean isAjaxModel) {
+    public void setAjaxModel(boolean isAjaxModel) {
         this.isAjaxModel = isAjaxModel;
     }
 }
