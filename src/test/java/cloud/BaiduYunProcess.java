@@ -34,7 +34,7 @@ public class BaiduYunProcess implements PageProcess {
 
     public static void main(String[] args) {
         HttpProxy proxy = new HttpProxy(Proxy.Type.HTTP, "10.228.110.21", 80, "panyongjian", "pan240409F");
-        ProxyPool.addProxy(proxy);
+        //ProxyPool.addProxy(proxy);
 
         Request request = new Request();
         request.getHeaders().put("X-Requested-With","XMLHttpRequest");

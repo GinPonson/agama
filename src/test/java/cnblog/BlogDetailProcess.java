@@ -23,8 +23,8 @@ public class BlogDetailProcess implements PageProcess {
 
     public static void main(String[] args) {
         HttpProxy proxy = new HttpProxy(Proxy.Type.HTTP, "10.228.110.21", 80, "panyongjian", "pan240409F");
-        ProxyPool.addProxy(proxy);
-        CrawlConfiger config = new CrawlConfiger("http://www.cnblogs.com/ycwang16/p/5995702.html");
+        //ProxyPool.addProxy(proxy);
+        CrawlConfiger config = new CrawlConfiger("http://www.cnblogs.com/ginponson/p/5947200.html");
         //config.setProxy(proxy);
         config.setDepth(1);
         config.setThreadNum(2);

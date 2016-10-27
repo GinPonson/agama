@@ -1,21 +1,9 @@
 package com.github.gin.agama.core;
 
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
-import com.github.gin.agama.downloader.PhantomDownloader;
-import com.github.gin.agama.exception.AgamaException;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.github.gin.agama.downloader.Downloader;
 import com.github.gin.agama.downloader.HttpDownloader;
-import com.github.gin.agama.downloader.AbstractPhantomDownloader;
+import com.github.gin.agama.downloader.PhantomDownloader;
+import com.github.gin.agama.exception.AgamaException;
 import com.github.gin.agama.processer.PageProcess;
 import com.github.gin.agama.scheduler.DuplicateURLScheduler;
 import com.github.gin.agama.scheduler.Scheduler;
@@ -23,6 +11,16 @@ import com.github.gin.agama.site.Page;
 import com.github.gin.agama.site.Request;
 import com.github.gin.agama.sorter.ConsoleDataStorer;
 import com.github.gin.agama.sorter.DataStorer;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class JCrawler{
 	
@@ -46,8 +44,6 @@ public class JCrawler{
 	
 	private DataStorer dataStorer;
 
-    private boolean closable;
-	
 	private int retryTime;
 
     public JCrawler(PageProcess pageProcess){
@@ -105,10 +101,7 @@ public class JCrawler{
         }
 
         if(threadPool == null){
-            if(isClosable())
-                threadPool = new ClosableThreadPool(configer.getThreadNum());
-            else
-                threadPool = new ForverThreadPool(configer.getThreadNum());
+			threadPool = new ThreadPool(configer.getThreadNum());
         }
 
         if(!configer.getStartRequests().isEmpty()){
@@ -175,7 +168,7 @@ public class JCrawler{
 		}
 	}
 	
-	private void process(Request request) {
+	private void  process(Request request) {
 		
 		Page page = downloader.download(request);
 		
@@ -242,14 +235,6 @@ public class JCrawler{
 	public void setPageProcess(PageProcess pageProcess) {
 		this.pageProcess = pageProcess;
 	}
-
-    public boolean isClosable() {
-        return closable;
-    }
-
-    public void setClosable(boolean closable) {
-        this.closable = closable;
-    }
 
     private enum Status{
 		STOPPED(0),PREPARED(1),STARTED(2),SHUTDOWN(3);
