@@ -24,7 +24,7 @@ public abstract class AbstractPhantomDownloader implements Downloader{
     public AbstractPhantomDownloader(){
         String driverPath = AbstractPhantomDownloader.class.getClassLoader().getResource("phantomjs-2.1.1-windows/bin/phantomjs.exe").getPath();
 
-        System.setProperty("phantomjs.binary.path", driverPath);
+        System.setProperty("phantomjs.binary.path", "D:/download/phantomjs-2.1.1-windows/bin/phantomjs.exe");
 
         capabilities = DesiredCapabilities.phantomjs();
 

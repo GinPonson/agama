@@ -17,8 +17,8 @@ public class CNBlogProcess implements PageProcess {
     @Override
     public void process(Page page) {
         //CNBlog cnBlog = page.getHtml().toEntity(CNBlog.class);
-        List<BlogItem> cnBlog = page.getHtml().toEntityList(BlogItem.class);
-        page.getRequests().addAll(page.getHtml().xpath("//div[@class='pager']/a").attrs("href"));
+        List<BlogItem> cnBlog = page.getRender().renderToHtml().toEntityList(BlogItem.class);
+        page.getRequests().addAll(page.getRender().renderToHtml().xpath("//div[@class='pager']/a").attrs("href"));
 
         for(BlogItem blogItems : cnBlog){
             System.out.println(blogItems);

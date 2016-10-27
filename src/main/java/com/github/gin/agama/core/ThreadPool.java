@@ -7,16 +7,12 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class ThreadPool {
+public abstract class ThreadPool {
 	
 	private int threadNum;
 	
 	private AtomicInteger threadAlive = new AtomicInteger();
-	
-	private Lock lock = new ReentrantLock();
-	
-	private Condition condition = lock.newCondition();
-	
+
 	private ExecutorService executor;
 	
 	public ThreadPool(int threadNum){
@@ -24,38 +20,7 @@ public class ThreadPool {
 		executor = Executors.newFixedThreadPool(threadNum);
 	}
 	
-	public void execute(final Runnable runnable){
-		if(getThreadAlive() >= threadNum){
-			lock.lock();
-			try {
-				while(getThreadAlive() >= threadNum){
-					condition.await();
-				}
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} finally {
-				lock.unlock();
-			}
-		}
-		threadAlive.incrementAndGet();
-		
-		executor.execute(new Runnable(){
-			@Override
-			public void run() {
-				try{
-					runnable.run();
-				} finally{
-					lock.lock();
-					condition.signal();
-					threadAlive.decrementAndGet();
-					lock.unlock();
-				}
-				
-			}
-			
-		});
-	}
-	
+	public abstract void execute(final Runnable runnable);
 	
 	public int getThreadAlive(){
 		return threadAlive.get();

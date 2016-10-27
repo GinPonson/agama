@@ -37,6 +37,7 @@ public class HttpDownloader implements Downloader{
 		Page page = new Page();
 		page.setRawText(getContent(response));
         page.setUrl(request.getUrl());
+        page.setContentType(response.getContentType());
 
 		return page;
 	}	

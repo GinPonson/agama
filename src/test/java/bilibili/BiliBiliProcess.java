@@ -14,7 +14,7 @@ public class BiliBiliProcess implements PageProcess {
 			System.out.println(link);
 		}*/
 		System.out.println("-----------------------------------");
-		BiliBili biliBili = page.getHtml().toEntity(BiliBili.class);
+		BiliBili biliBili = page.getRender().renderToHtml().toEntity(BiliBili.class);
 		for(BiliBiliVedio b : biliBili.getVedios()){
 			System.out.println(b.toString());
 		}

@@ -28,10 +28,10 @@ public class Page {
 	 */
 	private String url;
 
-	/**
-	 * parse to html
-	 */
-    private Html html;
+    /**
+     * response of the content-type
+     */
+    private String contentType;
 
 	public String getRawText() {
 		return rawText;
@@ -65,13 +65,16 @@ public class Page {
 		this.url = url;
 	}
 
-	public Html getHtml() {
-        if(rawText == null){
-            throw new NullPointerException();
-        }
-        String domain = UrlUtils.getDefaultDomain(url);
-        html = new Html(Jsoup.parse(rawText,domain));
-        return html;
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public Render getRender(){
+        return new Render(rawText,url);
     }
 
 }

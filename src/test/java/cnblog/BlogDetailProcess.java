@@ -16,7 +16,7 @@ public class BlogDetailProcess implements PageProcess {
 
     @Override
     public void process(Page page) {
-        BlogDetail blogDetail = page.getHtml().toEntity(BlogDetail.class);
+        BlogDetail blogDetail = page.getRender().renderToHtml().toEntity(BlogDetail.class);
 
         System.out.println(blogDetail);
     }
@@ -28,7 +28,7 @@ public class BlogDetailProcess implements PageProcess {
         //config.setProxy(proxy);
         config.setDepth(1);
         config.setThreadNum(2);
-        //config.setAjaxModel(true);
+        config.setAjaxModel(true);
         JCrawler.create(new BlogDetailProcess()).setConfig(config).run();
     }
 }

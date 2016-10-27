@@ -22,9 +22,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class Html {
+public class AgamaHtml {
 
-    private Logger logger = LoggerFactory.getLogger(Html.class);
+    private Logger logger = LoggerFactory.getLogger(AgamaHtml.class);
 	
     private static final HtmlCleaner HTML_CLEANER = new HtmlCleaner();
     
@@ -32,7 +32,7 @@ public class Html {
     
     private TagNode pageTagNode;
     
-    public Html(Document doc) {
+    public AgamaHtml(Document doc) {
         this.document = doc;
         //格式化html以便xpath操作,因为有些标签是不对称的
     	pageTagNode = HTML_CLEANER.clean(this.toString());

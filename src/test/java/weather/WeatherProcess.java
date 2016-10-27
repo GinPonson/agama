@@ -14,7 +14,7 @@ import java.util.TreeMap;
 public class WeatherProcess implements PageProcess {
 
 	public void process(Page page) {
-		System.out.println(page.getRawText());
+		/*System.out.println(page.getRawText());
 
         System.out.println(page.getHtml().select("#pro").find("option[value=10101]").texts());
 
@@ -32,9 +32,7 @@ public class WeatherProcess implements PageProcess {
         map.put("文本", page.getHtml().xpath("//div[@class='friendLink']/p").first().find("/a").first().text());
         map.put("链接", page.getHtml().xpath("//div[@class='friendLink']/p").first().find("/a").first().attr("href"));
         map.put("打开方式", page.getHtml().xpath("//div[@class='friendLink']/p").first().find("/a").first().attr("target"));
-        //page.getRecords().add(map);
-
-
+*/
     }
 
     public static void main(String[] args) {

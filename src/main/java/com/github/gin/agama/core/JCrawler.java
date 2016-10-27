@@ -45,6 +45,8 @@ public class JCrawler{
 	private PageProcess pageProcess;
 	
 	private DataStorer dataStorer;
+
+    private boolean closable;
 	
 	private int retryTime;
 
@@ -72,6 +74,11 @@ public class JCrawler{
 		return this;
 	}
 
+    public JCrawler setDownloader(Downloader downloader){
+        this.downloader = downloader;
+        return this;
+    }
+
     private void checkIfStarted() {
         if(THREAD_STATUS == Status.STOPPED){
             THREAD_STATUS = Status.PREPARED;
@@ -98,7 +105,10 @@ public class JCrawler{
         }
 
         if(threadPool == null){
-            threadPool = new ThreadPool(configer.getThreadNum());
+            if(isClosable())
+                threadPool = new ClosableThreadPool(configer.getThreadNum());
+            else
+                threadPool = new ForverThreadPool(configer.getThreadNum());
         }
 
         if(!configer.getStartRequests().isEmpty()){
@@ -233,13 +243,15 @@ public class JCrawler{
 		this.pageProcess = pageProcess;
 	}
 
-	public JCrawler setDownloader(Downloader downloader){
-		this.downloader = downloader;
-        return this;
-	}
+    public boolean isClosable() {
+        return closable;
+    }
 
+    public void setClosable(boolean closable) {
+        this.closable = closable;
+    }
 
-	private enum Status{
+    private enum Status{
 		STOPPED(0),PREPARED(1),STARTED(2),SHUTDOWN(3);
 		
 		int statusNum;
