@@ -3,6 +3,7 @@ package com.github.gin.agama.site;
 
 import com.github.gin.agama.annotation.ChildItem;
 import com.github.gin.agama.annotation.Xpath;
+import com.github.gin.agama.annotation.XpathConstant;
 import com.github.gin.agama.exception.AgamaException;
 import com.github.gin.agama.serekuta.JsoupSerekuta;
 import com.github.gin.agama.serekuta.Serekuta;
@@ -92,7 +93,7 @@ public class AgamaHtml {
                     } else {
                         String dataText = "";
                         //不需要解析集合的情况
-                        if(field.getAnnotation(Xpath.class).content().equals("html"))
+                        if(field.getAnnotation(Xpath.class).content().equals(XpathConstant.HTML))
                             dataText = XpathUtils.getHtmlText(nodes.get(0)).toString().trim();
                         else
                             dataText = nodes.get(0).getText().toString().trim();

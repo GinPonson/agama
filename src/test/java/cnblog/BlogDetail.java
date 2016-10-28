@@ -1,14 +1,14 @@
 package cnblog;
 
 import com.github.gin.agama.annotation.Xpath;
-import com.github.gin.agama.entity.HtmlEntity;
+import com.github.gin.agama.entity.AgamaEntity;
 
 import java.util.Date;
 
 /**
  * Created by FSTMP on 2016/10/21.
  */
-public class BlogDetail extends HtmlEntity{
+public class BlogDetail extends AgamaEntity {
 
     @Xpath("//a/[@id='cb_post_title_url']")
     private String title;

@@ -15,16 +15,6 @@ import java.util.List;
  */
 public class CNBlogProcess implements PageProcess {
 
-    static ThreadLocal<String> threadLocal = new ThreadLocal<>();
-
-    public static String get(){
-        return threadLocal.get();
-    }
-
-    public static void set(String str){
-        threadLocal.set(str);
-    }
-
     @Override
     public void process(Page page) {
         //CNBlog cnBlog = page.getHtml().toEntity(CNBlog.class);
@@ -32,18 +22,15 @@ public class CNBlogProcess implements PageProcess {
         page.getRequests().addAll(page.getRender().renderToHtml().xpath("//div[@class='pager']/a").attrs("href"));
 
         for(BlogItem blogItems : cnBlog){
-            if(blogItems.getPoster().equals("webNick"))
-                threadLocal.set("webNick");
-            System.out.println(blogItems);
-            System.out.println(threadLocal.get() + "," + blogItems.getTitle()+","+Thread.currentThread().getName());
+            //System.out.println(blogItems);
         }
+
+        page.getResultItems().add(cnBlog);
     }
 
     public static void main(String[] args) {
         HttpProxy proxy = new HttpProxy(Proxy.Type.HTTP, "10.228.110.21", 80, "panyongjian", "pan240409F");
-        //ProxyPool.addProxy(proxy);
-
-        CNBlogProcess.set("aa");
+        ProxyPool.addProxy(proxy);
 
         CrawlConfiger config = new CrawlConfiger("http://www.cnblogs.com/");
         //config.setProxy(proxy);
@@ -51,6 +38,5 @@ public class CNBlogProcess implements PageProcess {
         config.setThreadNum(2);
         JCrawler.create(new CNBlogProcess()).setConfig(config).run();
 
-        System.out.println(Thread.currentThread().getName() + CNBlogProcess.get());
     }
 }

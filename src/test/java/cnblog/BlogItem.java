@@ -1,12 +1,13 @@
 package cnblog;
 
 import com.github.gin.agama.annotation.Xpath;
+import com.github.gin.agama.entity.AgamaEntity;
 
 /**
  * Created by FSTMP on 2016/10/20.
  */
 @Xpath("//div[@class='post_item']")
-public class BlogItem {
+public class BlogItem extends AgamaEntity {
 
     private int id;
 

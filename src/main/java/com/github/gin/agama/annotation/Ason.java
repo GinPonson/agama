@@ -4,8 +4,8 @@ import java.lang.annotation.*;
 
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(value={ElementType.FIELD,ElementType.TYPE})
-public @interface Jsoup {
+@Target(value={ElementType.TYPE})
+public @interface Ason{
 
 	String value();
 }

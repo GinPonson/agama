@@ -2,12 +2,12 @@ package cnblog;
 
 import com.github.gin.agama.annotation.ChildItem;
 import com.github.gin.agama.annotation.Xpath;
-import com.github.gin.agama.entity.HtmlEntity;
+import com.github.gin.agama.entity.AgamaEntity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CNBlog extends HtmlEntity {
+public class CNBlog extends AgamaEntity {
 
     private int id;
 

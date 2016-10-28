@@ -177,7 +177,7 @@ public class JCrawler{
 			
 			addScheuleRequest(page.getRequests(),autoIncrement(request.getCurDepth()));
 			
-			dataStorer.store(page.getRecords());
+			dataStorer.store(page.getResultItems().getItems());
 		}
 			
 		try {

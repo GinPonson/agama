@@ -2,21 +2,12 @@ package com.github.gin.agama.site;
 
 import java.util.*;
 
-import com.github.gin.agama.entity.HtmlEntity;
-import com.github.gin.agama.util.UrlUtils;
-import org.jsoup.Jsoup;
-
 public class Page {
 	
 	/**
      * store output fields
      */
-    private List<HtmlEntity> records = new ArrayList<>();
-
-    /**
-     * store crawl url
-     */
-    private List<String> requests = new ArrayList<>();
+    private ResultItems resultItems = new ResultItems();;
 
     /**
      * text
@@ -33,6 +24,11 @@ public class Page {
      */
     private String contentType;
 
+    /**
+     * store crawl url
+     */
+    private List<String> requests = new ArrayList<>();
+
 	public String getRawText() {
 		return rawText;
 	}
@@ -40,14 +36,6 @@ public class Page {
 	public void setRawText(String rawText) {
 		this.rawText = rawText;
 	}
-
-    public List<HtmlEntity> getRecords() {
-        return records;
-    }
-
-    public void setRecords(List<HtmlEntity> records) {
-        this.records = records;
-    }
 
     public List<String> getRequests() {
 		return requests;
@@ -76,5 +64,10 @@ public class Page {
     public Render getRender(){
         return new Render(rawText,url);
     }
+
+    public ResultItems getResultItems(){
+        return resultItems;
+    }
+
 
 }

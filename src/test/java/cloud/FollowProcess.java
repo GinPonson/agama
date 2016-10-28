@@ -17,11 +17,17 @@ public class FollowProcess implements PageProcess {
     @Override
     public void process(Page page) {
         System.out.println(page.getRender().renderToJson().toString());
+
+        /*for(Follow follow : page.getRender().renderToJson().toEntityList(Follow.class)){
+            System.out.println(follow.getAvatarUrl());
+        }*/
+
+        page.getResultItems().add(page.getRender().renderToJson().toEntityList(Follow.class));
     }
 
     public static void main(String[] args) {
         HttpProxy proxy = new HttpProxy(Proxy.Type.HTTP, "10.228.110.21", 80, "panyongjian", "pan240409F");
-        //ProxyPool.addProxy(proxy);
+        ProxyPool.addProxy(proxy);
 
         Request request = new Request();
         request.getHeaders().put("X-Requested-With","XMLHttpRequest");
@@ -33,6 +39,6 @@ public class FollowProcess implements PageProcess {
         CrawlConfiger config = new CrawlConfiger(request);
         config.setDepth(1);
         config.setThreadNum(2);
-        JCrawler.create(new FollowProcess()).setConfig(config).run();
+        JCrawler.create(new FollowProcess()).persistBy(new FollowDataStorer()).setConfig(config).run();
     }
 }
