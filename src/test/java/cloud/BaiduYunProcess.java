@@ -5,6 +5,7 @@ import com.github.gin.agama.core.JCrawler;
 import com.github.gin.agama.processer.PageProcess;
 import com.github.gin.agama.proxy.HttpProxy;
 import com.github.gin.agama.proxy.ProxyPool;
+import com.github.gin.agama.site.AgamaJson;
 import com.github.gin.agama.site.Page;
 import com.github.gin.agama.site.Request;
 import com.google.gson.Gson;
@@ -13,6 +14,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import java.net.Proxy;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,14 +24,16 @@ import java.util.regex.Pattern;
 public class BaiduYunProcess implements PageProcess {
     @Override
     public void process(Page page) {
-        System.out.println(page.getRender().renderToHtml().toString());
+        //System.out.println(page.getRender().renderToHtml().toString());
         Pattern pattern = Pattern.compile("window.yunData = (.*})");
         Matcher matcher = pattern.matcher(page.getRender().renderToHtml().toString());
         String json = null;
         while (matcher.find()) {
             json = matcher.group(1);
+            AgamaJson agamaJson = new AgamaJson(json);
+            List<YunData> datas = agamaJson.toEntityList(YunData.class);
+            System.out.println(datas.size());
         }
-        System.out.println(json);
     }
 
     public static void main(String[] args) {

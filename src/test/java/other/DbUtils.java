@@ -20,7 +20,7 @@ public class DbUtils {
     static{
         try{
             ds = new DruidDataSource();
-            ds.setUrl("jdbc:mysql://localhost:3306/hs_db?useUnicode=true&characterEncoding=UTF-8");
+            ds.setUrl("jdbc:mysql://localhost:3306/yun?useUnicode=true&characterEncoding=UTF-8");
             ds.setUsername("root");
             ds.setPassword("root");
         }catch (Exception e) {

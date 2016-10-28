@@ -17,11 +17,13 @@ public class FansProcess implements PageProcess {
     @Override
     public void process(Page page) {
         System.out.println(page.getRender().renderToJson().toString());
+
+        page.getResultItems().add(page.getRender().renderToJson().toEntityList(Fans.class));
     }
 
     public static void main(String[] args) {
         HttpProxy proxy = new HttpProxy(Proxy.Type.HTTP, "10.228.110.21", 80, "panyongjian", "pan240409F");
-        ProxyPool.addProxy(proxy);
+        //ProxyPool.addProxy(proxy);
 
         Request request = new Request();
         request.getHeaders().put("X-Requested-With","XMLHttpRequest");
@@ -33,6 +35,6 @@ public class FansProcess implements PageProcess {
         CrawlConfiger config = new CrawlConfiger(request);
         config.setDepth(1);
         config.setThreadNum(2);
-        JCrawler.create(new FansProcess()).setConfig(config).run();
+        JCrawler.create(new FansProcess()).persistBy(new FansDataStorer()).setConfig(config).run();
     }
 }
