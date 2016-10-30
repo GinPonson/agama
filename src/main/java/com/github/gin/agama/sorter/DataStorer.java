@@ -6,8 +6,6 @@ import java.util.Collection;
 
 public interface DataStorer<T extends AgamaEntity> {
 
-    void store(T item);
-
 	void store(Collection<T> items);
 
 }

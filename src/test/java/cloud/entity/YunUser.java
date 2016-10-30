@@ -1,4 +1,4 @@
-package cloud;
+package cloud.entity;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.github.gin.agama.annotation.Ason;
@@ -7,24 +7,24 @@ import com.github.gin.agama.entity.AgamaEntity;
 import java.util.Date;
 
 /**
- * Created by FSTMP on 2016/10/27.
+ * Created by GinPonson on 10/30/2016.
  */
-@Ason("follow_list")
-public class Follow extends AgamaEntity{
+@Ason("list")
+public class YunUser extends AgamaEntity{
 
     public long id;
 
     @JSONField(name = "avatar_url")
-    public String avatarUrl;
+    private String avatarUrl;
 
     @JSONField(name = "follow_time")
     private Date followTime;
 
-    @JSONField(name = "follow_uname")
-    private String followUname;
+    @JSONField(name = "uname")
+    private String username;
 
-    @JSONField(name = "follow_uk")
-    private long followUk;
+    @JSONField(name = "uk")
+    private long uk;
 
     private Date updateTime;
 
@@ -56,20 +56,20 @@ public class Follow extends AgamaEntity{
         this.followTime = followTime;
     }
 
-    public String getFollowUname() {
-        return followUname;
+    public String getUsername() {
+        return username;
     }
 
-    public void setFollowUname(String followUname) {
-        this.followUname = followUname;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public long getFollowUk() {
-        return followUk;
+    public long getUk() {
+        return uk;
     }
 
-    public void setFollowUk(long followUk) {
-        this.followUk = followUk;
+    public void setUk(long uk) {
+        this.uk = uk;
     }
 
     public Date getUpdateTime() {

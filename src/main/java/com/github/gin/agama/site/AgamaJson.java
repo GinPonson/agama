@@ -63,7 +63,7 @@ public class AgamaJson {
             }
             jsonArray = json.getJSONArray(ason);
         }
-        System.out.println(jsonArray.toJSONString());
+
         return JSON.parseArray(jsonArray.toJSONString(), target);
     }
 
