@@ -26,11 +26,33 @@ public class YunUser extends AgamaEntity{
     @JSONField(name = "uk")
     private long uk;
 
+    /**
+     * 用户订阅的数量
+     */
+    @JSONField(name = "follow_count")
+    private int followCount;
+
+    /**
+     * 用户粉丝的数量
+     */
+    @JSONField(name = "fans_count")
+    private int fansCount;
+
     private Date updateTime;
 
+    /**
+     * 是否已经爬取完的标识
+     */
     private boolean flag;
 
-    private Integer version;
+    private Integer version = 1;
+
+    private boolean followCrawled;
+
+    private boolean fansCrawled;
+
+    @JSONField(name = "pubshare_count")
+    private int pubshareCount;
 
     public long getId() {
         return id;
@@ -94,5 +116,45 @@ public class YunUser extends AgamaEntity{
 
     public void setVersion(Integer version) {
         this.version = version;
+    }
+
+    public int getFollowCount() {
+        return followCount;
+    }
+
+    public void setFollowCount(int followCount) {
+        this.followCount = followCount;
+    }
+
+    public int getFansCount() {
+        return fansCount;
+    }
+
+    public void setFansCount(int fansCount) {
+        this.fansCount = fansCount;
+    }
+
+    public boolean isFollowCrawled() {
+        return followCrawled;
+    }
+
+    public void setFollowCrawled(boolean followCrawled) {
+        this.followCrawled = followCrawled;
+    }
+
+    public boolean isFansCrawled() {
+        return fansCrawled;
+    }
+
+    public void setFansCrawled(boolean fansCrawled) {
+        this.fansCrawled = fansCrawled;
+    }
+
+    public int getPubshareCount() {
+        return pubshareCount;
+    }
+
+    public void setPubshareCount(int pubshareCount) {
+        this.pubshareCount = pubshareCount;
     }
 }

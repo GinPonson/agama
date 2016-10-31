@@ -1,10 +1,14 @@
 package cloud.process;
 
+import cloud.Constant;
+import cloud.Singleton;
 import cloud.entity.YunData;
+import cloud.entity.YunUser;
 import com.github.gin.agama.core.CrawlConfiger;
 import com.github.gin.agama.core.JCrawler;
 import com.github.gin.agama.processer.PageProcess;
 import com.github.gin.agama.proxy.HttpProxy;
+import com.github.gin.agama.proxy.ProxyPool;
 import com.github.gin.agama.site.AgamaJson;
 import com.github.gin.agama.site.Page;
 import com.github.gin.agama.site.Request;
@@ -20,20 +24,33 @@ import java.util.regex.Pattern;
 public class BaiduYunProcess implements PageProcess {
     @Override
     public void process(Page page) {
+        Matcher m = Constant.YUN_PATTERN.matcher(page.getUrl());
+        if(m.find()){
+            long uk = Long.parseLong(m.group(1));
+            int start = Integer.parseInt(m.group(2));
+
+            YunUser user = Singleton.getYunUserService().get(uk);
+            if((start + Constant.LIMIT) >= user.getPubshareCount()){
+                Singleton.getYunUserService().updateYunCrawled(uk);
+            }
+        }
+
         Pattern pattern = Pattern.compile("window.yunData = (.*})");
         Matcher matcher = pattern.matcher(page.getRender().renderToHtml().toString());
-        String json = null;
         while (matcher.find()) {
-            json = matcher.group(1);
+            String json = matcher.group(1);
+
+            System.out.println(json);
             AgamaJson agamaJson = new AgamaJson(json);
             List<YunData> datas = agamaJson.toEntityList(YunData.class);
+
             page.getResultItems().add(datas);
         }
     }
 
     public static void main(String[] args) {
         HttpProxy proxy = new HttpProxy(Proxy.Type.HTTP, "10.228.110.21", 80, "panyongjian", "pan240409F");
-        //ProxyPool.addProxy(proxy);
+        ProxyPool.addProxy(proxy);
 
         Request request = new Request();
         request.getHeaders().put("X-Requested-With","XMLHttpRequest");

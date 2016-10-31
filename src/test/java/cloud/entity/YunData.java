@@ -27,7 +27,7 @@ public class YunData extends AgamaEntity{
     private long uk;
 
     @JSONField(name = "desc")
-    private String desc;
+    private String description;
 
     private Date updateTime;
 
@@ -81,12 +81,12 @@ public class YunData extends AgamaEntity{
         this.uk = uk;
     }
 
-    public String getDesc() {
-        return desc;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDesc(String desc) {
-        this.desc = desc;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Date getUpdateTime() {

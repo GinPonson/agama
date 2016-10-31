@@ -7,7 +7,12 @@ public class Page {
 	/**
      * store output fields
      */
-    private ResultItems resultItems = new ResultItems();;
+    private ResultItems resultItems = new ResultItems();
+
+    /**
+     * store crawl url
+     */
+    private List<Request> requests = new ArrayList<>();
 
     /**
      * text
@@ -24,11 +29,6 @@ public class Page {
      */
     private String contentType;
 
-    /**
-     * store crawl url
-     */
-    private List<String> requests = new ArrayList<>();
-
 	public String getRawText() {
 		return rawText;
 	}
@@ -37,15 +37,21 @@ public class Page {
 		this.rawText = rawText;
 	}
 
-    public List<String> getRequests() {
-		return requests;
-	}
+    public List<Request> getRequests() {
+        return requests;
+    }
 
-	public void setRequests(List<String> requests) {
-		this.requests = requests;
-	}
-	
-	public String getUrl() {
+    public void setRequests(List<Request> requests) {
+        this.requests = requests;
+    }
+
+    public void addRequests(List<String> urls) {
+        for(String url : urls){
+            this.requests.add(new Request(url));
+        }
+    }
+
+    public String getUrl() {
 		return url;
 	}
 

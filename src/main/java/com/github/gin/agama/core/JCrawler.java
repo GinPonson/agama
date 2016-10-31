@@ -202,10 +202,11 @@ public class JCrawler{
         return atomicInteger.incrementAndGet();
     }
 
-	private void addScheuleRequest(List<String> requests,int depth) {
+	private void addScheuleRequest(List<Request> requests,int depth) {
 		if(!requests.isEmpty()){
-			for(String request : requests){
-				scheduler.push(new Request(request,depth));
+			for(Request request : requests){
+                request.setCurDepth(depth);
+				scheduler.push(request);
 			}
 		}
 	}
