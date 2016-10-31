@@ -26,7 +26,8 @@ public class BaiduYunThread implements Runnable {
         //ProxyPool.addProxy(proxy);
 
         CrawlConfiger config = new CrawlConfiger();
-        config.setThreadNum(1);
+        config.setThreadNum(2);
+        config.setSleepTime(8000);
 
         List<YunUser> yunUserList = Singleton.getYunUserService().findUnfinish();
         if(yunUserList.isEmpty()){

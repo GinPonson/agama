@@ -28,6 +28,7 @@ public class FollowThread implements Runnable {
 
         CrawlConfiger config = new CrawlConfiger();
         config.setThreadNum(2);
+        config.setSleepTime(8000);
 
         List<YunUser> yunUserList = Singleton.getYunUserService().findFollowUnCrawled();
         if(yunUserList.isEmpty()){
