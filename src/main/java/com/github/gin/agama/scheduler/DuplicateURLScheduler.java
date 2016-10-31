@@ -43,10 +43,5 @@ public class DuplicateURLScheduler implements Scheduler{
 	public int getTolalRequestSize(){
 		return urls.size();
 	}
-	
-	public static void main(String[] args) {
-		DuplicateURLScheduler a  = new DuplicateURLScheduler();
-		a.push(new Request("aa"));
-		System.out.println(a.poll());
-	}
+
 }

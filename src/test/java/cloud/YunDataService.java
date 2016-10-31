@@ -14,7 +14,7 @@ public class YunDataService {
     public void save(YunData data){
         try {
             DbUtils.startTransaction();
-            if(Singleton.getYunDataDao().selectByUk(data.getUk()) == null){
+            if(get(data.getShareId()) == null){
                 Singleton.getYunDataDao().insert(data);
             }
             DbUtils.commit();
@@ -22,5 +22,15 @@ public class YunDataService {
             DbUtils.rollback();
             e.printStackTrace();
         }
+    }
+
+    public YunData get(long shareid){
+        YunData yunData = null;
+        try {
+            yunData = Singleton.getYunDataDao().selectByShareid(shareid);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return yunData;
     }
 }

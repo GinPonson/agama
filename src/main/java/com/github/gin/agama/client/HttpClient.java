@@ -34,9 +34,9 @@ public class HttpClient {
 		conn.setRequestProperty("user-agent", "Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 5.1;SV1)");
 		
 		setHeaders(req.getHeaders());
-		
+
 		conn.connect();
-		
+
 		Response response = new Response();
 		response.setContentByte	(getResponseByByte());
 		response.setResponseCode(conn.getResponseCode());

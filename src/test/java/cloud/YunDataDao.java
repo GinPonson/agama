@@ -19,11 +19,10 @@ public class YunDataDao {
         qr.update("insert into yun_data(share_id,data_id,share_name,uk,description,update_time,share_time,picture,version,flag) values(?,?,?,?,?,?,?,?,?,?)", params);
     }
 
-    public YunData selectByUk(long uk) throws SQLException {
+    public YunData selectByShareid(long shareid) throws SQLException {
         QueryRunner qr = new QueryRunner(DbUtils.getDataSource());
-        YunData data = (YunData) qr.query("select * from yun_data where uk=?", new BeanHandler(YunData.class), uk);
+        YunData data = (YunData) qr.query("select * from yun_data where share_id=?", new BeanHandler(YunData.class), shareid);
         return data;
     }
 
-    //public
 }

@@ -1,5 +1,8 @@
 package cloud;
 
+import cloud.entity.YunUser;
+
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -19,5 +22,6 @@ public class Constant {
 
     public static Pattern USER_PATTERN = Pattern.compile("query_uk=(\\d*)&");
 
-    public static Pattern YUN_PATTERN = Pattern.compile("uk=(\\d*)&start(\\d*)&");
+    public static Pattern YUN_PATTERN = Pattern.compile("uk=(\\d*)&start=(\\d*)&");
+
 }

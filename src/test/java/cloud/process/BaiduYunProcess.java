@@ -1,9 +1,11 @@
 package cloud.process;
 
 import cloud.Constant;
+import cloud.RequestUtil;
 import cloud.Singleton;
 import cloud.entity.YunData;
 import cloud.entity.YunUser;
+import cloud.storer.YunDataDataStorer;
 import com.github.gin.agama.core.CrawlConfiger;
 import com.github.gin.agama.core.JCrawler;
 import com.github.gin.agama.processer.PageProcess;
@@ -24,44 +26,62 @@ import java.util.regex.Pattern;
 public class BaiduYunProcess implements PageProcess {
     @Override
     public void process(Page page) {
+        //解析页面
+        Pattern pattern = Pattern.compile("window.yunData = (.*})");
+        Matcher matcher = pattern.matcher(page.getRender().renderToHtml().toString());
+        while (matcher.find()) {
+            String json = matcher.group(1);
+            AgamaJson agamaJson = new AgamaJson(json);
+            List<YunData> datas = agamaJson.toEntityList(YunData.class);
+
+            //保存资源
+            page.getResultItems().add(datas);
+        }
+
         Matcher m = Constant.YUN_PATTERN.matcher(page.getUrl());
         if(m.find()){
             long uk = Long.parseLong(m.group(1));
             int start = Integer.parseInt(m.group(2));
 
             YunUser user = Singleton.getYunUserService().get(uk);
+            //设置该用户的资源是否已获取完毕
             if((start + Constant.LIMIT) >= user.getPubshareCount()){
                 Singleton.getYunUserService().updateYunCrawled(uk);
             }
+
+            //循环获取所有的页面
+            for(int i =0 ; i < user.getPubshareCount();i = i+ Constant.LIMIT){
+                Request request = RequestUtil.createRequest();
+                request.setUrl(String.format(Constant.YUN_URL, user.getUk(), i));
+                page.getRequests().add(request);
+            }
         }
 
-        Pattern pattern = Pattern.compile("window.yunData = (.*})");
-        Matcher matcher = pattern.matcher(page.getRender().renderToHtml().toString());
-        while (matcher.find()) {
-            String json = matcher.group(1);
-
-            System.out.println(json);
-            AgamaJson agamaJson = new AgamaJson(json);
-            List<YunData> datas = agamaJson.toEntityList(YunData.class);
-
-            page.getResultItems().add(datas);
-        }
     }
 
     public static void main(String[] args) {
         HttpProxy proxy = new HttpProxy(Proxy.Type.HTTP, "10.228.110.21", 80, "panyongjian", "pan240409F");
-        ProxyPool.addProxy(proxy);
+        //ProxyPool.addProxy(proxy);
 
-        Request request = new Request();
-        request.getHeaders().put("X-Requested-With","XMLHttpRequest");
-        request.getHeaders().put("Accept", "application/json, text/javascript, */*; q=0.01");
-        request.getHeaders().put("Referer", "https://yun.baidu.com/share/home?uk=325913312#category/type=0");
-        request.getHeaders().put("Accept-Language", "zh-CN");
-        request.setUrl("http://pan.baidu.com/wap/share/home?uk=2889076181&start=0&adapt=pc&fr=ftw");
+        CrawlConfiger config = new CrawlConfiger();
+        config.setThreadNum(1);
 
-        CrawlConfiger config = new CrawlConfiger(request);
-        config.setDepth(1);
+        List<YunUser> yunUserList = Singleton.getYunUserService().findUnfinish();
+        if(yunUserList.isEmpty()){
+            Request request = RequestUtil.createRequest();
+            request.setUrl(String.format(Constant.YUN_URL,Constant.DEFAULT_UK,0));
+            config.getStartRequests().add(request);
+        } else {
+            for(YunUser user : yunUserList){
+                for(int i =0 ; i < user.getFollowCount();i = i+ Constant.LIMIT){
+                    Request request = RequestUtil.createRequest();
+                    request.setUrl(String.format(Constant.YUN_URL, user.getUk(), i));
+                    config.getStartRequests().add(request);
+                }
+            }
+        }
+
         config.setThreadNum(2);
-        JCrawler.create(new BaiduYunProcess()).setConfig(config).run();
+        JCrawler.create(new BaiduYunProcess()).persistBy(new YunDataDataStorer()).setConfig(config).run();
     }
 }

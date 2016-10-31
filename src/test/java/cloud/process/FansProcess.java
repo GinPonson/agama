@@ -17,17 +17,18 @@ import java.util.regex.Matcher;
 public class FansProcess implements PageProcess {
     @Override
     public void process(Page page) {
-System.out.println(page.getUrl());
+        //设置用户的粉丝已经被爬取
         Matcher m = Constant.USER_PATTERN.matcher(page.getUrl());
         if(m.find()){
             String uk = m.group(1);
             Singleton.getYunUserService().updateFansCrawled(Long.parseLong(uk));
         }
 
+        //为了fans和YunUser可以重用
         page.setRawText(page.getRawText().replace("fans_list", "list").replace("fans_uname", "uname").replace("fans_uk", "uk"));
-
         List<YunUser> userList = page.getRender().renderToJson().toEntityList(YunUser.class);
 
+        //循环获取页面
         for(YunUser user : userList){
             for(int i =0 ; i < user.getFollowCount();i = i+ Constant.LIMIT){
                 Request request = RequestUtil.createRequest();
@@ -35,7 +36,7 @@ System.out.println(page.getUrl());
                 page.getRequests().add(request);
             }
         }
-System.out.println(page.getRender().renderToJson().toString());
+        //保存粉丝用户
         page.getResultItems().add(userList);
     }
 

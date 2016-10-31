@@ -11,6 +11,8 @@ import com.github.gin.agama.proxy.HttpProxy;
 import com.github.gin.agama.proxy.ProxyPool;
 import com.github.gin.agama.site.Page;
 import com.github.gin.agama.site.Request;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.Proxy;
 import java.util.List;
@@ -20,19 +22,24 @@ import java.util.regex.Matcher;
  * Created by FSTMP on 2016/10/27.
  */
 public class FollowProcess implements PageProcess {
+    Logger logger = LoggerFactory.getLogger(FollowProcess.class);
+
     @Override
     public void process(Page page) {
-        System.out.println(page.getUrl());
+        //设置用户的订阅者是否获取完毕
         Matcher m = Constant.USER_PATTERN.matcher(page.getUrl());
         if(m.find()){
             String uk = m.group(1);
             Singleton.getYunUserService().updateFollowCrawled(Long.parseLong(uk));
         }
 
+        //为了follow和YunUser可以重用
         page.setRawText(page.getRawText().replace("follow_list", "list").replace("follow_uname", "uname").replace("follow_uk", "uk"));
-
+        if(logger.isDebugEnabled())
+            logger.debug("follow:"+page.getRawText());
         List<YunUser> userList = page.getRender().renderToJson().toEntityList(YunUser.class);
 
+        //循环获取订阅者的链接
         for(YunUser user : userList){
             for(int i =0 ; i < user.getFollowCount();i = i+ Constant.LIMIT){
                 Request request = RequestUtil.createRequest();
@@ -40,24 +47,8 @@ public class FollowProcess implements PageProcess {
                 page.getRequests().add(request);
             }
         }
-        System.out.println(page.getRender().renderToJson().toString());
+        //保存订阅者
         page.getResultItems().add(userList);
     }
 
-    public static void main(String[] args) {
-        HttpProxy proxy = new HttpProxy(Proxy.Type.HTTP, "10.228.110.21", 80, "panyongjian", "pan240409F");
-        ProxyPool.addProxy(proxy);
-
-        Request request = new Request();
-        request.getHeaders().put("X-Requested-With","XMLHttpRequest");
-        request.getHeaders().put("Accept", "application/json, text/javascript, */*; q=0.01");
-        request.getHeaders().put("Referer", "https://yun.baidu.com/share/home?uk=325913312#category/type=0");
-        request.getHeaders().put("Accept-Language", "zh-CN");
-        request.setUrl("http://yun.baidu.com/pcloud/friend/getfollowlist?query_uk=2889076181&limit=20&start=0&bdstoken=e6f1efec456b92778e70c55ba5d81c3d&channel=chunlei&clienttype=0&web=1&logid=MTQ3NDA3NDg5NzU4NDAuMzQxNDQyMDY2MjA5NDA4NjU=");
-
-        CrawlConfiger config = new CrawlConfiger(request);
-        config.setDepth(1);
-        config.setThreadNum(2);
-        JCrawler.create(new FollowProcess()).setConfig(config).run();
-    }
 }

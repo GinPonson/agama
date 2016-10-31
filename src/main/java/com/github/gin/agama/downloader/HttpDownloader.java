@@ -17,12 +17,11 @@ import com.github.gin.agama.util.UrlUtils;
 
 public class HttpDownloader implements Downloader{
 
-    private HttpClient client = new HttpClient();
-
 	@Override
 	public Page download(Request request) {
 		Page page = null;
 		try {
+			HttpClient client = new HttpClient();
 			Response response = client.execute(request);
 			if(response.getResponseCode() == 200){
 				page = handleResponse(request,response);

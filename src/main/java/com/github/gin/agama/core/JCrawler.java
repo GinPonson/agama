@@ -169,7 +169,7 @@ public class JCrawler{
 	}
 	
 	private void  process(Request request) {
-		
+
 		Page page = downloader.download(request);
 		
 		if(StringUtils.isNotBlank(page.getRawText())){

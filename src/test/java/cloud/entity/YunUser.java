@@ -26,23 +26,14 @@ public class YunUser extends AgamaEntity{
     @JSONField(name = "uk")
     private long uk;
 
-    /**
-     * 用户订阅的数量
-     */
     @JSONField(name = "follow_count")
     private int followCount;
 
-    /**
-     * 用户粉丝的数量
-     */
     @JSONField(name = "fans_count")
     private int fansCount;
 
     private Date updateTime;
 
-    /**
-     * 是否已经爬取完的标识
-     */
     private boolean flag;
 
     private Integer version = 1;
@@ -53,6 +44,18 @@ public class YunUser extends AgamaEntity{
 
     @JSONField(name = "pubshare_count")
     private int pubshareCount;
+
+    public YunUser(){}
+
+    public YunUser(String avatarUrl, String username, long uk, int followCount, int fansCount, Date updateTime, int pubshareCount) {
+        this.avatarUrl = avatarUrl;
+        this.username = username;
+        this.uk = uk;
+        this.followCount = followCount;
+        this.fansCount = fansCount;
+        this.updateTime = updateTime;
+        this.pubshareCount = pubshareCount;
+    }
 
     public long getId() {
         return id;
