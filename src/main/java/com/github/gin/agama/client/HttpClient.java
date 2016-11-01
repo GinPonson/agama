@@ -47,19 +47,17 @@ public class HttpClient {
 	}
 
     private void setHeaders(Map<String, String> headers) {
-        if(log.isDebugEnabled()){
-            log.debug("Request Header:");
-        }
+        String requestHeader = "Request Header:";
         if(headers != null && !headers.isEmpty()){
             for(Entry<String, String> header : headers.entrySet()){
                 conn.setRequestProperty(header.getKey(), header.getValue());
 
-                if(log.isDebugEnabled()){
-                    log.debug(header.getKey()+":"+header.getValue() );
-                }
+                requestHeader += " [" +header.getKey()+":"+header.getValue() +"] ";
             }
         }
-
+        if(log.isDebugEnabled()){
+            log.debug(requestHeader);
+        }
     }
 	
 	private byte[] getResponseByByte(){

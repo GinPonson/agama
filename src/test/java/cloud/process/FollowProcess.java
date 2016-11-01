@@ -29,24 +29,41 @@ public class FollowProcess implements PageProcess {
         //设置用户的订阅者是否获取完毕
         Matcher m = Constant.USER_PATTERN.matcher(page.getUrl());
         if(m.find()){
-            String uk = m.group(1);
-            Singleton.getYunUserService().updateFollowCrawled(Long.parseLong(uk));
+            long uk = Long.parseLong(m.group(1));
+            int start = Integer.parseInt(m.group(3));
+
+            YunUser user = Singleton.getYunUserService().get(uk);
+            //设置该用户的资源是否已获取完毕
+            if((start + Constant.LIMIT) >= user.getFollowCount()){
+                Singleton.getYunUserService().updateFollowCrawled(uk);
+
+                List<YunUser> yunUserList = Singleton.getYunUserService().findFollowUnCrawled();
+                for(YunUser yunUser : yunUserList){
+                    Request request = RequestUtil.createRequest();
+                    request.setUrl(String.format(Constant.FOLLOW_URL, yunUser.getUk(), Constant.LIMIT, 0));
+                    page.getRequests().add(request);
+                }
+            } else {
+                Request request = RequestUtil.createRequest();
+                request.setUrl(String.format(Constant.FOLLOW_URL, user.getUk(), Constant.LIMIT, start + Constant.LIMIT));
+                page.getRequests().add(request);
+            }
         }
 
         //为了follow和YunUser可以重用
         page.setRawText(page.getRawText().replace("follow_list", "list").replace("follow_uname", "uname").replace("follow_uk", "uk"));
+        List<YunUser> userList = page.getRender().renderToJson().toEntityList(YunUser.class);
         if(logger.isDebugEnabled())
             logger.debug("follow:"+page.getRawText());
-        List<YunUser> userList = page.getRender().renderToJson().toEntityList(YunUser.class);
 
         //循环获取订阅者的链接
-        for(YunUser user : userList){
+        /*for(YunUser user : userList){
             for(int i =0 ; i < user.getFollowCount();i = i+ Constant.LIMIT){
                 Request request = RequestUtil.createRequest();
                 request.setUrl(String.format(Constant.FOLLOW_URL, user.getUk(), Constant.LIMIT, i));
                 page.getRequests().add(request);
             }
-        }
+        }*/
         //保存订阅者
         page.getResultItems().add(userList);
     }

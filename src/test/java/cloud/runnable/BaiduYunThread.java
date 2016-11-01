@@ -23,11 +23,11 @@ public class BaiduYunThread implements Runnable {
     @Override
     public void run() {
         HttpProxy proxy = new HttpProxy(Proxy.Type.HTTP, "10.228.110.21", 80, "panyongjian", "pan240409F");
-        //ProxyPool.addProxy(proxy);
+        ProxyPool.addProxy(proxy);
 
         CrawlConfiger config = new CrawlConfiger();
         config.setThreadNum(2);
-        config.setSleepTime(8000);
+        //config.setSleepTime(8000);
 
         List<YunUser> yunUserList = Singleton.getYunUserService().findUnfinish();
         if(yunUserList.isEmpty()){
@@ -36,13 +36,11 @@ public class BaiduYunThread implements Runnable {
             request.setUrl(String.format(Constant.YUN_URL,Constant.DEFAULT_UK,0));
             config.getStartRequests().add(request);
         } else {
-            //穷尽获取每个用户的所有资源链接
+            //获取每个用户的所有资源链接
             for(YunUser user : yunUserList){
-                for(int i =0 ; i < user.getFollowCount();i = i+ Constant.LIMIT){
-                    Request request = RequestUtil.createRequest();
-                    request.setUrl(String.format(Constant.YUN_URL, user.getUk(), i));
-                    config.getStartRequests().add(request);
-                }
+                Request request = RequestUtil.createRequest();
+                request.setUrl(String.format(Constant.YUN_URL, user.getUk(), 0));
+                config.getStartRequests().add(request);
             }
         }
 

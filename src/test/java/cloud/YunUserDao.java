@@ -37,19 +37,19 @@ public class YunUserDao {
 
     public List<YunUser> fetchByFlag(boolean flag) throws SQLException {
         QueryRunner qr = new QueryRunner(DbUtils.getDataSource());
-        List<YunUser> yunUsers = (List<YunUser>) qr.query("select "+ COLUMNS +" from yun_user where flag=?", new BeanListHandler(YunUser.class),flag);
+        List<YunUser> yunUsers = (List<YunUser>) qr.query("select "+ COLUMNS +" from yun_user where flag=? limit 0,1", new BeanListHandler(YunUser.class),flag);
         return yunUsers;
     }
 
     public List<YunUser> fetchByFollowCrawled(boolean followCrawled) throws SQLException {
         QueryRunner qr = new QueryRunner(DbUtils.getDataSource());
-        List<YunUser> yunUsers = (List<YunUser>) qr.query("select "+ COLUMNS +" from yun_user where follow_crawled=?", new BeanListHandler(YunUser.class),followCrawled);
+        List<YunUser> yunUsers = (List<YunUser>) qr.query("select "+ COLUMNS +" from yun_user where follow_crawled=? limit 0,1", new BeanListHandler(YunUser.class),followCrawled);
         return yunUsers;
     }
 
     public List<YunUser> fetchByFansCrawled(boolean fansCrawled) throws SQLException {
         QueryRunner qr = new QueryRunner(DbUtils.getDataSource());
-        List<YunUser> yunUsers = (List<YunUser>) qr.query("select "+ COLUMNS +" from yun_user where fans_crawled=?", new BeanListHandler(YunUser.class),fansCrawled);
+        List<YunUser> yunUsers = (List<YunUser>) qr.query("select "+ COLUMNS +" from yun_user where fans_crawled=? limit 0,1", new BeanListHandler(YunUser.class),fansCrawled);
         return yunUsers;
     }
 

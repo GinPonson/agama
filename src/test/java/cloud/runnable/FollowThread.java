@@ -24,11 +24,11 @@ public class FollowThread implements Runnable {
     @Override
     public void run() {
         HttpProxy proxy = new HttpProxy(Proxy.Type.HTTP, "10.228.110.21", 80, "panyongjian", "pan240409F");
-        //ProxyPool.addProxy(proxy);
+        ProxyPool.addProxy(proxy);
 
         CrawlConfiger config = new CrawlConfiger();
-        config.setThreadNum(2);
-        config.setSleepTime(8000);
+        config.setThreadNum(1);
+        config.setSleepTime(15000);
 
         List<YunUser> yunUserList = Singleton.getYunUserService().findFollowUnCrawled();
         if(yunUserList.isEmpty()){
@@ -42,11 +42,9 @@ public class FollowThread implements Runnable {
         } else {
             //穷尽获取每个用户的所有订阅者链接
             for(YunUser user : yunUserList){
-                for(int i =0 ; i < user.getFollowCount();i = i+Constant.LIMIT){
-                    Request request = RequestUtil.createRequest();
-                    request.setUrl(String.format(Constant.FOLLOW_URL, user.getUk(), Constant.LIMIT, i));
-                    config.getStartRequests().add(request);
-                }
+                Request request = RequestUtil.createRequest();
+                request.setUrl(String.format(Constant.FOLLOW_URL, user.getUk(), Constant.LIMIT, 0));
+                config.getStartRequests().add(request);
             }
         }
 
