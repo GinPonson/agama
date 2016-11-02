@@ -5,16 +5,13 @@ import cloud.RequestUtil;
 import cloud.Singleton;
 import cloud.entity.YunUser;
 import cloud.process.FansProcess;
-import cloud.process.FollowProcess;
 import cloud.storer.YunUserDataStorer;
 import com.github.gin.agama.core.CrawlConfiger;
 import com.github.gin.agama.core.JCrawler;
 import com.github.gin.agama.proxy.HttpProxy;
-import com.github.gin.agama.proxy.ProxyPool;
 import com.github.gin.agama.site.Request;
 
 import java.net.Proxy;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,11 +22,11 @@ public class FansThread implements Runnable {
     @Override
     public void run() {
         HttpProxy proxy = new HttpProxy(Proxy.Type.HTTP, "10.228.110.21", 80, "panyongjian", "pan240409F");
-        ProxyPool.addProxy(proxy);
+        //ProxyPool.addProxy(proxy);
 
         CrawlConfiger config = new CrawlConfiger();
         config.setThreadNum(1);
-        config.setSleepTime(15000);
+        config.setInterval(15000);
 
         List<YunUser> yunUserList = Singleton.getYunUserService().findFansUnCrawled();
         if(yunUserList.isEmpty()){

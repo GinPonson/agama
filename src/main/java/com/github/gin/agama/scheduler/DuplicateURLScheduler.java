@@ -12,40 +12,39 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import com.github.gin.agama.entity.BlogDetail;
 import com.github.gin.agama.site.Request;
 
 public class DuplicateURLScheduler implements Scheduler{
 
 	private Set<String> urls = setFromMap(new ConcurrentHashMap<String, Boolean>());
 	
-	private BlockingQueue<Request> requestQueue = new LinkedBlockingQueue<Request>();
+	/*private BlockingQueue<Request> requestQueue = new LinkedBlockingQueue<Request>();*/
 
-    private Lock lock = new ReentrantLock();
-
-    private Condition waitCondition = lock.newCondition();
-			
 	public static <E>Set<E> setFromMap(Map<E,Boolean> map){
 		return Collections.newSetFromMap(map);
 	}
 
 
-    private BlockingQueue<Request> blockingQueue = new PriorityBlockingQueue(11, new Comparator<Request>() {
+    private BlockingQueue<Request> requestQueue = new PriorityBlockingQueue(11, new Comparator<Request>() {
 
         @Override
         public int compare(Request o1, Request o2) {
-            return 0;
+			if(o1.getPriority() < o2.getPriority())	return 1;
+			else if (o1.getPriority() > o2.getPriority()) return -1;
+			else return 0;
         }
     });
 
+	@Override
+	public void add(Request request) {
+		requestQueue.add(request);
+	}
+
     @Override
 	public void push(Request request) {
-        lock.lock();
-        try {
-            if(!isDuplicate(request.getUrl()))
-                requestQueue.add(request);
-        } finally {
-            lock.unlock();
-        }
+		if(!isDuplicate(request.getUrl()))
+			requestQueue.add(request);
 	}
 
 	private boolean isDuplicate(String url) {
@@ -66,7 +65,5 @@ public class DuplicateURLScheduler implements Scheduler{
 	public int getTolalRequestSize(){
 		return urls.size();
 	}
-
-
 
 }

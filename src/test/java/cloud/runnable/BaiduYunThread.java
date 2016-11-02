@@ -23,11 +23,11 @@ public class BaiduYunThread implements Runnable {
     @Override
     public void run() {
         HttpProxy proxy = new HttpProxy(Proxy.Type.HTTP, "10.228.110.21", 80, "panyongjian", "pan240409F");
-        ProxyPool.addProxy(proxy);
+        //ProxyPool.addProxy(proxy);
 
         CrawlConfiger config = new CrawlConfiger();
         config.setThreadNum(2);
-        //config.setSleepTime(8000);
+        //config.setInterval(8000);
 
         List<YunUser> yunUserList = Singleton.getYunUserService().findUnfinish();
         if(yunUserList.isEmpty()){

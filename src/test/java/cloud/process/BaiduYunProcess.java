@@ -84,7 +84,7 @@ public class BaiduYunProcess implements PageProcess {
 
         CrawlConfiger config = new CrawlConfiger();
         config.setThreadNum(2);
-        //config.setSleepTime(8000);
+        //config.setInterval(8000);
 
         List<YunUser> yunUserList = Singleton.getYunUserService().findUnfinish();
         if(yunUserList.isEmpty()){

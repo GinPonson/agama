@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.github.gin.agama.site.Request;
-import com.github.gin.agama.proxy.HttpProxy;
 
 public class CrawlConfiger {
 
@@ -16,7 +15,7 @@ public class CrawlConfiger {
 	/**
 	 * 每次抓取默认间隔时间
 	 */
-	private int sleepTime = 3000;
+	private int interval = 3000;
 	
 	/**
 	 * 空队列等待时间
@@ -61,12 +60,12 @@ public class CrawlConfiger {
 		this.startRequests = startRequests;
 	}
 
-	public int getSleepTime() {
-		return sleepTime;
+	public int getInterval() {
+		return interval;
 	}
 
-	public void setSleepTime(int sleepTime) {
-		this.sleepTime = sleepTime;
+	public void setInterval(int interval) {
+		this.interval = interval;
 	}
 
 	public int getThreadNum() {

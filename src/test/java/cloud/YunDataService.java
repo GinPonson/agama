@@ -13,11 +13,11 @@ public class YunDataService {
 
     public void save(YunData data){
         try {
-            DbUtils.startTransaction();
             if(get(data.getShareId()) == null){
+                DbUtils.startTransaction();
                 Singleton.getYunDataDao().insert(data);
+                DbUtils.commit();
             }
-            DbUtils.commit();
         } catch (SQLException e) {
             DbUtils.rollback();
             e.printStackTrace();

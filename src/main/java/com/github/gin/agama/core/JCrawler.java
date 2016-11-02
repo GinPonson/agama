@@ -179,22 +179,34 @@ public class JCrawler{
                 dataStorer.store(page.getResultItems().getItems());
             }
 
-            if(log.isDebugEnabled()){
-                log.debug("Thread:"+Thread.currentThread().getName()+" is sleeping");
-            }
-
-            Thread.sleep(configer.getSleepTime());
-
-            if(log.isDebugEnabled()){
-                log.debug("Thread:" + Thread.currentThread().getName() + " finished sleepping");
-            }
+			sleep(configer.getInterval());
         }catch (Exception e){
             int time = retriedTime.incrementAndGet();
             if(time <= configer.getRetryTime()){
-                log.error("爬取网页出错，错误原因:"+e.getMessage()+",正在尝试第"+time+"次重连...");
-                e.printStackTrace();
+                log.error("爬取网页出错，错误原因:" + e.getMessage() + ",正在尝试第" + time + "次重连...");
+				e.printStackTrace();
+
+				request.setPriority(999);
+				addRetryRequest(request);
+				sleep(5000);
             }
         }
+	}
+
+	public void sleep(int time){
+		try {
+			if(log.isDebugEnabled()){
+				log.debug("Thread:"+Thread.currentThread().getName()+" is sleeping");
+			}
+
+			Thread.sleep(time);
+
+			if(log.isDebugEnabled()){
+				log.debug("Thread:" + Thread.currentThread().getName() + " finished sleepping");
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
     private int autoIncrement(int curDepth){
@@ -220,6 +232,10 @@ public class JCrawler{
             return true;
         }
     }
+
+	public void addRetryRequest(Request request){
+		scheduler.add(request);
+	}
 	
 	private void close() {
 		threadPool.shutdown();

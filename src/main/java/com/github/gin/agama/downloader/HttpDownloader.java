@@ -18,18 +18,15 @@ import com.github.gin.agama.util.UrlUtils;
 public class HttpDownloader implements Downloader{
 
 	@Override
-	public Page download(Request request) {
+	public Page download(Request request) throws IOException {
 		Page page = null;
-		try {
-			HttpClient client = new HttpClient();
-			Response response = client.execute(request);
-			if(response.getResponseCode() == 200){
-				page = handleResponse(request,response);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
+		HttpClient client = new HttpClient();
+		Response response = client.execute(request);
+		if(response.getResponseCode() == 200){
+			page = handleResponse(request,response);
 		}
-		return page;
+		throw new IOException();
+		//return page;
 	}
 
 	private Page handleResponse(Request request,Response response) throws IOException {

@@ -4,7 +4,9 @@ import com.github.gin.agama.site.Request;
 
 public interface Scheduler {
 	
-	public void push(Request request);
+	void push(Request request);
 	
-	public Request poll();
+	Request poll();
+
+	void add(Request request);
 }

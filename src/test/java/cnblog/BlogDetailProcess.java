@@ -28,7 +28,7 @@ public class BlogDetailProcess implements PageProcess {
         //config.setProxy(proxy);
         config.setDepth(1);
         config.setThreadNum(2);
-        config.setAjaxModel(true);
+        //config.setAjaxModel(true);
         JCrawler.create(new BlogDetailProcess()).setConfig(config).run();
     }
 }

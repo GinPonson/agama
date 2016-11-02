@@ -4,6 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Request {
+
+	/**
+	 * request header
+	 */
+	private Map<String,String> headers = new HashMap<String,String>();
 	
 	/**
 	 * request url
@@ -16,16 +21,14 @@ public class Request {
 	private String method;
 	
 	/**
-	 * request header
-	 */
-	private Map<String,String> headers = new HashMap<String,String>();
-	
-	/**
 	 * current crawle depth
 	 */
 	private int curDepth = 1;
-	
-	private int priority;
+
+	/**
+	 * priority of this request
+	 */
+	private int priority = 0;
 	
 	public Request(){}
 
