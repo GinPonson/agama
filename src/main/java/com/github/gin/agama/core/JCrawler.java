@@ -36,6 +36,8 @@ public class JCrawler{
 	
 	private Condition waitCondition = urlLock.newCondition();
 
+    private AtomicInteger retriedTime = new AtomicInteger();
+
 	private ThreadPool threadPool;
 	
 	private Downloader downloader;
@@ -43,8 +45,6 @@ public class JCrawler{
 	private PageProcess pageProcess;
 	
 	private DataStorer dataStorer;
-
-	private int retryTime;
 
     public JCrawler(PageProcess pageProcess){
         this.pageProcess = pageProcess;
@@ -66,7 +66,6 @@ public class JCrawler{
 	
 	public JCrawler setConfig(CrawlConfiger config) {
 		this.configer = config;
-		this.retryTime = config.getRetryTime();
 		return this;
 	}
 
@@ -169,32 +168,33 @@ public class JCrawler{
 	}
 	
 	private void  process(Request request) {
+        try{
+            Page page = downloader.download(request);
 
-		Page page = downloader.download(request);
-		
-		if(StringUtils.isNotBlank(page.getRawText())){
-			pageProcess.process(page);
-			
-			addScheuleRequest(page.getRequests(),autoIncrement(request.getCurDepth()));
-			
-			dataStorer.store(page.getResultItems().getItems());
-		}
-			
-		try {
-			if(log.isDebugEnabled()){
-				log.debug("Thread:"+Thread.currentThread().getName()+" is sleeping");
-			}
-			
-			Thread.sleep(configer.getSleepTime());
-			
-			if(log.isDebugEnabled()){
-				log.debug("Thread:"+Thread.currentThread().getName()+" finished sleepping");
-			}
-			
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
+            if(StringUtils.isNotBlank(page.getRawText())){
+                pageProcess.process(page);
+
+                addScheuleRequest(page.getRequests(),autoIncrement(request.getCurDepth()));
+
+                dataStorer.store(page.getResultItems().getItems());
+            }
+
+            if(log.isDebugEnabled()){
+                log.debug("Thread:"+Thread.currentThread().getName()+" is sleeping");
+            }
+
+            Thread.sleep(configer.getSleepTime());
+
+            if(log.isDebugEnabled()){
+                log.debug("Thread:" + Thread.currentThread().getName() + " finished sleepping");
+            }
+        }catch (Exception e){
+            int time = retriedTime.incrementAndGet();
+            if(time <= configer.getRetryTime()){
+                log.error("爬取网页出错，错误原因:"+e.getMessage()+",正在尝试第"+time+"次重连...");
+                e.printStackTrace();
+            }
+        }
 	}
 
     private int autoIncrement(int curDepth){
@@ -226,7 +226,7 @@ public class JCrawler{
 	}
 	
 	private void resetRetryTime(){
-		this.retryTime = configer.getRetryTime();
+		this.retriedTime.set(0);
 	}
 
 	public void setScheduler(Scheduler scheduler) {

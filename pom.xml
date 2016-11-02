@@ -157,7 +157,12 @@
 		  <version>1.0.26</version>
 	  </dependency>
 
-
+      <!-- https://mvnrepository.com/artifact/org.elasticsearch/elasticsearch -->
+      <dependency>
+          <groupId>org.elasticsearch</groupId>
+          <artifactId>elasticsearch</artifactId>
+          <version>5.0.0</version>
+      </dependency>
   </dependencies>
   
   

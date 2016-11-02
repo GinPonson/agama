@@ -37,7 +37,10 @@ public class CrawlConfiger {
 	 * 抓取深度
 	 */
 	private int depth = -1;
-	
+
+    /**
+     * 是否使用phantomjs获取网页s
+     */
 	private boolean isAjaxModel = false;
 
 	public CrawlConfiger(){}
