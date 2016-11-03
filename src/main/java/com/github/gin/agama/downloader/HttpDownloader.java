@@ -25,8 +25,7 @@ public class HttpDownloader implements Downloader{
 		if(response.getResponseCode() == 200){
 			page = handleResponse(request,response);
 		}
-		throw new IOException();
-		//return page;
+		return page;
 	}
 
 	private Page handleResponse(Request request,Response response) throws IOException {

@@ -16,6 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
@@ -36,7 +38,7 @@ public class JCrawler{
 	
 	private Condition waitCondition = urlLock.newCondition();
 
-    private AtomicInteger retriedTime = new AtomicInteger();
+    private Map<String,AtomicInteger> retryMap = new ConcurrentHashMap<>();
 
 	private ThreadPool threadPool;
 	
@@ -181,14 +183,23 @@ public class JCrawler{
 
 			sleep(configer.getInterval());
         }catch (Exception e){
+            AtomicInteger retriedTime = retryMap.get(request.getUrl());
+
+            if(retriedTime == null){
+                retriedTime = new AtomicInteger();
+                retryMap.put(request.getUrl(),retriedTime);
+            }
+
             int time = retriedTime.incrementAndGet();
             if(time <= configer.getRetryTime()){
-                log.error("爬取网页出错，错误原因:" + e.getMessage() + ",正在尝试第" + time + "次重连...");
-				e.printStackTrace();
+                log.info("爬取网页出错,正在尝试第" + time + "次重连...");
 
 				request.setPriority(999);
 				addRetryRequest(request);
-				sleep(5000);
+				sleep(1000 * 60);
+            } else {
+                log.error("错误原因:" + e.getMessage());
+                e.printStackTrace();
             }
         }
 	}
@@ -241,10 +252,6 @@ public class JCrawler{
 		threadPool.shutdown();
 	}
 	
-	private void resetRetryTime(){
-		this.retriedTime.set(0);
-	}
-
 	public void setScheduler(Scheduler scheduler) {
 		this.scheduler = scheduler;
 	}

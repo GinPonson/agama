@@ -23,7 +23,7 @@ public class BaiduYunThread implements Runnable {
     @Override
     public void run() {
         HttpProxy proxy = new HttpProxy(Proxy.Type.HTTP, "10.228.110.21", 80, "panyongjian", "pan240409F");
-        //ProxyPool.addProxy(proxy);
+        ProxyPool.addProxy(proxy);
 
         CrawlConfiger config = new CrawlConfiger();
         config.setThreadNum(2);
@@ -36,7 +36,7 @@ public class BaiduYunThread implements Runnable {
             request.setUrl(String.format(Constant.YUN_URL,Constant.DEFAULT_UK,0));
             config.getStartRequests().add(request);
         } else {
-            //获取每个用户的所有资源链接
+            //获取每个用户的第一页资源链接
             for(YunUser user : yunUserList){
                 Request request = RequestUtil.createRequest();
                 request.setUrl(String.format(Constant.YUN_URL, user.getUk(), 0));
@@ -45,5 +45,10 @@ public class BaiduYunThread implements Runnable {
         }
 
         JCrawler.create(new BaiduYunProcess()).persistBy(new YunDataDataStorer()).setConfig(config).run();
+    }
+
+    public static void main(String[] args) {
+        Thread fansThread = new Thread(new BaiduYunThread());
+        fansThread.start();
     }
 }

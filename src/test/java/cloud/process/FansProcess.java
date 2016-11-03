@@ -17,19 +17,18 @@ import java.util.regex.Matcher;
  * Created by FSTMP on 2016/10/27.
  */
 public class FansProcess implements PageProcess {
+    Logger logger = LoggerFactory.getLogger(FollowProcess.class);
+
     @Override
     public void process(Page page) {
-        Logger logger = LoggerFactory.getLogger(FollowProcess.class);
-
-        //设置用户的粉丝已经被爬取
         Matcher m = Constant.USER_PATTERN.matcher(page.getUrl());
         if(m.find()){
             long uk = Long.parseLong(m.group(1));
             int start = Integer.parseInt(m.group(3));
 
-            YunUser user = Singleton.getYunUserService().get(uk);
-            //设置该用户的资源是否已获取完毕
-            if((start + Constant.LIMIT) >= user.getFansCount()){
+            //设置用户的粉丝是否已经被爬取,从其他人列表中取出的fans_count不一定对
+            int fanCount = page.getRender().renderToJson().getJson().getInteger("total_count");
+            if((start + Constant.LIMIT) >= fanCount){
                 Singleton.getYunUserService().updateFansCrawled(uk);
 
                 List<YunUser> yunUserList = Singleton.getYunUserService().findFansUnCrawled();
@@ -40,7 +39,7 @@ public class FansProcess implements PageProcess {
                 }
             } else {
                 Request request = RequestUtil.createRequest();
-                request.setUrl(String.format(Constant.FANS_URL, user.getUk(), Constant.LIMIT, start+Constant.LIMIT));
+                request.setUrl(String.format(Constant.FANS_URL, uk, Constant.LIMIT, start+Constant.LIMIT));
                 page.getRequests().add(request);
             }
         }
@@ -51,16 +50,9 @@ public class FansProcess implements PageProcess {
         if(logger.isDebugEnabled())
             logger.debug("fans:"+page.getRawText());
 
-        //循环获取页面
-        /*for(YunUser user : userList){
-            for(int i =0 ; i < user.getFollowCount();i = i+ Constant.LIMIT){
-                Request request = RequestUtil.createRequest();
-                request.setUrl(String.format(Constant.FANS_URL, user.getUk(), Constant.LIMIT, i));
-                page.getRequests().add(request);
-            }
-        }*/
         //保存粉丝用户
         page.getResultItems().add(userList);
+
     }
 
 }

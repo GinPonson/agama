@@ -9,6 +9,7 @@ import cloud.storer.YunUserDataStorer;
 import com.github.gin.agama.core.CrawlConfiger;
 import com.github.gin.agama.core.JCrawler;
 import com.github.gin.agama.proxy.HttpProxy;
+import com.github.gin.agama.proxy.ProxyPool;
 import com.github.gin.agama.site.Request;
 
 import java.net.Proxy;
@@ -22,7 +23,7 @@ public class FansThread implements Runnable {
     @Override
     public void run() {
         HttpProxy proxy = new HttpProxy(Proxy.Type.HTTP, "10.228.110.21", 80, "panyongjian", "pan240409F");
-        //ProxyPool.addProxy(proxy);
+        ProxyPool.addProxy(proxy);
 
         CrawlConfiger config = new CrawlConfiger();
         config.setThreadNum(1);
@@ -38,7 +39,7 @@ public class FansThread implements Runnable {
             //保存默认uk，以免获取资源的时候找不到该用户
             //Singleton.getYunUserService().save(new YunUser("http://himg.bdimg.com/sys/portrait/item/83ac0a37.jpg","51xuejava_com",2889076181L,2,60,new Date(),152));
         } else {
-            //穷尽获取每个用户的所有粉丝链接
+            //获取每个用户第一页粉丝的链接
             for(YunUser user : yunUserList){
                 Request request = RequestUtil.createRequest();
                 request.setUrl(String.format(Constant.FANS_URL, user.getUk(), Constant.LIMIT, 0));

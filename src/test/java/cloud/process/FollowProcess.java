@@ -26,15 +26,14 @@ public class FollowProcess implements PageProcess {
 
     @Override
     public void process(Page page) {
-        //设置用户的订阅者是否获取完毕
         Matcher m = Constant.USER_PATTERN.matcher(page.getUrl());
         if(m.find()){
             long uk = Long.parseLong(m.group(1));
             int start = Integer.parseInt(m.group(3));
 
-            YunUser user = Singleton.getYunUserService().get(uk);
-            //设置该用户的资源是否已获取完毕
-            if((start + Constant.LIMIT) >= user.getFollowCount()){
+            //设置用户的订阅者是否获取完毕
+            int followCount = page.getRender().renderToJson().getJson().getInteger("total_count");
+            if((start + Constant.LIMIT) >= followCount){
                 Singleton.getYunUserService().updateFollowCrawled(uk);
 
                 List<YunUser> yunUserList = Singleton.getYunUserService().findFollowUnCrawled();
@@ -45,7 +44,7 @@ public class FollowProcess implements PageProcess {
                 }
             } else {
                 Request request = RequestUtil.createRequest();
-                request.setUrl(String.format(Constant.FOLLOW_URL, user.getUk(), Constant.LIMIT, start + Constant.LIMIT));
+                request.setUrl(String.format(Constant.FOLLOW_URL, uk, Constant.LIMIT, start + Constant.LIMIT));
                 page.getRequests().add(request);
             }
         }
@@ -56,14 +55,6 @@ public class FollowProcess implements PageProcess {
         if(logger.isDebugEnabled())
             logger.debug("follow:"+page.getRawText());
 
-        //循环获取订阅者的链接
-        /*for(YunUser user : userList){
-            for(int i =0 ; i < user.getFollowCount();i = i+ Constant.LIMIT){
-                Request request = RequestUtil.createRequest();
-                request.setUrl(String.format(Constant.FOLLOW_URL, user.getUk(), Constant.LIMIT, i));
-                page.getRequests().add(request);
-            }
-        }*/
         //保存订阅者
         page.getResultItems().add(userList);
     }
