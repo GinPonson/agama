@@ -2,7 +2,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>net.osc.gin</groupId>
+  <groupId>com.github.gin</groupId>
   <artifactId>agama</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
@@ -13,7 +13,7 @@
   <!-- 指定 ocs Maven仓库 -->
 	<repositories>
 		
-		<repository>
+		<!--<repository>
 			<id>oschinaRepository</id>
 			<name>local private nexus</name>
 			<url>http://maven.oschina.net/content/groups/public/</url>
@@ -23,7 +23,7 @@
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
-		</repository>
+		</repository>-->
 
 		<!-- 官方maven仓库 -->
 		<repository>
@@ -107,17 +107,27 @@
       </dependency>-->
 	
 	<!-- 加入slf4j依赖包 -->
-	<dependency>
+      <dependency>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+          <version>1.7.5</version>
+      </dependency>
+	<!--<dependency>
 		<groupId>org.slf4j</groupId>
 		<artifactId>slf4j-log4j12</artifactId>
-		<version>1.5.8</version>
+		<version>1.7.5</version>
 	</dependency>	
 	<dependency>
 		<groupId>log4j</groupId>
 		<artifactId>log4j</artifactId>
 		<version>1.2.17</version>
-	</dependency>
-	
+	</dependency>-->
+      <dependency>
+          <groupId>org.apache.logging.log4j</groupId>
+          <artifactId>log4j-api</artifactId>
+          <version>2.6.2</version>
+      </dependency>
+
 	<!-- commons-lang3 -->
 	<dependency>
 		<groupId>org.apache.commons</groupId>
@@ -163,11 +173,10 @@
           <artifactId>elasticsearch</artifactId>
           <version>5.0.0</version>
       </dependency>
-
-	 <!-- <dependency>
+	  <!--<dependency>
 		  <groupId>org.elasticsearch.client</groupId>
 		  <artifactId>transport</artifactId>
-		  <version>5.0.0</version>
+		  <version>2.3.0</version>
 	  </dependency>-->
   </dependencies>
   
