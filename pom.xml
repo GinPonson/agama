@@ -13,7 +13,7 @@
   <!-- 指定 ocs Maven仓库 -->
 	<repositories>
 		
-		<!--<repository>
+		<repository>
 			<id>oschinaRepository</id>
 			<name>local private nexus</name>
 			<url>http://maven.oschina.net/content/groups/public/</url>
@@ -23,7 +23,7 @@
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
-		</repository>-->
+		</repository>
 
 		<!-- 官方maven仓库 -->
 		<repository>
@@ -168,16 +168,16 @@
 	  </dependency>
 
       <!-- https://mvnrepository.com/artifact/org.elasticsearch/elasticsearch -->
-      <dependency>
+      <!--<dependency>
           <groupId>org.elasticsearch</groupId>
           <artifactId>elasticsearch</artifactId>
           <version>5.0.0</version>
-      </dependency>
-	  <!--<dependency>
+      </dependency>-->
+	  <dependency>
 		  <groupId>org.elasticsearch.client</groupId>
 		  <artifactId>transport</artifactId>
-		  <version>2.3.0</version>
-	  </dependency>-->
+		  <version>5.0.0</version>
+	  </dependency>
   </dependencies>
   
   
@@ -188,8 +188,8 @@
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.8</source>
+					<target>1.8</target>
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
