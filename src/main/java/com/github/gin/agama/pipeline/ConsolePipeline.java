@@ -1,13 +1,13 @@
-package com.github.gin.agama.sorter;
+package com.github.gin.agama.pipeline;
 
 import com.github.gin.agama.entity.AgamaEntity;
 
 import java.util.Collection;
 
-public class ConsoleDataStorer implements DataStorer<AgamaEntity>{
+public class ConsolePipeline implements Pipeline<AgamaEntity> {
 
     @Override
-    public void store(Collection<AgamaEntity> items) {
+    public void process(Collection<AgamaEntity> items) {
         for(AgamaEntity item : items){
             System.out.println(item.toString());
         }

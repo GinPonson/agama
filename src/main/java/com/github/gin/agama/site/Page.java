@@ -5,12 +5,12 @@ import java.util.*;
 public class Page {
 	
 	/**
-     * store output fields
+     * process output fields
      */
     private ResultItems resultItems = new ResultItems();
 
     /**
-     * store crawl url
+     * process crawl url
      */
     private List<Request> requests = new ArrayList<>();
 

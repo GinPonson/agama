@@ -9,8 +9,8 @@ import com.github.gin.agama.scheduler.DuplicateURLScheduler;
 import com.github.gin.agama.scheduler.Scheduler;
 import com.github.gin.agama.site.Page;
 import com.github.gin.agama.site.Request;
-import com.github.gin.agama.sorter.ConsoleDataStorer;
-import com.github.gin.agama.sorter.DataStorer;
+import com.github.gin.agama.pipeline.ConsolePipeline;
+import com.github.gin.agama.pipeline.Pipeline;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +46,7 @@ public class JCrawler{
 	
 	private PageProcess pageProcess;
 	
-	private DataStorer dataStorer;
+	private Pipeline pipeline;
 
     public JCrawler(PageProcess pageProcess){
         this.pageProcess = pageProcess;
@@ -61,8 +61,8 @@ public class JCrawler{
         return this;
     }
 	
-	public JCrawler persistBy(DataStorer dataStorer){
-		this.dataStorer = dataStorer;
+	public JCrawler persistBy(Pipeline pipeline){
+		this.pipeline = pipeline;
 		return this;
 	}
 	
@@ -97,8 +97,8 @@ public class JCrawler{
             }
         }
 
-        if(dataStorer == null){
-            dataStorer = new ConsoleDataStorer();
+        if(pipeline == null){
+            pipeline = new ConsolePipeline();
         }
 
         if(threadPool == null){
@@ -178,7 +178,7 @@ public class JCrawler{
 
                 addScheuleRequest(page.getRequests(),autoIncrement(request.getCurDepth()));
 
-                dataStorer.store(page.getResultItems().getItems());
+                pipeline.process(page.getResultItems().getItems());
             }
 
 			sleep(configer.getInterval());
