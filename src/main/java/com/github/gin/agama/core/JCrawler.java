@@ -66,15 +66,35 @@ public class JCrawler{
 		return this;
 	}
 	
-	public JCrawler setConfig(CrawlConfiger config) {
+	public JCrawler configBy(CrawlConfiger config) {
 		this.configer = config;
 		return this;
 	}
 
-    public JCrawler setDownloader(Downloader downloader){
+	public JCrawler downloadBy(Downloader downloader){
+		this.downloader = downloader;
+		return this;
+	}
+
+    public void setDownloader(Downloader downloader){
         this.downloader = downloader;
-        return this;
     }
+
+	public void setPipeline(Pipeline pipeline){
+		this.pipeline = pipeline;
+	}
+
+	public void setScheduler(Scheduler scheduler) {
+		this.scheduler = scheduler;
+	}
+
+	public void setPageProcess(PageProcess pageProcess) {
+		this.pageProcess = pageProcess;
+	}
+
+	public int getThreadStatus(){
+		return THREAD_STATUS.getValue();
+	}
 
     private void checkIfStarted() {
         if(THREAD_STATUS == Status.STOPPED){
@@ -207,7 +227,7 @@ public class JCrawler{
 	public void sleep(int time){
 		try {
 			if(log.isDebugEnabled()){
-				log.debug("Thread:"+Thread.currentThread().getName()+" is sleeping");
+				log.debug("Thread:" + Thread.currentThread().getName() + " is sleeping");
 			}
 
 			Thread.sleep(time);
@@ -250,24 +270,15 @@ public class JCrawler{
 	
 	private void close() {
 		threadPool.shutdown();
+		THREAD_STATUS = Status.STOPPED;
 	}
 	
-	public void setScheduler(Scheduler scheduler) {
-		this.scheduler = scheduler;
-	}
-
-	public void setPageProcess(PageProcess pageProcess) {
-		this.pageProcess = pageProcess;
-	}
-
     private enum Status{
 		STOPPED(0),PREPARED(1),STARTED(2),SHUTDOWN(3);
 		
 		int statusNum;
-		
-		private Status(){}
-		
-		private Status(int statusNum){
+
+		Status(int statusNum){
 			this.statusNum = statusNum;
 		}
 		
