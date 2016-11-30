@@ -92,6 +92,14 @@ public class JCrawler{
 		this.pageProcess = pageProcess;
 	}
 
+	public void setConfiger(CrawlConfiger configer) {
+		this.configer = configer;
+	}
+
+	public CrawlConfiger getConfiger() {
+		return configer;
+	}
+
 	public int getThreadStatus(){
 		return THREAD_STATUS.getValue();
 	}

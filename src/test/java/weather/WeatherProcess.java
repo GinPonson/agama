@@ -43,6 +43,6 @@ public class WeatherProcess implements PageProcess {
 		config.setThreadNum(2);
 		config.setAjaxModel(true);
         //config.setDriverPath("D:/download/phantomjs-2.1.1-windows/bin/phantomjs.exe");
-		JCrawler.create(new WeatherProcess()).setDownloader(new WeatherDownloader()).setConfig(config).run();
+		JCrawler.create(new WeatherProcess()).downloadBy(new WeatherDownloader()).configBy(config).run();
 	}
 }

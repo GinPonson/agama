@@ -30,13 +30,17 @@ public class CNBlogProcess implements PageProcess {
 
     public static void main(String[] args) {
         HttpProxy proxy = new HttpProxy(Proxy.Type.HTTP, "10.228.110.21", 80, "panyongjian", "pan240409F");
-        ProxyPool.addProxy(proxy);
+        //ProxyPool.addProxy(proxy);
 
         CrawlConfiger config = new CrawlConfiger("http://www.cnblogs.com/");
         //config.setProxy(proxy);
         config.setDepth(1);
         config.setThreadNum(2);
-        JCrawler.create(new CNBlogProcess()).setConfig(config).run();
+        JCrawler crawler = JCrawler.create(new CNBlogProcess()).configBy(config);
+
+        crawler.run();
+
+        System.out.println(crawler.getThreadStatus());
 
     }
 }
