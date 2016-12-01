@@ -5,10 +5,6 @@
   <groupId>com.github.gin</groupId>
   <artifactId>agama</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-	<modules>
-		<module>yun</module>
-	</modules>
-	<packaging>pom</packaging>
 
   <name>agama</name>
   <url>http://maven.apache.org</url>
