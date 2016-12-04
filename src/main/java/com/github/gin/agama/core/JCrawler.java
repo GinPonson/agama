@@ -211,6 +211,7 @@ public class JCrawler{
 
 			sleep(configer.getInterval());
         }catch (Exception e){
+			e.printStackTrace();
             AtomicInteger retriedTime = retryMap.get(request.getUrl());
 
             if(retriedTime == null){
@@ -226,8 +227,7 @@ public class JCrawler{
 				addRetryRequest(request);
 				sleep(1000 * 60);
             } else {
-                log.error("错误原因:" + e.getMessage());
-                e.printStackTrace();
+				log.error("错误原因:" + e.getMessage());
             }
         }
 	}
