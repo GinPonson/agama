@@ -25,7 +25,7 @@ public class WeatherProcess {
 
 	public static void CaptureScreenshot(String fileName, WebDriver driver) {
 		String dirName = "d://dn//screenshot";
-		
+
 		if (!(new File(dirName).isDirectory())) {
 			new File(dirName).mkdir();
 		}

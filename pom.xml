@@ -8,50 +8,6 @@
 
   <name>agama</name>
   <url>http://maven.apache.org</url>
-  
-  <!-- 指定 ocs Maven仓库 -->
-	<repositories>
-		
-		<repository>
-			<id>oschinaRepository</id>
-			<name>local private nexus</name>
-			<url>http://maven.oschina.net/content/groups/public/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-
-		<!-- 官方maven仓库 -->
-		<repository>
-			<id>maven</id>
-			<name>Maven Repository Switchboard</name>
-			<layout>default</layout>
-			<url>http://repo1.maven.org/maven2</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		
-	</repositories>
-
-	<!-- 指定maven plugin仓库 -->
-	<pluginRepositories>
-		<!-- oschina的maven plugin仓库 -->
-		<pluginRepository>
-			<id>oschinaPluginRepository</id>
-			<name>local private nexus</name>
-			<url>http://maven.oschina.net/content/groups/public/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -62,7 +18,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <version>4.11</version>
       <scope>test</scope>
     </dependency>
 
@@ -71,27 +27,23 @@
 		<groupId>org.jsoup</groupId>
 		<artifactId>jsoup</artifactId>
 		<version>1.8.2</version>
-		<scope>compile</scope>
 	</dependency>
 	<!-- htmlcleaner -->
 	<dependency>
 		<groupId>net.sourceforge.htmlcleaner</groupId>
 		<artifactId>htmlcleaner</artifactId>
 		<version>2.16</version>
-		<scope>compile</scope>
 	</dependency>
 	<!--selenium  -->
 	  <dependency>
 		  <groupId>org.seleniumhq.selenium</groupId>
 		  <artifactId>selenium-java</artifactId>
 		  <version>2.53.0</version>
-		  <scope>compile</scope>
 	  </dependency>
 	  <dependency>
 		  <groupId>com.codeborne</groupId>
 		  <artifactId>phantomjsdriver</artifactId>
 		  <version>1.2.1</version>
-		  <scope>compile</scope>
 		  <exclusions>
 			<exclusion>
 				<groupId>org.seleniumhq.selenium</groupId>
@@ -122,7 +74,6 @@
 		  <groupId>com.alibaba</groupId>
 		  <artifactId>fastjson</artifactId>
 		  <version>1.2.6</version>
-		  <scope>compile</scope>
 	  </dependency>
 
 	<!-- commons-lang3 -->
@@ -130,7 +81,6 @@
 		<groupId>org.apache.commons</groupId>
 		<artifactId>commons-lang3</artifactId>
 		<version>3.1</version>
-		<scope>compile</scope>
 	</dependency>
   </dependencies>
   
