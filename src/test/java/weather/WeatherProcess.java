@@ -39,9 +39,8 @@ public class WeatherProcess implements PageProcess {
 		HttpProxy proxy = new HttpProxy(Proxy.Type.HTTP, "10.228.110.21", 80, "panyongjian", "pan240409F");
         ProxyPool.addProxy(proxy);
 		CrawlConfiger config = new CrawlConfiger("http://www.weather.com.cn/alarm/newalarmlist.shtml");
-		config.setDepth(4);
 		config.setThreadNum(2);
-		config.setAjaxModel(true);
+		config.setUseAjax(true);
         //config.setDriverPath("D:/download/phantomjs-2.1.1-windows/bin/phantomjs.exe");
 		JCrawler.create(new WeatherProcess()).downloadBy(new WeatherDownloader()).configBy(config).run();
 	}

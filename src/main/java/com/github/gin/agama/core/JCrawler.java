@@ -4,14 +4,14 @@ import com.github.gin.agama.downloader.Downloader;
 import com.github.gin.agama.downloader.HttpDownloader;
 import com.github.gin.agama.downloader.PhantomDownloader;
 import com.github.gin.agama.exception.AgamaException;
+import com.github.gin.agama.pipeline.ConsolePipeline;
+import com.github.gin.agama.pipeline.Pipeline;
 import com.github.gin.agama.processer.PageProcess;
 import com.github.gin.agama.scheduler.DuplicateURLScheduler;
 import com.github.gin.agama.scheduler.Scheduler;
 import com.github.gin.agama.site.Page;
 import com.github.gin.agama.site.Request;
-import com.github.gin.agama.pipeline.ConsolePipeline;
-import com.github.gin.agama.pipeline.Pipeline;
-import org.apache.commons.lang3.StringUtils;
+import com.github.gin.agama.util.AgamaUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +48,7 @@ public class JCrawler{
 	
 	private Pipeline pipeline;
 
-    public JCrawler(PageProcess pageProcess){
+    private JCrawler(PageProcess pageProcess){
         this.pageProcess = pageProcess;
     }
 	
@@ -104,6 +104,33 @@ public class JCrawler{
 		return THREAD_STATUS.getValue();
 	}
 
+	public void run() {
+		checkIfStarted();
+
+		initComponent();
+
+		THREAD_STATUS = Status.STARTED;
+
+		while(Status.SHUTDOWN != THREAD_STATUS && !threadPool.isShutdown() ){
+			Request request = scheduler.poll();
+			if(request == null){
+				if(threadPool.getThreadAlive() == 0){
+					break;
+				}
+				watiURL();
+			} else {
+				final Request finRequest = request;
+				threadPool.execute( () -> {
+					process(finRequest);
+					signalCondition();
+				}) ;
+
+			}
+		}
+
+		shutdown();
+	}
+
     private void checkIfStarted() {
         if(THREAD_STATUS == Status.STOPPED){
             THREAD_STATUS = Status.PREPARED;
@@ -118,11 +145,7 @@ public class JCrawler{
 
     private void initComponent() {
         if(downloader == null){
-            if(configer.isAjaxModel()){
-                downloader = new PhantomDownloader();
-            } else {
-                downloader = new HttpDownloader();
-            }
+			downloader = configer.isUseAjax() ? new PhantomDownloader() : new HttpDownloader();
         }
 
         if(pipeline == null){
@@ -134,46 +157,12 @@ public class JCrawler{
         }
 
         if(!configer.getStartRequests().isEmpty()){
-            for(Request request : configer.getStartRequests())
-                scheduler.push(request);
+			configer.getStartRequests().forEach(request -> scheduler.push(request));
         }
 
         THREAD_STATUS = Status.PREPARED;
 
     }
-	
-	public void run() {
-		checkIfStarted();
-		
-		initComponent();	
-		
-		THREAD_STATUS = Status.STARTED;
-		
-		while(Status.SHUTDOWN != THREAD_STATUS && !threadPool.isShutdown() ){
-			Request request = scheduler.poll();
-			if(request == null){
-				if(threadPool.getThreadAlive() == 0){
-					break;
-				}
-				watiURL();
-			} else {
-				final Request finRequest = request;
-				threadPool.execute(new Runnable() {					
-					@Override
-					public void run() {
-						if(!isOutOfDepth(finRequest)){
-							process(finRequest);
-						}
-						signalCondition();
-						
-					}
-					
-				});
-			}
-		}
-		
-		close();
-	}
 	
 	private void watiURL() {
 		urlLock.lock();
@@ -201,10 +190,10 @@ public class JCrawler{
         try{
             Page page = downloader.download(request);
 
-            if(StringUtils.isNotBlank(page.getRawText())){
+            if(AgamaUtils.isNotBlank(page.getRawText())){
                 pageProcess.process(page);
 
-                addScheuleRequest(page.getRequests(),autoIncrement(request.getCurDepth()));
+                addScheuleRequest(page.getRequests());
 
                 pipeline.process(page.getResultItems().getItems());
             }
@@ -232,7 +221,7 @@ public class JCrawler{
         }
 	}
 
-	public void sleep(int time){
+	private void sleep(int time){
 		try {
 			if(log.isDebugEnabled()){
 				log.debug("Thread:" + Thread.currentThread().getName() + " is sleeping");
@@ -248,35 +237,17 @@ public class JCrawler{
 		}
 	}
 
-    private int autoIncrement(int curDepth){
-        AtomicInteger atomicInteger = new AtomicInteger(curDepth);
-        return atomicInteger.incrementAndGet();
-    }
-
-	private void addScheuleRequest(List<Request> requests,int depth) {
-		if(!requests.isEmpty()){
-			for(Request request : requests){
-                request.setCurDepth(depth);
-				scheduler.push(request);
-			}
+	private void addScheuleRequest(List<Request> requests) {
+		if(AgamaUtils.isNotEmpty(requests)){
+			requests.forEach(request -> scheduler.push(request));
 		}
 	}
 
-    private boolean isOutOfDepth(Request request){
-        if(configer.getDepth() == -1){
-            return false;
-        } else if(configer.getDepth() >= request.getCurDepth()){
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-	public void addRetryRequest(Request request){
+	private void addRetryRequest(Request request){
 		scheduler.add(request);
 	}
 	
-	private void close() {
+	private void shutdown() {
 		threadPool.shutdown();
 		THREAD_STATUS = Status.STOPPED;
 	}

@@ -31,16 +31,11 @@ public class CrawlConfiger {
 	 * 爬虫线程数量
 	 */
 	private int threadNum = 2;
-	
-	/**
-	 * 抓取深度
-	 */
-	private int depth = -1;
 
     /**
-     * 是否使用phantomjs获取网页s
+     * 是否加载ajax内容
      */
-	private boolean isAjaxModel = false;
+	private boolean useAjax = false;
 
 	public CrawlConfiger(){}
 	
@@ -92,19 +87,11 @@ public class CrawlConfiger {
 		this.retryTime = retryTime;
 	}
 
-	public int getDepth() {
-		return depth;
+	public boolean isUseAjax() {
+		return useAjax;
 	}
 
-	public void setDepth(int depth) {
-		this.depth = depth;
+	public void setUseAjax(boolean useAjax) {
+		this.useAjax = useAjax;
 	}
-
-    public boolean isAjaxModel() {
-        return isAjaxModel;
-    }
-
-    public void setAjaxModel(boolean isAjaxModel) {
-        this.isAjaxModel = isAjaxModel;
-    }
 }

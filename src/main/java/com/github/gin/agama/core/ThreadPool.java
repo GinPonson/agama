@@ -9,8 +9,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class ThreadPool {
 	
-	private int threadNum;
-	
 	private AtomicInteger threadAlive = new AtomicInteger();
 	
 	private Lock lock = new ReentrantLock();
@@ -18,6 +16,8 @@ public class ThreadPool {
 	private Condition condition = lock.newCondition();
 	
 	private ExecutorService executor;
+
+	private int threadNum;
 	
 	public ThreadPool(int threadNum){
 		this.threadNum = threadNum;
@@ -39,9 +39,7 @@ public class ThreadPool {
 		}
 		threadAlive.incrementAndGet();
 		
-		executor.execute(new Runnable(){
-			@Override
-			public void run() {
+		executor.execute(() -> {
 				try{
 					runnable.run();
 				} finally{
@@ -50,9 +48,6 @@ public class ThreadPool {
 					threadAlive.decrementAndGet();
 					lock.unlock();
 				}
-				
-			}
-			
 		});
 	}
 	

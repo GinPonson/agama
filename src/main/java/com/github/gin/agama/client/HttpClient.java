@@ -1,24 +1,22 @@
 package com.github.gin.agama.client;
 
+import com.github.gin.agama.proxy.ProxyPool;
+import com.github.gin.agama.site.Request;
+import com.github.gin.agama.site.Response;
+import com.github.gin.agama.util.AgamaUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.Proxy;
 import java.net.URL;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
-
-import com.github.gin.agama.proxy.ProxyPool;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.github.gin.agama.site.Request;
-import com.github.gin.agama.site.Response;
 
 public class HttpClient {
 	private static final Logger log  = LoggerFactory.getLogger(HttpClient.class);
@@ -48,7 +46,7 @@ public class HttpClient {
 
     private void setHeaders(Map<String, String> headers) {
         String requestHeader = "Request Header:";
-        if(headers != null && !headers.isEmpty()){
+        if(AgamaUtils.isNotEmptyMap(headers)){
             for(Entry<String, String> header : headers.entrySet()){
                 conn.setRequestProperty(header.getKey(), header.getValue());
 
@@ -86,7 +84,7 @@ public class HttpClient {
 				if(baos != null)
 					baos.close();
 			} catch (IOException e) {
-				log.error("流关闭错误！");
+				log.error("流关闭错误！错误信息：{}",e.getMessage());
 				e.printStackTrace();
 			}			
 		}		
@@ -97,7 +95,7 @@ public class HttpClient {
 		InputStream input = null;
 		String contentEncoding = conn.getContentEncoding();
 		try {
-			if(StringUtils.isNotBlank(contentEncoding)){
+			if(AgamaUtils.isNotBlank(contentEncoding)){
 				if("gzip".equalsIgnoreCase(contentEncoding)){
 					input = new GZIPInputStream(conn.getInputStream());
 				} else if("deflate".equalsIgnoreCase(contentEncoding)){
@@ -109,7 +107,7 @@ public class HttpClient {
 				input = conn.getInputStream();
 			}
 		}catch(IOException e){
-			log.error("获取输入流错误！");
+			log.error("获取输入流错误！错误信息：{}",e.getMessage());
 			e.printStackTrace();
 		}
 		return input;
