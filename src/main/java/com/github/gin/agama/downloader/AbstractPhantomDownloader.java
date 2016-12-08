@@ -34,7 +34,7 @@ public abstract class AbstractPhantomDownloader implements Downloader{
     public Page download(Request req) {
 		log.info(Thread.currentThread().getName() + "正在抓取页面:" + req.getUrl());
 
-        setHttp();
+        setProxy();
 
         WebDriver driver = new PhantomJSDriver(capabilities);
         driver.get(req.getUrl());
@@ -52,7 +52,7 @@ public abstract class AbstractPhantomDownloader implements Downloader{
 
     public abstract void opration(WebDriver webDriver);
 
-    public void setHttp(){
+    public void setProxy(){
         Proxy proxy = ProxyPool.getProxy();
         if(proxy instanceof HttpProxy){
             HttpProxy httpProxy = (HttpProxy) proxy;
