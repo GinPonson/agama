@@ -61,13 +61,13 @@
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
           <version>1.7.5</version>
-		  <scope>provided</scope>
+		  <!--<scope>provided</scope>-->
       </dependency>
 	<dependency>
 		<groupId>org.slf4j</groupId>
 		<artifactId>slf4j-log4j12</artifactId>
 		<version>1.7.5</version>
-		<scope>provided</scope>
+		<!--<scope>provided</scope>-->
 	</dependency>
 
 	  <dependency>
@@ -75,6 +75,13 @@
 		  <artifactId>fastjson</artifactId>
 		  <version>1.2.6</version>
 	  </dependency>
+
+      <dependency>
+          <groupId>org.redisson</groupId>
+          <artifactId>redisson</artifactId>
+          <version>3.2.4</version>
+      </dependency>
+
   </dependencies>
   
   

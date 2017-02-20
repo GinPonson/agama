@@ -24,11 +24,15 @@ public class Request {
 	 * 请求优先级
 	 */
 	private int priority = 0;
-	
+
+    /**
+     * 是否为重试请求
+     */
+	private boolean isRetryRequest;
+
 	public Request(){}
 
 	public Request(String url) {
-		super();
 		this.url = url;
 	}
 
@@ -64,4 +68,11 @@ public class Request {
 		this.priority = priority;
 	}
 
+    public boolean isRetryRequest() {
+        return isRetryRequest;
+    }
+
+    public void setIsRetryRequest(boolean isRetryRequest) {
+        this.isRetryRequest = isRetryRequest;
+    }
 }
