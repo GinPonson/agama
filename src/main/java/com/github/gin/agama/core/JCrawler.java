@@ -1,5 +1,6 @@
 package com.github.gin.agama.core;
 
+import com.github.gin.agama.Closeable;
 import com.github.gin.agama.downloader.Downloader;
 import com.github.gin.agama.downloader.HttpDownloader;
 import com.github.gin.agama.downloader.DefaultPhantomDownloader;
@@ -94,6 +95,11 @@ public class JCrawler {
     }
 
     public JCrawler scheduleBy(Scheduler scheduler) {
+        this.scheduler = scheduler;
+        return this;
+    }
+
+    public JCrawler redis(String address) {
         this.scheduler = scheduler;
         return this;
     }
@@ -194,6 +200,7 @@ public class JCrawler {
             e.printStackTrace();
             AtomicInteger retriedTime = retryMap.get(request.getUrl());
 
+
             if (retriedTime == null) {
                 retriedTime = new AtomicInteger();
                 retryMap.put(request.getUrl(), retriedTime);
@@ -241,6 +248,10 @@ public class JCrawler {
 
     private void shutdown() {
         threadPool.shutdown();
+        if(scheduler instanceof Closeable){
+            Closeable closeable = (Closeable) scheduler;
+            closeable.close();
+        }
         THREAD_STATUS = Status.STOPPED;
     }
 

@@ -5,7 +5,6 @@ import com.github.gin.agama.proxy.ProxyPool;
 import com.github.gin.agama.site.Page;
 import com.github.gin.agama.site.Request;
 import com.github.gin.agama.util.AgamaUtils;
-import com.github.gin.agama.util.OSinfo;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
@@ -26,12 +25,9 @@ public abstract class PhantomDownloader implements Downloader{
 
     public PhantomDownloader(){
         String[] paths = System.getenv().get("Path").split(File.pathSeparator);
-
-        if(OSinfo.isWindows()){
-            for (String path : paths ) {
-                if(AgamaUtils.contains(path,"phantomjs")) {
-                    System.setProperty("phantomjs.binary.path", path + File.separator + "phantomjs.exe");
-                }
+        for (String path : paths ) {
+            if(AgamaUtils.contains(path,"phantomjs")) {
+                System.setProperty("phantomjs.binary.path", path + File.separator + "phantomjs.exe");
             }
         }
 
