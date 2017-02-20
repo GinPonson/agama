@@ -30,13 +30,11 @@ public abstract class PhantomDownloader implements Downloader{
         if(OSinfo.isWindows()){
             for (String path : paths ) {
                 if(AgamaUtils.contains(path,"phantomjs")) {
-                    System.setProperty("phantomjs.binary.path", path + File.separator + "phantomjs1.exe");
+                    System.setProperty("phantomjs.binary.path", path + File.separator + "phantomjs.exe");
                 }
             }
         }
-        //add priority scheduler ; fix
-        //The driver executable is a directory
-        // The driver executable does not exist
+
         capabilities = DesiredCapabilities.phantomjs();
     }
 
