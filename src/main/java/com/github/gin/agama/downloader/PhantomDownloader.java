@@ -27,7 +27,12 @@ public abstract class PhantomDownloader implements Downloader{
         String[] paths = System.getenv().get("Path").split(File.pathSeparator);
         for (String path : paths ) {
             if(AgamaUtils.contains(path,"phantomjs")) {
-                System.setProperty("phantomjs.binary.path", path + File.separator + "phantomjs.exe");
+                String binaryPath = path + File.separator + "phantomjs.exe";
+                System.setProperty("phantomjs.binary.path", binaryPath);
+
+                if(LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("phantomjs.binary.path : {}", binaryPath);
+                }
             }
         }
 
@@ -36,7 +41,7 @@ public abstract class PhantomDownloader implements Downloader{
 
 	@Override
     public Page download(Request req) {
-		LOGGER.info(Thread.currentThread().getName() + "正在抓取页面:" + req.getUrl());
+		LOGGER.info(Thread.currentThread().getName() + "crawling the page : {}" , req.getUrl());
 
         setProxy();
         Page page = null;

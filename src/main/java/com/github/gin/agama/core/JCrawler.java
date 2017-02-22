@@ -4,12 +4,15 @@ import com.github.gin.agama.Closeable;
 import com.github.gin.agama.downloader.Downloader;
 import com.github.gin.agama.downloader.HttpDownloader;
 import com.github.gin.agama.downloader.DefaultPhantomDownloader;
+import com.github.gin.agama.entity.AgamaEntity;
 import com.github.gin.agama.exception.AgamaException;
 import com.github.gin.agama.pipeline.ConsolePipeline;
 import com.github.gin.agama.pipeline.Pipeline;
+import com.github.gin.agama.processer.DefaultPageProcess;
 import com.github.gin.agama.processer.PageProcess;
 import com.github.gin.agama.scheduler.DuplicateUrlScheduler;
 import com.github.gin.agama.scheduler.FIFOUrlScheduler;
+import com.github.gin.agama.scheduler.RedisUrlScheduler;
 import com.github.gin.agama.scheduler.Scheduler;
 import com.github.gin.agama.site.Page;
 import com.github.gin.agama.site.Request;
@@ -34,9 +37,7 @@ public class JCrawler {
 
     private Status THREAD_STATUS = Status.STOPPED;
 
-    private Scheduler scheduler = new DuplicateUrlScheduler(new FIFOUrlScheduler());
-
-    private CrawlConfiger configer = new CrawlConfiger();
+    private CrawlConfigure configure = new CrawlConfigure();
 
     private Lock urlLock = new ReentrantLock();
 
@@ -51,6 +52,8 @@ public class JCrawler {
     private PageProcess pageProcess;
 
     private Pipeline pipeline;
+
+    private Scheduler scheduler = new DuplicateUrlScheduler(new FIFOUrlScheduler());
 
     private JCrawler(PageProcess pageProcess) {
         this.pageProcess = pageProcess;
@@ -79,8 +82,8 @@ public class JCrawler {
         return this;
     }
 
-    public JCrawler useConfig(CrawlConfiger config) {
-        this.configer = config;
+    public JCrawler useConfig(CrawlConfigure config) {
+        this.configure = config;
         return this;
     }
 
@@ -100,7 +103,11 @@ public class JCrawler {
     }
 
     public JCrawler redis(String address) {
-        this.scheduler = scheduler;
+        this.scheduler = new DuplicateUrlScheduler(new RedisUrlScheduler(address));
+        return this;
+    }
+
+    public JCrawler prey(Class<? extends AgamaEntity> prey) {
         return this;
     }
 
@@ -145,18 +152,20 @@ public class JCrawler {
 
     private void initComponent() {
         if (downloader == null) {
-            downloader = configer.isUseAjax() ? new DefaultPhantomDownloader() : new HttpDownloader();
+            downloader = configure.isUseAjax() ? new DefaultPhantomDownloader() : new HttpDownloader();
         }
         if (pipeline == null) {
             pipeline = new ConsolePipeline();
         }
         if (threadPool == null) {
-            threadPool = new ThreadPool(configer.getThreadNum());
+            threadPool = new ThreadPool(configure.getThreadNum());
         }
-        if (!configer.getStartRequests().isEmpty()) {
-            configer.getStartRequests().forEach(request -> scheduler.push(request));
+        if (!configure.getStartRequests().isEmpty()) {
+            configure.getStartRequests().forEach(request -> scheduler.push(request));
         }
-
+        if (pageProcess == null) {
+            pageProcess = new DefaultPageProcess();
+        }
         THREAD_STATUS = Status.PREPARED;
 
     }
@@ -165,7 +174,7 @@ public class JCrawler {
         urlLock.lock();
         try {
             if (threadPool.getThreadAlive() != 0) {
-                waitCondition.await(configer.getWaitTime(), TimeUnit.MILLISECONDS);
+                waitCondition.await(configure.getWaitTime(), TimeUnit.MILLISECONDS);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -195,11 +204,10 @@ public class JCrawler {
                 pipeline.process(page.getResultItems().getItems());
             }
 
-            sleep(configer.getInterval());
+            sleep(configure.getInterval());
         } catch (Exception e) {
             e.printStackTrace();
             AtomicInteger retriedTime = retryMap.get(request.getUrl());
-
 
             if (retriedTime == null) {
                 retriedTime = new AtomicInteger();
@@ -207,15 +215,15 @@ public class JCrawler {
             }
 
             int time = retriedTime.incrementAndGet();
-            if (time <= configer.getRetryTime()) {
-                LOGGER.info("爬取网页出错,正在尝试第" + time + "次重连...");
+            if (time <= configure.getRetryTime()) {
+                LOGGER.info("crawling the page error ,now trying reconnect [{}] times," , time );
 
                 request.setPriority(999);
                 request.setIsRetryRequest(true);
                 addRetryRequest(request);
                 sleep(_1_MINUTE);
             } else {
-                LOGGER.error("错误原因:" + e.getMessage());
+                LOGGER.error("error reason : {} " , e.getMessage());
             }
         }
     }
@@ -259,8 +267,8 @@ public class JCrawler {
         this.scheduler = scheduler;
     }
 
-    public CrawlConfiger getConfiger() {
-        return configer;
+    public CrawlConfigure getConfigure() {
+        return configure;
     }
 
     public int getThreadStatus() {
