@@ -36,7 +36,7 @@ public class JCrawler {
 
     private Scheduler scheduler = new DuplicateUrlScheduler(new FIFOUrlScheduler());
 
-    private CrawlConfiger configer = new CrawlConfiger();
+    private CrawlConfigure configure = new CrawlConfigure();
 
     private Lock urlLock = new ReentrantLock();
 
@@ -52,12 +52,10 @@ public class JCrawler {
 
     private Pipeline pipeline;
 
-    private JCrawler(PageProcess pageProcess) {
-        this.pageProcess = pageProcess;
-    }
+    private JCrawler() { }
 
-    public static JCrawler create(PageProcess pageProcess) {
-        return new JCrawler(pageProcess);
+    public static JCrawler create() {
+        return new JCrawler();
     }
 
     public JCrawler crawl(Request... requests) {
@@ -79,8 +77,8 @@ public class JCrawler {
         return this;
     }
 
-    public JCrawler useConfig(CrawlConfiger config) {
-        this.configer = config;
+    public JCrawler useConfig(CrawlConfigure config) {
+        this.configure = config;
         return this;
     }
 
@@ -134,27 +132,24 @@ public class JCrawler {
     private void checkIfStarted() {
         if (THREAD_STATUS == Status.STOPPED) {
             THREAD_STATUS = Status.PREPARED;
-            if (LOGGER.isDebugEnabled())
-                LOGGER.debug("thread prepared .....");
         }
         if (THREAD_STATUS == Status.STARTED) {
-            LOGGER.error("thread started !!!");
             throw new AgamaException("thread started !!!");
         }
     }
 
     private void initComponent() {
         if (downloader == null) {
-            downloader = configer.isUseAjax() ? new DefaultPhantomDownloader() : new HttpDownloader();
+            downloader = configure.isUseAjax() ? new DefaultPhantomDownloader() : new HttpDownloader();
         }
         if (pipeline == null) {
             pipeline = new ConsolePipeline();
         }
         if (threadPool == null) {
-            threadPool = new ThreadPool(configer.getThreadNum());
+            threadPool = new ThreadPool(configure.getThreadNum());
         }
-        if (!configer.getStartRequests().isEmpty()) {
-            configer.getStartRequests().forEach(request -> scheduler.push(request));
+        if (!configure.getStartRequests().isEmpty()) {
+            configure.getStartRequests().forEach(request -> scheduler.push(request));
         }
 
         THREAD_STATUS = Status.PREPARED;
@@ -165,7 +160,7 @@ public class JCrawler {
         urlLock.lock();
         try {
             if (threadPool.getThreadAlive() != 0) {
-                waitCondition.await(configer.getWaitTime(), TimeUnit.MILLISECONDS);
+                waitCondition.await(configure.getWaitTime(), TimeUnit.MILLISECONDS);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -195,7 +190,7 @@ public class JCrawler {
                 pipeline.process(page.getResultItems().getItems());
             }
 
-            sleep(configer.getInterval());
+            sleep(configure.getInterval());
         } catch (Exception e) {
             e.printStackTrace();
             AtomicInteger retriedTime = retryMap.get(request.getUrl());
@@ -207,7 +202,7 @@ public class JCrawler {
             }
 
             int time = retriedTime.incrementAndGet();
-            if (time <= configer.getRetryTime()) {
+            if (time <= configure.getRetryTime()) {
                 LOGGER.info("爬取网页出错,正在尝试第" + time + "次重连...");
 
                 request.setPriority(999);
@@ -222,15 +217,7 @@ public class JCrawler {
 
     private void sleep(int time) {
         try {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Thread:" + Thread.currentThread().getName() + " is sleeping");
-            }
-
             Thread.sleep(time);
-
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Thread:" + Thread.currentThread().getName() + " finished sleepping");
-            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -255,12 +242,8 @@ public class JCrawler {
         THREAD_STATUS = Status.STOPPED;
     }
 
-    public void setScheduler(Scheduler scheduler) {
-        this.scheduler = scheduler;
-    }
-
-    public CrawlConfiger getConfiger() {
-        return configer;
+    public CrawlConfigure getConfigure() {
+        return configure;
     }
 
     public int getThreadStatus() {

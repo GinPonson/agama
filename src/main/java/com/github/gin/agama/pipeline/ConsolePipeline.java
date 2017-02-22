@@ -9,6 +9,6 @@ public class ConsolePipeline implements Pipeline<AgamaEntity> {
 
     @Override
     public void process(Collection<AgamaEntity> items) {
-        items.forEach(item -> JSON.toJSONString(item));
+        items.forEach(item -> System.out.println(JSON.toJSONString(item)));
     }
 }

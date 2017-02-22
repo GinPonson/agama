@@ -55,6 +55,6 @@ public class ImgUtils {
 	}
 
 	public static void main(String[] args) {
-		//saveAsFile("D://test//1.jpg","http://img9.bcyimg.com/coser/51601/post/177ne/ac8bc950c11e11e5aeae0bac70cf153b.jpg");
+		saveAsImg("D://test//1.jpg","http://img9.bcyimg.com/coser/51601/post/177ne/ac8bc950c11e11e5aeae0bac70cf153b.jpg");
 	}
 }

@@ -5,7 +5,7 @@ import java.util.Set;
 
 import com.github.gin.agama.site.Request;
 
-public class CrawlConfiger {
+public class CrawlConfigure {
 
 	/**
 	 * 请求集
@@ -37,13 +37,13 @@ public class CrawlConfiger {
      */
 	private boolean useAjax = false;
 
-	public CrawlConfiger(){}
+	public CrawlConfigure(){}
 	
-	public CrawlConfiger(String url){
+	public CrawlConfigure(String url){
 		startRequests.add(new Request(url));
 	}
 
-	public CrawlConfiger(Request request){
+	public CrawlConfigure(Request request){
 		startRequests.add(request);
 	}
 

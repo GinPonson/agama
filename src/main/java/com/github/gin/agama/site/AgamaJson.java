@@ -19,14 +19,14 @@ public class AgamaJson {
         json = JSON.parseObject(rawText);
     }
 
-    public String toString(){
+    public String toString() {
         return JSON.toJSONString(json);
     }
 
-    private void preprocess(String ason){
+    private void preprocess(String ason) {
         String prefix = ason.substring(0, ason.lastIndexOf("."));
-        if(AgamaUtils.contains(prefix,".")){
-            for(String a : prefix.split(".")){
+        if (AgamaUtils.contains(prefix, ".")) {
+            for (String a : prefix.split(".")) {
                 json = json.getJSONObject(a);
             }
         } else {
@@ -35,26 +35,26 @@ public class AgamaJson {
 
     }
 
-    public <T>T toEntity(Class<T> target){
-        if(target.isAnnotationPresent(Ason.class)){
+    public <T> T toEntity(Class<T> target) {
+        if (target.isAnnotationPresent(Ason.class)) {
             String ason = target.getAnnotation(Ason.class).value();
-            if(AgamaUtils.contains(ason,".")){
+            if (AgamaUtils.contains(ason, ".")) {
                 preprocess(ason);
-                ason = ason.substring(ason.lastIndexOf(".") + 1,ason.length());
+                ason = ason.substring(ason.lastIndexOf(".") + 1, ason.length());
             }
             json = json.getJSONObject(ason);
         }
 
-        return  JSON.parseObject(json.toJSONString(), target);
+        return JSON.parseObject(json.toJSONString(), target);
     }
 
-    public <T>List<T> toEntityList(Class<T> target){
+    public <T> List<T> toEntityList(Class<T> target) {
         JSONArray jsonArray = null;
-        if(target.isAnnotationPresent(Ason.class)){
+        if (target.isAnnotationPresent(Ason.class)) {
             String ason = target.getAnnotation(Ason.class).value();
-            if(AgamaUtils.contains(ason,".")){
+            if (AgamaUtils.contains(ason, ".")) {
                 preprocess(ason);
-                ason = ason.substring(ason.lastIndexOf(".") + 1,ason.length());
+                ason = ason.substring(ason.lastIndexOf(".") + 1, ason.length());
             }
             jsonArray = json.getJSONArray(ason);
         }
@@ -62,7 +62,7 @@ public class AgamaJson {
         return JSON.parseArray(jsonArray.toJSONString(), target);
     }
 
-    public JSONObject getJson(){
+    public JSONObject getJson() {
         return json;
     }
 
