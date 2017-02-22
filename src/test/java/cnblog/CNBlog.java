@@ -1,16 +1,11 @@
-# agama
-agamga是一个轻量高效的Java爬虫框架。
+package cnblog;
 
-# 特点
-- [x] 使用流式Api，方便易用
-- [x] 使用自定义的xpath注解+POJO方式爬取
-- [x] 支持多线程
-- [x] 支持Redis实现分布式抓取
-- [x] 支持抓取Ajax加载的页面
-- [x] 支持解析Json形式的Api数据
+import com.github.gin.agama.annotation.Xpath;
+import com.github.gin.agama.entity.AgamaEntity;
 
-# 使用
-```java
+/**
+ * Created by FSTMP on 2016/10/20.
+ */
 @Xpath("//div[@class='post_item']")
 public class CNBlog extends AgamaEntity {
 
@@ -91,46 +86,3 @@ public class CNBlog extends AgamaEntity {
         this.comment = comment;
     }
 }
-
-```
-
-```java
-public class CNBlogProcess implements PageProcess {
-
-    @Override
-    public void process(Page page) {
-        page.addRequests(
-                page.getRender()
-                        .renderToHtml()
-                        .xpath("//div[@class='pager']/a")
-                        .attrs("href")
-        );
-
-        page.getResultItems().add(
-                page.getRender()
-                        .renderToHtml()
-                        .toEntityList(CNBlog.class)
-        );
-    }
-
-    public static void main(String[] args) {
-        JCrawler.create()
-                .crawl("http://www.cnblogs.com/")
-                .processBy(new CNBlogProcess())
-                .run();
-    }
-}
-```
-
-# TODO
-- [ ] 支持智能过滤html标签
-- [ ] 支持Jquery注解
-- [ ] 支持url的正则抓取
-- [ ] 支持代理池
-- [ ] 支持自动登录
-- [ ] 支持定时器
-- [ ] 支持与Spring结合开发
-
-
-# 项目依赖
-jsoup、htmlcleaner、selenium、redisson、fastjson
