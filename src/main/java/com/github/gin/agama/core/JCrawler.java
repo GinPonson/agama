@@ -10,6 +10,7 @@ import com.github.gin.agama.pipeline.Pipeline;
 import com.github.gin.agama.processer.PageProcess;
 import com.github.gin.agama.scheduler.DuplicateUrlScheduler;
 import com.github.gin.agama.scheduler.FIFOUrlScheduler;
+import com.github.gin.agama.scheduler.RedisUrlScheduler;
 import com.github.gin.agama.scheduler.Scheduler;
 import com.github.gin.agama.site.Page;
 import com.github.gin.agama.site.Request;
@@ -17,8 +18,10 @@ import com.github.gin.agama.util.AgamaUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -37,6 +40,8 @@ public class JCrawler {
     private Scheduler scheduler = new DuplicateUrlScheduler(new FIFOUrlScheduler());
 
     private CrawlConfigure configure = new CrawlConfigure();
+
+    private Set<Request> startRequests = new HashSet<>();
 
     private Lock urlLock = new ReentrantLock();
 
@@ -60,14 +65,14 @@ public class JCrawler {
 
     public JCrawler crawl(Request... requests) {
         for (Request request : requests) {
-            scheduler.push(request);
+            startRequests.add(request);
         }
         return this;
     }
 
     public JCrawler crawl(String... urls) {
         for (String url : urls) {
-            scheduler.push(new Request(url));
+            startRequests.add(new Request(url));
         }
         return this;
     }
@@ -98,7 +103,7 @@ public class JCrawler {
     }
 
     public JCrawler redis(String address) {
-        this.scheduler = scheduler;
+        this.scheduler = new DuplicateUrlScheduler(new RedisUrlScheduler(address));
         return this;
     }
 
@@ -148,8 +153,8 @@ public class JCrawler {
         if (threadPool == null) {
             threadPool = new ThreadPool(configure.getThreadNum());
         }
-        if (!configure.getStartRequests().isEmpty()) {
-            configure.getStartRequests().forEach(request -> scheduler.push(request));
+        if (!this.startRequests.isEmpty()) {
+            this.startRequests.forEach(request -> scheduler.push(request));
         }
 
         THREAD_STATUS = Status.PREPARED;
