@@ -55,12 +55,10 @@ public class JCrawler {
 
     private Scheduler scheduler = new DuplicateUrlScheduler(new FIFOUrlScheduler());
 
-    private JCrawler(PageProcess pageProcess) {
-        this.pageProcess = pageProcess;
-    }
+    private JCrawler() { }
 
-    public static JCrawler create(PageProcess pageProcess) {
-        return new JCrawler(pageProcess);
+    public static JCrawler create() {
+        return new JCrawler();
     }
 
     public JCrawler crawl(Request... requests) {
@@ -141,11 +139,8 @@ public class JCrawler {
     private void checkIfStarted() {
         if (THREAD_STATUS == Status.STOPPED) {
             THREAD_STATUS = Status.PREPARED;
-            if (LOGGER.isDebugEnabled())
-                LOGGER.debug("thread prepared .....");
         }
         if (THREAD_STATUS == Status.STARTED) {
-            LOGGER.error("thread started !!!");
             throw new AgamaException("thread started !!!");
         }
     }
@@ -230,15 +225,7 @@ public class JCrawler {
 
     private void sleep(int time) {
         try {
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Thread:" + Thread.currentThread().getName() + " is sleeping");
-            }
-
             Thread.sleep(time);
-
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Thread:" + Thread.currentThread().getName() + " finished sleepping");
-            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -261,10 +248,6 @@ public class JCrawler {
             closeable.close();
         }
         THREAD_STATUS = Status.STOPPED;
-    }
-
-    public void setScheduler(Scheduler scheduler) {
-        this.scheduler = scheduler;
     }
 
     public CrawlConfigure getConfigure() {
