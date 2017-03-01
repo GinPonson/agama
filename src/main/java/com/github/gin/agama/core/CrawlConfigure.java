@@ -1,17 +1,11 @@
 package com.github.gin.agama.core;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.github.gin.agama.site.Request;
+
+import java.util.Set;
 
 public class CrawlConfigure {
 
-	/**
-	 * 请求集
-	 */
-	private Set<Request> startRequests = new HashSet<Request>();
-	
 	/**
 	 * 每次抓取默认间隔时间
 	 */
@@ -36,24 +30,6 @@ public class CrawlConfigure {
      * 是否加载ajax内容
      */
 	private boolean useAjax = false;
-
-	public CrawlConfigure(){}
-	
-	public CrawlConfigure(String url){
-		startRequests.add(new Request(url));
-	}
-
-	public CrawlConfigure(Request request){
-		startRequests.add(request);
-	}
-
-    public Set<Request> getStartRequests() {
-		return startRequests;
-	}
-
-	public void setStartRequests(Set<Request> startRequests) {
-		this.startRequests = startRequests;
-	}
 
 	public int getInterval() {
 		return interval;

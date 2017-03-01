@@ -131,6 +131,5 @@ public class CNBlogProcess implements PageProcess {
 - [ ] 支持定时器
 - [ ] 支持与Spring结合开发
 
-
 # 项目依赖
 jsoup、htmlcleaner、selenium、redisson、fastjson

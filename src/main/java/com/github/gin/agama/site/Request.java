@@ -5,30 +5,17 @@ import java.util.Map;
 
 public class Request {
 
-	/**
-	 * 请求头
-	 */
-	private Map<String,String> headers = new HashMap<String,String>();
+	private Map<String,String> headers = new HashMap<>();
+
+	private Map<String,String> cookies = new HashMap<>();
+
+	private boolean isRetryRequest;
 	
-	/**
-	 * 请求url
-	 */
 	private String url;
 	
-	/**
-	 * 请求方法
-	 */
 	private String method;
 
-	/**
-	 * 请求优先级
-	 */
-	private int priority = 0;
-
-    /**
-     * 是否为重试请求
-     */
-	private boolean isRetryRequest;
+	private int priority;
 
 	public Request(){}
 
@@ -58,6 +45,14 @@ public class Request {
 
 	public void setHeaders(Map<String, String> headers) {
 		this.headers = headers;
+	}
+
+	public Map<String, String> getCookies() {
+		return cookies;
+	}
+
+	public void setCookies(Map<String, String> cookies) {
+		this.cookies = cookies;
 	}
 
 	public int getPriority() {

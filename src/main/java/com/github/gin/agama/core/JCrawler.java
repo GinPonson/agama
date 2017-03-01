@@ -4,9 +4,11 @@ import com.github.gin.agama.Closeable;
 import com.github.gin.agama.downloader.Downloader;
 import com.github.gin.agama.downloader.HttpDownloader;
 import com.github.gin.agama.downloader.DefaultPhantomDownloader;
+import com.github.gin.agama.entity.AgamaEntity;
 import com.github.gin.agama.exception.AgamaException;
 import com.github.gin.agama.pipeline.ConsolePipeline;
 import com.github.gin.agama.pipeline.Pipeline;
+import com.github.gin.agama.processer.DefaultPageProcess;
 import com.github.gin.agama.processer.PageProcess;
 import com.github.gin.agama.scheduler.DuplicateUrlScheduler;
 import com.github.gin.agama.scheduler.FIFOUrlScheduler;
@@ -37,8 +39,6 @@ public class JCrawler {
 
     private Status THREAD_STATUS = Status.STOPPED;
 
-    private Scheduler scheduler = new DuplicateUrlScheduler(new FIFOUrlScheduler());
-
     private CrawlConfigure configure = new CrawlConfigure();
 
     private Set<Request> startRequests = new HashSet<>();
@@ -56,6 +56,8 @@ public class JCrawler {
     private PageProcess pageProcess;
 
     private Pipeline pipeline;
+
+    private Scheduler scheduler = new DuplicateUrlScheduler(new FIFOUrlScheduler());
 
     private JCrawler() { }
 
@@ -104,6 +106,10 @@ public class JCrawler {
 
     public JCrawler redis(String address) {
         this.scheduler = new DuplicateUrlScheduler(new RedisUrlScheduler(address));
+        return this;
+    }
+
+    public JCrawler prey(Class<? extends AgamaEntity> prey) {
         return this;
     }
 
@@ -156,7 +162,9 @@ public class JCrawler {
         if (!this.startRequests.isEmpty()) {
             this.startRequests.forEach(request -> scheduler.push(request));
         }
-
+        if (pageProcess == null) {
+            pageProcess = new DefaultPageProcess();
+        }
         THREAD_STATUS = Status.PREPARED;
 
     }
@@ -200,7 +208,6 @@ public class JCrawler {
             e.printStackTrace();
             AtomicInteger retriedTime = retryMap.get(request.getUrl());
 
-
             if (retriedTime == null) {
                 retriedTime = new AtomicInteger();
                 retryMap.put(request.getUrl(), retriedTime);
@@ -208,14 +215,14 @@ public class JCrawler {
 
             int time = retriedTime.incrementAndGet();
             if (time <= configure.getRetryTime()) {
-                LOGGER.info("爬取网页出错,正在尝试第" + time + "次重连...");
+                LOGGER.info("crawling the page error ,now trying reconnect [{}] times," , time );
 
                 request.setPriority(999);
                 request.setIsRetryRequest(true);
                 addRetryRequest(request);
                 sleep(_1_MINUTE);
             } else {
-                LOGGER.error("错误原因:" + e.getMessage());
+                LOGGER.error("error reason : {} " , e.getMessage());
             }
         }
     }
