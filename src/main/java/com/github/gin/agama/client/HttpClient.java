@@ -1,7 +1,7 @@
 package com.github.gin.agama.client;
 
 import com.github.gin.agama.UserAgent;
-import com.github.gin.agama.proxy.ProxyPool;
+import com.github.gin.agama.proxy.Proxys;
 import com.github.gin.agama.site.Request;
 import com.github.gin.agama.site.Response;
 import com.github.gin.agama.util.AgamaUtils;
@@ -28,7 +28,7 @@ public class HttpClient {
                 Thread.currentThread().getName(), req.getUrl());
 
         URL url = new URL(req.getUrl());
-        conn = (HttpURLConnection) url.openConnection(ProxyPool.getProxy());
+        conn = (HttpURLConnection) url.openConnection(Proxys.getProxy());
 
         conn.setRequestProperty("User-Agent", UserAgent.randomUserAgent());
         for (Entry<String, String> header : req.getHeaders().entrySet()) {

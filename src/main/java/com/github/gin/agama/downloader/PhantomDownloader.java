@@ -1,10 +1,12 @@
 package com.github.gin.agama.downloader;
 
+import com.github.gin.agama.UserAgent;
 import com.github.gin.agama.proxy.HttpProxy;
-import com.github.gin.agama.proxy.ProxyPool;
+import com.github.gin.agama.proxy.Proxys;
 import com.github.gin.agama.site.Page;
 import com.github.gin.agama.site.Request;
 import com.github.gin.agama.util.AgamaUtils;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriver;
 import org.openqa.selenium.phantomjs.PhantomJSDriverService;
@@ -15,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.net.Proxy;
 import java.util.ArrayList;
+import java.util.Map;
 
 
 public abstract class PhantomDownloader implements Downloader{
@@ -43,14 +46,29 @@ public abstract class PhantomDownloader implements Downloader{
     public Page download(Request req) {
 		LOGGER.info(Thread.currentThread().getName() + "crawling the page : {}" , req.getUrl());
 
-        setProxy();
-        Page page = null;
+        Proxy proxy = Proxys.getProxy();
+        if(proxy instanceof HttpProxy){
+            HttpProxy httpProxy = (HttpProxy) proxy;
+            ArrayList<String> cliArgsCap = new ArrayList<>();
+            cliArgsCap.add("--proxy=http://"+httpProxy.getHost()+":"+httpProxy.getPort());
+            cliArgsCap.add("--proxy-auth=" + httpProxy.getUser() + ":" + httpProxy.getPassword());
+            cliArgsCap.add("--proxy-type=http");
+            capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, cliArgsCap);
+        }
+        capabilities.setCapability("phantomjs.page.settings.userAgent", UserAgent.randomUserAgent());
 
+        Page page = null;
         try {
             WebDriver driver = new PhantomJSDriver(capabilities);
+
+            for(Map.Entry<String,String> cookieEntry : req.getCookies().entrySet()) {
+                Cookie cookie = new Cookie(cookieEntry.getKey(),cookieEntry.getValue());
+                driver.manage().addCookie(cookie);
+            }
+
             driver.get(req.getUrl());
 
-            opration(driver);
+            operate(driver);
 
             page = new Page();
             page.setRawText(driver.getPageSource());
@@ -66,18 +84,6 @@ public abstract class PhantomDownloader implements Downloader{
         return page;
     }
 
-    public abstract void opration(WebDriver webDriver);
-
-    public void setProxy(){
-        Proxy proxy = ProxyPool.getProxy();
-        if(proxy instanceof HttpProxy){
-            HttpProxy httpProxy = (HttpProxy) proxy;
-            ArrayList<String> cliArgsCap = new ArrayList<>();
-            cliArgsCap.add("--proxy=http://"+httpProxy.getHost()+":"+httpProxy.getPort());
-            cliArgsCap.add("--proxy-auth=" + httpProxy.getUser() + ":" + httpProxy.getPassword());
-            cliArgsCap.add("--proxy-type=http");
-            capabilities.setCapability(PhantomJSDriverService.PHANTOMJS_CLI_ARGS, cliArgsCap);
-        }
-    }
+    public abstract void operate(WebDriver webDriver);
 
 }

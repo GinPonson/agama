@@ -24,7 +24,9 @@ public class HttpDownloader implements Downloader{
 		Response response = client.execute(request);
 		if(response.getResponseCode() == 200){
 			page = handleResponse(request,response);
-		}
+		} else if (response.getResponseCode() == 302 || response.getResponseCode() == 301) {
+		    //Location
+        }
 		return page;
 	}
 

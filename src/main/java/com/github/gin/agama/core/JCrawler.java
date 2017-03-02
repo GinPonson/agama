@@ -49,6 +49,8 @@ public class JCrawler {
 
     private Map<String, AtomicInteger> retryMap = new ConcurrentHashMap<>();
 
+    private Class<? extends AgamaEntity> prey;
+
     private ThreadPool threadPool;
 
     private Downloader downloader;
@@ -63,6 +65,10 @@ public class JCrawler {
 
     public static JCrawler create() {
         return new JCrawler();
+    }
+
+    public JCrawler prey(Class<? extends AgamaEntity> prey) {
+        return this;
     }
 
     public JCrawler crawl(Request... requests) {
@@ -105,11 +111,7 @@ public class JCrawler {
     }
 
     public JCrawler redis(String address) {
-        this.scheduler = new DuplicateUrlScheduler(new RedisUrlScheduler(address));
-        return this;
-    }
-
-    public JCrawler prey(Class<? extends AgamaEntity> prey) {
+        this.scheduler = new RedisUrlScheduler(address);
         return this;
     }
 
@@ -126,7 +128,7 @@ public class JCrawler {
                 if (threadPool.getThreadAlive() == 0) {
                     break;
                 }
-                watiURL();
+                waitURL();
             } else {
                 final Request finRequest = request;
                 threadPool.execute(() -> {
@@ -169,7 +171,7 @@ public class JCrawler {
 
     }
 
-    private void watiURL() {
+    private void waitURL() {
         urlLock.lock();
         try {
             if (threadPool.getThreadAlive() != 0) {
@@ -198,7 +200,7 @@ public class JCrawler {
             if (AgamaUtils.isNotBlank(page.getRawText())) {
                 pageProcess.process(page);
 
-                addScheuleRequest(page.getRequests());
+                addScheduleRequest(page.getRequests());
 
                 pipeline.process(page.getResultItems().getItems());
             }
@@ -235,7 +237,7 @@ public class JCrawler {
         }
     }
 
-    private void addScheuleRequest(List<Request> requests) {
+    private void addScheduleRequest(List<Request> requests) {
         if (AgamaUtils.isNotEmpty(requests)) {
             requests.forEach(request -> scheduler.push(request));
         }

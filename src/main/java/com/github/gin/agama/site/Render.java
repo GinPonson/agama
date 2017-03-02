@@ -1,5 +1,6 @@
 package com.github.gin.agama.site;
 
+import com.github.gin.agama.entity.AgamaEntity;
 import com.github.gin.agama.exception.AgamaException;
 import com.github.gin.agama.util.UrlUtils;
 import org.jsoup.Jsoup;
@@ -13,24 +14,24 @@ public class Render {
 
     private String url;
 
-    public Render(String rawText,String url) {
+    public Render(String rawText, String url) {
         this.rawText = rawText;
         this.url = url;
     }
 
-    public AgamaJson renderToJson(){
-        if(rawText == null){
+    public JsonRender renderToJson() {
+        if (rawText == null) {
             throw new AgamaException("内容为空");
         }
-        return new AgamaJson(rawText);
+        return new JsonRender(rawText);
     }
 
-    public AgamaHtml renderToHtml(){
-        if(rawText == null){
+    public XpathRender renderToHtml() {
+        if (rawText == null) {
             throw new AgamaException("内容为空");
         }
         String domain = UrlUtils.getDefaultDomain(url);
-        AgamaHtml html = new AgamaHtml(Jsoup.parse(rawText, domain));
+        XpathRender html = new XpathRender(Jsoup.parse(rawText, domain));
         return html;
     }
 }

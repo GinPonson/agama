@@ -1,7 +1,6 @@
 package com.github.gin.agama.site;
 
 
-import com.github.gin.agama.annotation.ChildItem;
 import com.github.gin.agama.annotation.Xpath;
 import com.github.gin.agama.annotation.XpathConstant;
 import com.github.gin.agama.exception.AgamaException;
@@ -23,9 +22,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class AgamaHtml {
+public class XpathRender {
 
-    private Logger logger = LoggerFactory.getLogger(AgamaHtml.class);
+    private Logger logger = LoggerFactory.getLogger(XpathRender.class);
 	
     private static final HtmlCleaner HTML_CLEANER = new HtmlCleaner();
     
@@ -33,7 +32,7 @@ public class AgamaHtml {
     
     private TagNode pageTagNode;
     
-    public AgamaHtml(Document doc) {
+    public XpathRender(Document doc) {
         this.document = doc;
         //格式化html以便xpath操作,因为有些标签是不对称的
     	pageTagNode = HTML_CLEANER.clean(this.toString());
@@ -83,13 +82,13 @@ public class AgamaHtml {
                 if(!nodes.isEmpty()){
                     //有集合需要解析
                     if(ReflectUtils.getValue(field.getName(),instance) instanceof Collection){
-                        if(!field.isAnnotationPresent(ChildItem.class))
+                       /* if(!field.isAnnotationPresent(ChildItem.class))
                             throw new AgamaException("请在集合字段上添加ChildItem注解");
 
                         Class childitem = field.getAnnotation(ChildItem.class).value();
                         Collection childitems = toEntityList(childitem,nodes);
 
-                        ReflectUtils.setValue(field.getName(), instance, childitems);
+                        ReflectUtils.setValue(field.getName(), instance, childitems);*/
                     } else {
                         String dataText = "";
                         //不需要解析集合的情况

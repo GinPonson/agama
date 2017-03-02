@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class WeatherDownloader extends PhantomDownloader {
     @Override
-    public void opration(WebDriver webDriver) {
+    public void operate(WebDriver webDriver) {
         Select selectSheng = new Select(webDriver.findElement(By.id("pro")));
         selectSheng.selectByValue("10128");
 

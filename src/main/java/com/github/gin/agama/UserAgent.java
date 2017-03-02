@@ -15,7 +15,7 @@ import java.util.Collections;
  */
 public class UserAgent {
 
-    public static JSONArray userAgents;
+    private static JSONArray userAgents;
 
     static {
         URL url = Resources.getResource("UserAgent.json");

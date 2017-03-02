@@ -11,11 +11,11 @@ import java.util.List;
 /**
  * Created by FSTMP on 2016/10/27.
  */
-public class AgamaJson {
+public class JsonRender {
 
     public JSONObject json;
 
-    public AgamaJson(String rawText) {
+    public JsonRender(String rawText) {
         json = JSON.parseObject(rawText);
     }
 
