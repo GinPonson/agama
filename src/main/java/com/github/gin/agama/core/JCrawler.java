@@ -16,6 +16,7 @@ import com.github.gin.agama.scheduler.RedisUrlScheduler;
 import com.github.gin.agama.scheduler.Scheduler;
 import com.github.gin.agama.site.Page;
 import com.github.gin.agama.site.Request;
+import com.github.gin.agama.site.XpathRender;
 import com.github.gin.agama.util.AgamaUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,6 +69,7 @@ public class JCrawler {
     }
 
     public JCrawler prey(Class<? extends AgamaEntity> prey) {
+        this.prey = prey;
         return this;
     }
 
@@ -202,7 +204,10 @@ public class JCrawler {
 
                 //addScheduleRequest(page.getRequests());
 
-                //pipeline.process(page.getResultItems().getItems());
+                XpathRender render = new XpathRender();
+                AgamaEntity entity = render.inject(page,prey);
+
+                pipeline.process(entity);
             }
 
             sleep(configure.getInterval());

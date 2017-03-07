@@ -1,16 +1,17 @@
 package com.github.gin.agama.util;
 
+import org.reflections.ReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
+import java.util.Set;
 
 public class ReflectUtils {
 
-    private static Logger logger = LoggerFactory.getLogger(ReflectUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReflectUtils.class);
 
 	public static <T> T newInstance(Class<T> clazz){
 		T instance = null;
@@ -72,4 +73,40 @@ public class ReflectUtils {
         Object res = invokeMethod(instance, method,args);
         return res;
     }
+
+	public static Set<Class<?>> getAllSuperType(Class clazz) {
+		return ReflectionUtils.getAllSuperTypes(clazz);
+	}
+
+	public static boolean haveSuperType(Class childClazz, Class superClazz) {
+		for (Class<?> clazz : getAllSuperType(childClazz)) {
+			if (clazz.equals(superClazz)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static Class getGenericClass(Type type, int i) {
+		if (type instanceof ParameterizedType) { // 处理泛型类型
+			return getGenericClass((ParameterizedType) type, i);
+		} else if (type instanceof TypeVariable) { // 处理泛型擦拭对象
+			return getGenericClass(((TypeVariable) type).getBounds()[0], 0);
+		} else {// class本身也是type，强制转型
+			return (Class) type;
+		}
+	}
+
+	private static Class getGenericClass(ParameterizedType parameterizedType, int i) {
+		Object genericClass = parameterizedType.getActualTypeArguments()[i];
+		if (genericClass instanceof ParameterizedType) { // 处理多级泛型
+			return (Class) ((ParameterizedType) genericClass).getRawType();
+		} else if (genericClass instanceof GenericArrayType) { // 处理数组泛型
+			return (Class) ((GenericArrayType) genericClass).getGenericComponentType();
+		} else if (genericClass instanceof TypeVariable) { // 处理泛型擦拭对象
+			return getGenericClass(((TypeVariable) genericClass).getBounds()[0], 0);
+		} else {
+			return (Class) genericClass;
+		}
+	}
 }

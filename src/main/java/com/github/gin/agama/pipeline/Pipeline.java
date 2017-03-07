@@ -6,6 +6,6 @@ import java.util.Collection;
 
 public interface Pipeline<T extends AgamaEntity> {
 
-	void process(Collection<T> items);
+	void process(T entity);
 
 }
