@@ -198,11 +198,11 @@ public class JCrawler {
             Page page = downloader.download(request);
 
             if (AgamaUtils.isNotBlank(page.getRawText())) {
-                pageProcess.process(page);
+                //pageProcess.process(page);
 
-                addScheduleRequest(page.getRequests());
+                //addScheduleRequest(page.getRequests());
 
-                pipeline.process(page.getResultItems().getItems());
+                //pipeline.process(page.getResultItems().getItems());
             }
 
             sleep(configure.getInterval());

@@ -31,17 +31,13 @@ public class MyTest {
 
     @Test
     public void test() throws IOException {
-        //Reflections reflections = new Reflections();
         CNBlog cnBlog = new CNBlog();
         cnBlog.setHref("aa");
         BeanMap beanMap = BeanMap.create(cnBlog);
         System.out.println(beanMap);
+
         String json = JSON.toJSONString(cnBlog);
         System.out.println(JSONPath.eval(JSON.parseObject(json),"$.href"));
-        URL url = Resources.getResource("UserAgent.json");
-        String json1  = Files.toString(new File(url.getPath()), Charset.defaultCharset());
-        JSONArray array = JSON.parseArray(json1);
-        System.out.println(array.getString(0));
 
         new ConfigurationBuilder().forPackages("com.github.gin.agama");
         Reflections reflections = new Reflections("cnblog");

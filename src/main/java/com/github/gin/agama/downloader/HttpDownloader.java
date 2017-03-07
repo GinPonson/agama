@@ -32,16 +32,18 @@ public class HttpDownloader implements Downloader{
 
 	private Page handleResponse(Request request,Response response) throws IOException {
 		Page page = new Page();
-		page.setRawText(getContent(response));
         page.setUrl(request.getUrl());
         page.setContentType(response.getContentType());
+
+        String charset = getCharset(response.getContentType(), response.getContentByte());
+        page.setCharset(charset);
+        page.setRawText(getContent(response,charset));
 
 		return page;
 	}	
 	
-	private String getContent(Response response) throws IOException {
+	private String getContent(Response response,String charset) throws IOException {
 		String content ;
-		String charset = getCharset(response.getContentType(), response.getContentByte());
 		if(charset != null)
 			content = new String(response.getContentByte(),charset);
 		else

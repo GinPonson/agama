@@ -19,11 +19,11 @@ public class CNBlogProcess implements PageProcess {
                         .attrs("href")
         );*/
         System.out.println(page.getRawText());
-        page.getResultItems().add(
+        /*page.getResultItems().add(
                 page.getRender()
                         .renderToHtml()
                         .toEntityList(CNBlog.class)
-        );
+        );*/
     }
 
     public static void main(String[] args) {
