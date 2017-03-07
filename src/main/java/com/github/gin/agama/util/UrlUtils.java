@@ -66,6 +66,10 @@ public class UrlUtils {
         }
 	}
 
+	public static boolean isHttps(String url){
+	    return url.startsWith("https");
+    }
+
 	public static void main(String[] args) {
 		System.out.println(toAsbLink("http://bilibili.com", "/video/bangumi-two-2.html"));
 	}

@@ -5,14 +5,18 @@ import com.github.gin.agama.proxy.Proxys;
 import com.github.gin.agama.site.Request;
 import com.github.gin.agama.site.Response;
 import com.github.gin.agama.util.AgamaUtils;
+import com.github.gin.agama.util.UrlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.Authenticator;
 import java.net.HttpURLConnection;
+import java.net.PasswordAuthentication;
 import java.net.URL;
 import java.util.Map.Entry;
 import java.util.zip.GZIPInputStream;
@@ -28,7 +32,12 @@ public class HttpClient {
                 Thread.currentThread().getName(), req.getUrl());
 
         URL url = new URL(req.getUrl());
-        conn = (HttpURLConnection) url.openConnection(Proxys.getProxy());
+        if (UrlUtils.isHttps(req.getUrl())) {
+            conn = (HttpsURLConnection) url.openConnection(Proxys.getProxy());
+
+        } else {
+            conn = (HttpURLConnection) url.openConnection(Proxys.getProxy());
+        }
 
         conn.setRequestProperty("User-Agent", UserAgent.randomUserAgent());
         for (Entry<String, String> header : req.getHeaders().entrySet()) {
@@ -50,7 +59,7 @@ public class HttpClient {
 
     private String getCookies(Request request) {
         StringBuilder sb = new StringBuilder();
-        for(Entry<String,String> cookie : request.getCookies().entrySet()) {
+        for (Entry<String, String> cookie : request.getCookies().entrySet()) {
             sb.append(cookie.getKey())
                     .append("=")
                     .append(cookie.getValue())
