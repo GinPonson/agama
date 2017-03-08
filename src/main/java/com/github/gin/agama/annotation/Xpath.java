@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(value={ElementType.FIELD,ElementType.TYPE})
+@Target(value={ElementType.FIELD})
 public @interface Xpath {
 
 	String value();

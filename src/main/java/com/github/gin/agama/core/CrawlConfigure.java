@@ -20,7 +20,7 @@ public class CrawlConfigure {
     /**
      * 爬虫线程数量
      */
-    private int threadNum = 2;
+    private int threadNum = 1;
 
     /**
      * 是否加载ajax内容

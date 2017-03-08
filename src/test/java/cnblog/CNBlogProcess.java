@@ -30,6 +30,7 @@ public class CNBlogProcess implements PageProcess {
         JCrawler.create()
                 //.redis("192.168.153.131:6379")
                 .crawl("http://www.cnblogs.com/")
+                .prey(CNBlog.class)
                 .processBy(new CNBlogProcess())
                 .run();
     }

@@ -1,69 +1,72 @@
 package com.github.gin.agama.site;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.github.gin.agama.annotation.Ason;
-import com.github.gin.agama.util.AgamaUtils;
+import com.alibaba.fastjson.JSONPath;
+import com.github.gin.agama.annotation.Json;
+import com.github.gin.agama.entity.AgamaEntity;
+import com.github.gin.agama.site.converter.TypeConverter;
+import com.github.gin.agama.util.ReflectUtils;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Set;
+
+import static org.reflections.ReflectionUtils.getAllFields;
+import static org.reflections.ReflectionUtils.withAnnotation;
 
 /**
  * Created by FSTMP on 2016/10/27.
  */
-public class JsonRender {
+public class JsonRender extends AbstractRender {
 
-    public JSONObject json;
+    @Override
+    public AgamaEntity inject(Page page, Class<? extends AgamaEntity> clazz) {
+        AgamaEntity entity = ReflectUtils.newInstance(clazz);
 
-    public JsonRender(String rawText) {
-        json = JSON.parseObject(rawText);
-    }
+        /*String json = page.getRawText();
+        if (clazz.isAnnotationPresent(Json.class)) {
+            String jsonPath = clazz.getAnnotation(Json.class).value();
 
-    public String toString() {
-        return JSON.toJSONString(json);
-    }
+            JSONObject jsonObject = JSONObject.parseObject(json);
+            json = JSONPath.eval(jsonObject, jsonPath).toString();
 
-    private void preprocess(String ason) {
-        String prefix = ason.substring(0, ason.lastIndexOf("."));
-        if (AgamaUtils.contains(prefix, ".")) {
-            for (String a : prefix.split(".")) {
-                json = json.getJSONObject(a);
+            List<? extends AgamaEntity> subEntityList = JSONArray.parseArray(json, clazz);
+            System.out.print("a");
+        }*/
+
+        Set<Field> fieldSet = getAllFields(clazz, withAnnotation(Json.class));
+
+        for (Field field : fieldSet) {
+            String jsonPath = field.getAnnotation(Json.class).value();
+
+            Class<?> fieldClass = field.getType();
+            boolean isList = ReflectUtils.haveSuperType(fieldClass, List.class);
+
+            if (isList) {
+                //获取list的泛型
+                Type type = field.getGenericType();
+                Class<?> genericClass = ReflectUtils.getGenericClass(type, 0);
+
+                boolean isAgamaEntity = ReflectUtils.haveSuperType(genericClass, AgamaEntity.class);
+                if (isAgamaEntity) {
+                    JSONObject jsonObject = JSONObject.parseObject(page.getRawText());
+                    Object segment = JSONPath.eval(jsonObject, jsonPath);
+                    List<?> subEntityList = JSONArray.parseArray(segment.toString(), genericClass);
+
+                    ReflectUtils.setValue(field.getName(), entity, subEntityList);
+                }
+            } else {
+                //处理普通类型
+                JSONObject jsonObject = JSONObject.parseObject(page.getRawText());
+                Object segment = JSONPath.eval(jsonObject, jsonPath);
+
+                Object data = TypeConverter.convert(segment.toString(), field.getType());
+                ReflectUtils.setValue(field.getName(), entity, data);
             }
-        } else {
-            json = json.getJSONObject(prefix);
         }
 
+        return entity;
     }
-
-    public <T> T toEntity(Class<T> target) {
-        if (target.isAnnotationPresent(Ason.class)) {
-            String ason = target.getAnnotation(Ason.class).value();
-            if (AgamaUtils.contains(ason, ".")) {
-                preprocess(ason);
-                ason = ason.substring(ason.lastIndexOf(".") + 1, ason.length());
-            }
-            json = json.getJSONObject(ason);
-        }
-
-        return JSON.parseObject(json.toJSONString(), target);
-    }
-
-    public <T> List<T> toEntityList(Class<T> target) {
-        JSONArray jsonArray = null;
-        if (target.isAnnotationPresent(Ason.class)) {
-            String ason = target.getAnnotation(Ason.class).value();
-            if (AgamaUtils.contains(ason, ".")) {
-                preprocess(ason);
-                ason = ason.substring(ason.lastIndexOf(".") + 1, ason.length());
-            }
-            jsonArray = json.getJSONArray(ason);
-        }
-
-        return JSON.parseArray(jsonArray.toJSONString(), target);
-    }
-
-    public JSONObject getJson() {
-        return json;
-    }
-
 }

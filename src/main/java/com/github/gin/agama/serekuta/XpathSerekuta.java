@@ -45,6 +45,14 @@ public class XpathSerekuta implements Serekuta{
         return list;
     }
 
+    public List<String> list(){
+        List<String> list = new ArrayList<>();
+        for(TagNode tagNode : tagNodes){
+            list.add(XpathUtils.getHtmlText(tagNode).toString());
+        }
+        return list;
+    }
+
     @Override
     public String attr(String attr) {
         if("href".equals(attr) || "src".equals(attr))

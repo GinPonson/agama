@@ -31,7 +31,7 @@ public class UrlUtils {
      * @param url
      * @return
      */
-    public static String getDefaultDomain(String url) {
+    public static String getDomain(String url) {
 		Matcher matcher = PATTERN_FOR_DOMAIN.matcher(url);
 		if(matcher.find()){
 			String domain = matcher.group(1);

@@ -1,139 +1,91 @@
 package com.github.gin.agama.site;
 
 
+import com.github.gin.agama.annotation.Text;
 import com.github.gin.agama.annotation.Xpath;
 import com.github.gin.agama.annotation.XpathConstant;
+import com.github.gin.agama.entity.AgamaEntity;
 import com.github.gin.agama.exception.AgamaException;
 import com.github.gin.agama.serekuta.JsoupSerekuta;
 import com.github.gin.agama.serekuta.Serekuta;
 import com.github.gin.agama.serekuta.XpathSerekuta;
 import com.github.gin.agama.site.converter.TypeConverter;
 import com.github.gin.agama.util.ReflectUtils;
+import com.github.gin.agama.util.UrlUtils;
 import com.github.gin.agama.util.XpathUtils;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+import org.reflections.ReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
-public class XpathRender {
+import static org.reflections.ReflectionUtils.getAllFields;
+import static org.reflections.ReflectionUtils.withAnnotation;
 
-    private Logger logger = LoggerFactory.getLogger(XpathRender.class);
+public class XpathRender extends AbstractRender{
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(XpathRender.class);
 	
     private static final HtmlCleaner HTML_CLEANER = new HtmlCleaner();
-    
-    private Document document;
-    
-    private TagNode pageTagNode;
-    
-    public XpathRender(Document doc) {
-        this.document = doc;
+
+    @Override
+    public AgamaEntity inject(Page page, Class<? extends AgamaEntity> clazz) {
         //格式化html以便xpath操作,因为有些标签是不对称的
-    	pageTagNode = HTML_CLEANER.clean(this.toString());
-    }
-    
-    public Serekuta links(){
-        return xpath("//a/@href");
-    }
-    
-    public Serekuta imgs(){
-        return xpath("//img/@src");
-    }
-    
-    public JsoupSerekuta select(String selector){
-    	Elements elements = document.select(selector);
-    	return new JsoupSerekuta(elements,document.baseUri());
-    }
-    
-    public XpathSerekuta xpath(String xpath){
-    	TagNodes tagNodes = XpathUtils.evaluate(pageTagNode, xpath);
-    	return new XpathSerekuta(tagNodes,document.baseUri());
-    }
-    
-    public <T>T toEntity(Class<T> target){
-        TagNode tagNode = pageTagNode;
-        if(target.isAnnotationPresent(Xpath.class)){
-            String xpath = target.getAnnotation(Xpath.class).value();
-            TagNodes tagNodes = XpathUtils.evaluate(pageTagNode, xpath);
-            if(!tagNodes.isEmpty())
-                tagNode = tagNodes.get(0);
-        }
+        TagNode pageTagNode = HTML_CLEANER.clean(page.getRawText());
 
-        return toEntity(target,tagNode);
-    }
+        AgamaEntity entity = ReflectUtils.newInstance(clazz);
+        Set<Field> fieldSet = getAllFields(clazz,withAnnotation(Xpath.class));
 
-    private <T>T toEntity(Class<T> target,TagNode tagNode){
-        T instance = ReflectUtils.newInstance(target);
+        for(Field field : fieldSet){
+            //1、根据xpath解析html
+            String xpath = field.getAnnotation(Xpath.class).value();
+            TagNodes nodes = XpathUtils.evaluate(pageTagNode,xpath);
 
-        for(Field field : target.getDeclaredFields()){
-            //字段有xpath注解时，需要解析html并保存到字段中
-            if(field.isAnnotationPresent(Xpath.class)){
-                //1、根据xpath解析html
-                String xpath = field.getAnnotation(Xpath.class).value();
-                TagNodes nodes = XpathUtils.evaluate(tagNode,xpath);
+            Class<?> fieldClas = field.getType();
+            //boolean isArray = fieldClas.isArray();
+            boolean isList = ReflectUtils.haveSuperType(fieldClas,List.class);
 
-                //2、将解析的数据注入字段中
-                if(!nodes.isEmpty()){
-                    //有集合需要解析
-                    if(ReflectUtils.getValue(field.getName(),instance) instanceof Collection){
-                       /* if(!field.isAnnotationPresent(ChildItem.class))
-                            throw new AgamaException("请在集合字段上添加ChildItem注解");
+            if(isList){
+                Type type = field.getGenericType();
+                Class genericClass = ReflectUtils.getGenericClass(type,0);
 
-                        Class childitem = field.getAnnotation(ChildItem.class).value();
-                        Collection childitems = toEntityList(childitem,nodes);
+                boolean isAgamaEntity = ReflectUtils.haveSuperType(genericClass,AgamaEntity.class);
+                if(isAgamaEntity) {
+                    List<AgamaEntity> subEntityList = new ArrayList<>();
 
-                        ReflectUtils.setValue(field.getName(), instance, childitems);*/
-                    } else {
-                        String dataText = "";
-                        //不需要解析集合的情况
-                        if(field.getAnnotation(Xpath.class).content().equals(XpathConstant.HTML))
-                            dataText = XpathUtils.getHtmlText(nodes.get(0)).toString().trim();
-                        else
-                            dataText = nodes.get(0).getText().toString().trim();
-
-                        Object data = TypeConverter.convert(dataText, field.getType());
-                        ReflectUtils.setValue(field.getName(), instance, data);
-
+                    XpathSerekuta serekuta = new XpathSerekuta(nodes, UrlUtils.getDomain(page.getUrl()));
+                    List<String> itemHtml = serekuta.list();
+                    for(String html : itemHtml){
+                        AgamaEntity subEntity = inject(new Page(html),genericClass);
+                        subEntityList.add(subEntity);
                     }
+                    ReflectUtils.setValue(field.getName(), entity, subEntityList);
                 }
+            } else {
+                //不需要解析集合的情况
+                String dataText = "";
+                if(field.isAnnotationPresent(Text.class)){
+                    if(field.getAnnotation(Text.class).value()){
+                        dataText = XpathUtils.getHtmlText(nodes.get(0)).toString().trim();
+                    }
+                } else {
+                    dataText = nodes.get(0).getText().toString().trim();
+                }
+
+                Object data = TypeConverter.convert(dataText, field.getType());
+                ReflectUtils.setValue(field.getName(), entity, data);
             }
         }
 
-        return instance;
-    }
-
-    public <T>List<T> toEntityList(Class<T> target){
-        if(!target.isAnnotationPresent(Xpath.class))
-            throw new AgamaException("请给类添加注解");
-
-        String xpath = target.getAnnotation(Xpath.class).value();
-        TagNodes tagNodes = XpathUtils.evaluate(pageTagNode, xpath);
-
-        return toEntityList(target, tagNodes);
-    }
-
-	private <T>List<T> toEntityList(Class<T> target,TagNodes tagNodes){
-		List<T> resList = new ArrayList<>();
-
-		for(TagNode tagNode : tagNodes){
-			T instance = toEntity(target, tagNode);
-			resList.add(instance);
-		}
-
-		return resList;
-	}
-    
-    public Document getDocument(){
-    	return document;
-    }
-    
-    public String toString(){
-    	return document.html();
+        return entity;
     }
 }

@@ -14,17 +14,19 @@ import com.github.gin.agama.scheduler.DuplicateUrlScheduler;
 import com.github.gin.agama.scheduler.FIFOUrlScheduler;
 import com.github.gin.agama.scheduler.RedisUrlScheduler;
 import com.github.gin.agama.scheduler.Scheduler;
-import com.github.gin.agama.site.Page;
-import com.github.gin.agama.site.Request;
+import com.github.gin.agama.site.*;
 import com.github.gin.agama.util.AgamaUtils;
+import org.apache.http.util.Asserts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import reactor.core.support.Assert;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
@@ -35,8 +37,6 @@ public class JCrawler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JCrawler.class);
 
-    private static final int _1_MINUTE = 1000 * 60;
-
     private Status THREAD_STATUS = Status.STOPPED;
 
     private CrawlConfigure configure = new CrawlConfigure();
@@ -46,6 +46,8 @@ public class JCrawler {
     private Lock urlLock = new ReentrantLock();
 
     private Condition waitCondition = urlLock.newCondition();
+
+    private CountDownLatch cdl;
 
     private Map<String, AtomicInteger> retryMap = new ConcurrentHashMap<>();
 
@@ -59,15 +61,14 @@ public class JCrawler {
 
     private Pipeline pipeline;
 
-    private Scheduler scheduler = new DuplicateUrlScheduler(new FIFOUrlScheduler());
-
-    private JCrawler() { }
+    private Scheduler scheduler;
 
     public static JCrawler create() {
         return new JCrawler();
     }
 
     public JCrawler prey(Class<? extends AgamaEntity> prey) {
+        this.prey = prey;
         return this;
     }
 
@@ -116,30 +117,43 @@ public class JCrawler {
     }
 
     public void run() {
-        checkIfStarted();
+        if (downloader == null) {
+            downloader = configure.isUseAjax() ? new DefaultPhantomDownloader() : new HttpDownloader();
+        }
+        if (pipeline == null) {
+            pipeline = new ConsolePipeline();
+        }
+        if (scheduler == null) {
+            scheduler = new DuplicateUrlScheduler(new FIFOUrlScheduler());
+        }
+        if (!this.startRequests.isEmpty()) {
+            this.startRequests.forEach(request -> scheduler.push(request));
+        }
+        if (pageProcess == null) {
+            pageProcess = new DefaultPageProcess();
+        }
 
-        initComponent();
+        this.cdl = new CountDownLatch(configure.getThreadNum());
 
-        THREAD_STATUS = Status.STARTED;
-
-        while (Status.SHUTDOWN != THREAD_STATUS && !threadPool.isShutdown()) {
-            Request request = scheduler.poll();
-            if (request == null) {
-                if (threadPool.getThreadAlive() == 0) {
-                    break;
-                }
-                waitURL();
-            } else {
-                final Request finRequest = request;
-                threadPool.execute(() -> {
-                    process(finRequest);
-                    signalCondition();
-                });
-
-            }
+        for (int i = 0; i < configure.getThreadNum(); i++) {
+            CrawlWorker worker = new CrawlWorker(this);
+            Thread thread = new Thread(worker,"CrawlWorker"+i);
+            thread.start();
         }
 
         shutdown();
+    }
+
+    private void shutdown() {
+        try {
+            cdl.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if (scheduler instanceof Closeable) {
+            Closeable closeable = (Closeable) scheduler;
+            closeable.close();
+        }
     }
 
     private void checkIfStarted() {
@@ -151,113 +165,44 @@ public class JCrawler {
         }
     }
 
-    private void initComponent() {
-        if (downloader == null) {
-            downloader = configure.isUseAjax() ? new DefaultPhantomDownloader() : new HttpDownloader();
-        }
-        if (pipeline == null) {
-            pipeline = new ConsolePipeline();
-        }
-        if (threadPool == null) {
-            threadPool = new ThreadPool(configure.getThreadNum());
-        }
-        if (!this.startRequests.isEmpty()) {
-            this.startRequests.forEach(request -> scheduler.push(request));
-        }
-        if (pageProcess == null) {
-            pageProcess = new DefaultPageProcess();
-        }
-        THREAD_STATUS = Status.PREPARED;
-
+    public void singleComplete(){
+        this.cdl.countDown();
     }
 
-    private void waitURL() {
-        urlLock.lock();
-        try {
-            if (threadPool.getThreadAlive() != 0) {
-                waitCondition.await(configure.getWaitTime(), TimeUnit.MILLISECONDS);
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } finally {
-            urlLock.unlock();
-        }
-    }
 
-    private void signalCondition() {
-        urlLock.lock();
-        try {
-            waitCondition.signal();
-        } finally {
-            urlLock.unlock();
-        }
-    }
-
-    private void process(Request request) {
-        try {
-            Page page = downloader.download(request);
-
-            if (AgamaUtils.isNotBlank(page.getRawText())) {
-                //pageProcess.process(page);
-
-                //addScheduleRequest(page.getRequests());
-
-                //pipeline.process(page.getResultItems().getItems());
-            }
-
-            sleep(configure.getInterval());
-        } catch (Exception e) {
-            e.printStackTrace();
-            AtomicInteger retriedTime = retryMap.get(request.getUrl());
-
-            if (retriedTime == null) {
-                retriedTime = new AtomicInteger();
-                retryMap.put(request.getUrl(), retriedTime);
-            }
-
-            int time = retriedTime.incrementAndGet();
-            if (time <= configure.getRetryTime()) {
-                LOGGER.info("crawling the page error ,now trying reconnect [{}] times," , time );
-
-                request.setPriority(999);
-                request.setIsRetryRequest(true);
-                addRetryRequest(request);
-                sleep(_1_MINUTE);
-            } else {
-                LOGGER.error("error reason : {} " , e.getMessage());
-            }
-        }
-    }
-
-    private void sleep(int time) {
-        try {
-            Thread.sleep(time);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void addScheduleRequest(List<Request> requests) {
+    public void addScheduleRequest(List<Request> requests) {
         if (AgamaUtils.isNotEmpty(requests)) {
             requests.forEach(request -> scheduler.push(request));
         }
     }
 
-    private void addRetryRequest(Request request) {
+    public void addRetryRequest(Request request) {
         scheduler.push(request);
     }
 
-    private void shutdown() {
-        threadPool.shutdown();
-        if(scheduler instanceof Closeable){
-            Closeable closeable = (Closeable) scheduler;
-            closeable.close();
-        }
-        THREAD_STATUS = Status.STOPPED;
-    }
 
     public CrawlConfigure getConfigure() {
         return configure;
+    }
+
+    public Downloader getDownloader() {
+        return downloader;
+    }
+
+    public PageProcess getPageProcess() {
+        return pageProcess;
+    }
+
+    public Pipeline getPipeline() {
+        return pipeline;
+    }
+
+    public Scheduler getScheduler() {
+        return scheduler;
+    }
+
+    public Class<? extends AgamaEntity> getPrey() {
+        return prey;
     }
 
     public int getThreadStatus() {

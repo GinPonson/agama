@@ -4,8 +4,8 @@ import java.lang.annotation.*;
 
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(value={ElementType.TYPE})
-public @interface Ason{
+@Target(value = {ElementType.TYPE, ElementType.FIELD})
+public @interface Json {
 
-	String value();
+    String value();
 }

@@ -10,7 +10,13 @@ public class Page {
 
     private String charset;
 
-	public String getRawText() {
+    public Page() {}
+
+    public Page(String rawText) {
+        this.rawText = rawText;
+    }
+
+    public String getRawText() {
 		return rawText;
 	}
 

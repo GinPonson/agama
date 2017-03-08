@@ -9,7 +9,7 @@ import java.util.concurrent.PriorityBlockingQueue;
 /**
  * Created by FSTMP on 2017/2/20.
  */
-public class PriorityFIFOUrlScheduler implements Scheduler{
+public class PriorityUrlScheduler implements Scheduler{
 
     private BlockingQueue<Request> requestQueue = new PriorityBlockingQueue(11, comparator());
 
@@ -23,7 +23,7 @@ public class PriorityFIFOUrlScheduler implements Scheduler{
 
     private Scheduler scheduler;
 
-    public PriorityFIFOUrlScheduler(Scheduler scheduler) {
+    public PriorityUrlScheduler(Scheduler scheduler) {
         this.scheduler = scheduler;
     }
 
