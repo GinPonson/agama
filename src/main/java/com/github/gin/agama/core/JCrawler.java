@@ -1,37 +1,15 @@
 package com.github.gin.agama.core;
 
 import com.github.gin.agama.Closeable;
-import com.github.gin.agama.downloader.Downloader;
-import com.github.gin.agama.downloader.HttpDownloader;
-import com.github.gin.agama.downloader.DefaultPhantomDownloader;
 import com.github.gin.agama.entity.AgamaEntity;
 import com.github.gin.agama.exception.AgamaException;
-import com.github.gin.agama.pipeline.ConsolePipeline;
-import com.github.gin.agama.pipeline.Pipeline;
-import com.github.gin.agama.processer.DefaultPageProcess;
-import com.github.gin.agama.processer.PageProcess;
-import com.github.gin.agama.scheduler.DuplicateUrlScheduler;
-import com.github.gin.agama.scheduler.FIFOUrlScheduler;
-import com.github.gin.agama.scheduler.RedisUrlScheduler;
-import com.github.gin.agama.scheduler.Scheduler;
-import com.github.gin.agama.site.*;
-import com.github.gin.agama.util.AgamaUtils;
-import org.apache.http.util.Asserts;
+import com.github.gin.agama.site.Request;
+import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import reactor.core.support.Assert;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class JCrawler {
 
@@ -39,29 +17,15 @@ public class JCrawler {
 
     private Status THREAD_STATUS = Status.STOPPED;
 
-    private CrawlConfigure configure = new CrawlConfigure();
-
     private Set<Request> startRequests = new HashSet<>();
-
-    private Lock urlLock = new ReentrantLock();
-
-    private Condition waitCondition = urlLock.newCondition();
 
     private CountDownLatch cdl;
 
-    private Map<String, AtomicInteger> retryMap = new ConcurrentHashMap<>();
-
     private Class<? extends AgamaEntity> prey;
 
-    private ThreadPool threadPool;
+    private List<Worker> workers;
 
-    private Downloader downloader;
-
-    private PageProcess pageProcess;
-
-    private Pipeline pipeline;
-
-    private Scheduler scheduler;
+    private CrawlerContext context;
 
     public static JCrawler create() {
         return new JCrawler();
@@ -73,9 +37,7 @@ public class JCrawler {
     }
 
     public JCrawler crawl(Request... requests) {
-        for (Request request : requests) {
-            startRequests.add(request);
-        }
+        Collections.addAll(startRequests, requests);
         return this;
     }
 
@@ -86,58 +48,24 @@ public class JCrawler {
         return this;
     }
 
-    public JCrawler persistBy(Pipeline pipeline) {
-        this.pipeline = pipeline;
-        return this;
-    }
-
-    public JCrawler useConfig(CrawlConfigure config) {
-        this.configure = config;
-        return this;
-    }
-
-    public JCrawler downloadBy(Downloader downloader) {
-        this.downloader = downloader;
-        return this;
-    }
-
-    public JCrawler processBy(PageProcess pageProcess) {
-        this.pageProcess = pageProcess;
-        return this;
-    }
-
-    public JCrawler scheduleBy(Scheduler scheduler) {
-        this.scheduler = scheduler;
-        return this;
-    }
-
-    public JCrawler redis(String address) {
-        this.scheduler = new RedisUrlScheduler(address);
+    public JCrawler context(CrawlerContext context) {
+        this.context = context;
         return this;
     }
 
     public void run() {
-        if (downloader == null) {
-            downloader = configure.isUseAjax() ? new DefaultPhantomDownloader() : new HttpDownloader();
-        }
-        if (pipeline == null) {
-            pipeline = new ConsolePipeline();
-        }
-        if (scheduler == null) {
-            scheduler = new DuplicateUrlScheduler(new FIFOUrlScheduler());
-        }
+        Assert.assertNotNull("Prey could not be null !",prey);
         if (!this.startRequests.isEmpty()) {
-            this.startRequests.forEach(request -> scheduler.push(request));
-        }
-        if (pageProcess == null) {
-            pageProcess = new DefaultPageProcess();
+            this.startRequests.forEach(request -> context.getScheduler().push(request));
         }
 
-        this.cdl = new CountDownLatch(configure.getThreadNum());
+        this.cdl = new CountDownLatch(context.getConfigure().getThreadNum());
 
-        for (int i = 0; i < configure.getThreadNum(); i++) {
-            CrawlWorker worker = new CrawlWorker(this);
-            Thread thread = new Thread(worker,"CrawlWorker"+i);
+        workers = new ArrayList<>(context.getConfigure().getThreadNum());
+        for (int i = 0; i < context.getConfigure().getThreadNum(); i++) {
+            Worker worker = new Worker(this, context);
+            workers.add(worker);
+            Thread thread = new Thread(worker, "CrawlWorker" + i);
             thread.start();
         }
 
@@ -150,10 +78,7 @@ public class JCrawler {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        if (scheduler instanceof Closeable) {
-            Closeable closeable = (Closeable) scheduler;
-            closeable.close();
-        }
+        context.getCloseables().forEach(Closeable::close);
     }
 
     private void checkIfStarted() {
@@ -165,40 +90,12 @@ public class JCrawler {
         }
     }
 
-    public void singleComplete(){
+    public void singleComplete() {
         this.cdl.countDown();
     }
 
-
-    public void addScheduleRequest(List<Request> requests) {
-        if (AgamaUtils.isNotEmpty(requests)) {
-            requests.forEach(request -> scheduler.push(request));
-        }
-    }
-
     public void addRetryRequest(Request request) {
-        scheduler.push(request);
-    }
-
-
-    public CrawlConfigure getConfigure() {
-        return configure;
-    }
-
-    public Downloader getDownloader() {
-        return downloader;
-    }
-
-    public PageProcess getPageProcess() {
-        return pageProcess;
-    }
-
-    public Pipeline getPipeline() {
-        return pipeline;
-    }
-
-    public Scheduler getScheduler() {
-        return scheduler;
+        context.getScheduler().push(request);
     }
 
     public Class<? extends AgamaEntity> getPrey() {

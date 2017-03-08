@@ -45,6 +45,7 @@ public class HttpClient {
         }
 
         conn.setRequestProperty("Cookie", getCookies(req));
+        conn.setRequestMethod(req.getMethod());
         conn.connect();
 
         Response response = new Response();
@@ -91,7 +92,7 @@ public class HttpClient {
                 if (baos != null)
                     baos.close();
             } catch (IOException e) {
-                LOGGER.error("close error ! error message : {}", e.getMessage());
+                LOGGER.error("Close error ! error message : {}", e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -114,7 +115,7 @@ public class HttpClient {
                 input = conn.getInputStream();
             }
         } catch (IOException e) {
-            LOGGER.error("error message : {}", e.getMessage());
+            LOGGER.error("Error message : {}", e.getMessage());
             e.printStackTrace();
         }
         return input;

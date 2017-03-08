@@ -2,13 +2,14 @@ package cloud;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.github.gin.agama.entity.AgamaEntity;
+import com.github.gin.agama.entity.JsonEntity;
 
 import java.util.Date;
 
 /**
  * Created by FSTMP on 2017/3/8.
  */
-public class YunUser extends AgamaEntity {
+public class YunUser extends JsonEntity {
     public long id;
 
     @JSONField(name = "avatar_url")

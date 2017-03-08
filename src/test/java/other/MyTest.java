@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONPath;
 import com.github.gin.agama.annotation.Xpath;
 import com.github.gin.agama.entity.AgamaEntity;
+import com.github.gin.agama.entity.JsonEntity;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import net.sf.cglib.beans.BeanMap;
@@ -28,7 +29,7 @@ import java.util.Set;
 /**
  * Created by FSTMP on 2017/2/28.
  */
-public class MyTest {
+public class MyTest extends JsonEntity {
 
     public static final String FOLLOW_URL = "http://yun.baidu.com/pcloud/friend/getfollowlist?query_uk=%d&limit=%d&start=%d&bdstoken=e6f1efec456b92778e70c55ba5d81c3d&channel=chunlei&clienttype=0&web=1&logid=MTQ3NDA3NDg5NzU4NDAuMzQxNDQyMDY2MjA5NDA4NjU=";
 
@@ -63,12 +64,14 @@ public class MyTest {
         System.out.println(list2);
 
         new ConfigurationBuilder().forPackages("com.github.gin.agama");
-        Reflections reflections = new Reflections("cnblog");
+        Reflections reflections = new Reflections();
         Set<Class<? extends AgamaEntity>> set =  reflections.getSubTypesOf(AgamaEntity.class);
         System.out.println(set);
 
         Set<Class<?>> set1 = reflections.getTypesAnnotatedWith(Xpath.class);
         System.out.println(set1);
+
+        System.out.println(MyTest.class.getSuperclass());
     }
 
 

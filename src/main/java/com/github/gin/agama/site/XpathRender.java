@@ -3,11 +3,7 @@ package com.github.gin.agama.site;
 
 import com.github.gin.agama.annotation.Text;
 import com.github.gin.agama.annotation.Xpath;
-import com.github.gin.agama.annotation.XpathConstant;
 import com.github.gin.agama.entity.AgamaEntity;
-import com.github.gin.agama.exception.AgamaException;
-import com.github.gin.agama.serekuta.JsoupSerekuta;
-import com.github.gin.agama.serekuta.Serekuta;
 import com.github.gin.agama.serekuta.XpathSerekuta;
 import com.github.gin.agama.site.converter.TypeConverter;
 import com.github.gin.agama.util.ReflectUtils;
@@ -15,23 +11,19 @@ import com.github.gin.agama.util.UrlUtils;
 import com.github.gin.agama.util.XpathUtils;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
-import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
-import org.reflections.ReflectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
 import static org.reflections.ReflectionUtils.getAllFields;
 import static org.reflections.ReflectionUtils.withAnnotation;
 
-public class XpathRender extends AbstractRender{
+public class XpathRender implements Render {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XpathRender.class);
 	

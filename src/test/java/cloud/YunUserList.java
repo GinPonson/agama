@@ -1,17 +1,16 @@
 package cloud;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import com.github.gin.agama.annotation.Json;
+import com.github.gin.agama.core.CrawlerContext;
 import com.github.gin.agama.core.JCrawler;
-import com.github.gin.agama.entity.AgamaEntity;
+import com.github.gin.agama.entity.JsonEntity;
 
-import java.util.Date;
 import java.util.List;
 
 /**
  * Created by GinPonson on 10/30/2016.
  */
-public class YunUserList extends AgamaEntity{
+public class YunUserList extends JsonEntity{
 
     @Json("$.fans_list")
     List<YunUser> yunUsers;
@@ -39,6 +38,7 @@ public class YunUserList extends AgamaEntity{
         JCrawler.create()
                 .crawl("http://pan.baidu.com/pcloud/friend/getfanslist?query_uk=2889076181&limit=20&start=0&bdstoken=null&channel=chunlei&clienttype=0&web=1&logid=MTQ3NDAzNjQwNzg3OTAuNzM1MzMxMDUyMDczMjYxNA==")
                 .prey(YunUserList.class)
+                .context(CrawlerContext.create().build())
                 .run();
     }
 }

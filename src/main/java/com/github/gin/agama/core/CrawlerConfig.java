@@ -1,6 +1,6 @@
 package com.github.gin.agama.core;
 
-public class CrawlConfigure {
+public class CrawlerConfig {
 
     /**
      * 每次抓取默认间隔时间
@@ -31,7 +31,7 @@ public class CrawlConfigure {
         return interval;
     }
 
-    public CrawlConfigure setInterval(int interval) {
+    public CrawlerConfig setInterval(int interval) {
         this.interval = interval;
         return this;
     }
@@ -40,7 +40,7 @@ public class CrawlConfigure {
         return threadNum;
     }
 
-    public CrawlConfigure setThreadNum(int threadNum) {
+    public CrawlerConfig setThreadNum(int threadNum) {
         this.threadNum = threadNum;
         return this;
     }
@@ -49,7 +49,7 @@ public class CrawlConfigure {
         return waitTime;
     }
 
-    public CrawlConfigure setWaitTime(int waitTime) {
+    public CrawlerConfig setWaitTime(int waitTime) {
         this.waitTime = waitTime;
         return this;
     }
@@ -58,7 +58,7 @@ public class CrawlConfigure {
         return retryTime;
     }
 
-    public CrawlConfigure setRetryTime(int retryTime) {
+    public CrawlerConfig setRetryTime(int retryTime) {
         this.retryTime = retryTime;
         return this;
     }
@@ -67,7 +67,7 @@ public class CrawlConfigure {
         return useAjax;
     }
 
-    public CrawlConfigure setUseAjax(boolean useAjax) {
+    public CrawlerConfig setUseAjax(boolean useAjax) {
         this.useAjax = useAjax;
         return this;
     }

@@ -14,5 +14,4 @@ public @interface Xpath {
 
 	String value();
 
-    String content() default XpathConstant.TEXT;
 }

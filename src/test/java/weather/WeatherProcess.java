@@ -1,6 +1,6 @@
 package weather;
 
-import com.github.gin.agama.core.CrawlConfigure;
+import com.github.gin.agama.core.CrawlerConfig;
 import com.github.gin.agama.core.JCrawler;
 import com.github.gin.agama.processer.PageProcess;
 import com.github.gin.agama.proxy.HttpProxy;
@@ -36,17 +36,17 @@ public class WeatherProcess implements PageProcess {
     public static void main(String[] args) {
 		HttpProxy proxy = new HttpProxy(Proxy.Type.HTTP, "10.228.110.21", 80, "panyongjian", "pan240409F");
         Proxys.addProxy(proxy);
-		CrawlConfigure config = new CrawlConfigure();
+		CrawlerConfig config = new CrawlerConfig();
 		config.setThreadNum(2);
 		config.setUseAjax(true);
         //config.setDriverPath("D:/download/phantomjs-2.1.1-windows/bin/phantomjs.exe");
 		JCrawler.create()
-                .processBy(new WeatherProcess())
+                //.processBy(new WeatherProcess())
                 .crawl("http://www.weather.com.cn/alarm/newalarmlist.shtml")
                 //.downloadBy(new WeatherDownloader())
                 //.redis("127.0.0.1:6379")
                 //.scheduleBy(new RedisUrlScheduler("127.0.0.1:6379"))
-                .useConfig(config)
+                //.useConfig(config)
                 .run();
 	}
 }

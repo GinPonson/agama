@@ -9,12 +9,12 @@ public class Request {
 
 	private Map<String,String> cookies = new HashMap<>();
 
+	private String method = "GET";
+
 	private boolean isRetryRequest;
 	
 	private String url;
 	
-	private String method;
-
 	private int priority;
 
 	public Request(){}

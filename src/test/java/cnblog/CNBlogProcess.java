@@ -1,6 +1,5 @@
 package cnblog;
 
-import com.github.gin.agama.core.CrawlConfigure;
 import com.github.gin.agama.core.JCrawler;
 import com.github.gin.agama.processer.PageProcess;
 import com.github.gin.agama.site.Page;
@@ -31,7 +30,7 @@ public class CNBlogProcess implements PageProcess {
                 //.redis("192.168.153.131:6379")
                 .crawl("http://www.cnblogs.com/")
                 .prey(CNBlog.class)
-                .processBy(new CNBlogProcess())
+                //.processBy(new CNBlogProcess())
                 .run();
     }
 }
