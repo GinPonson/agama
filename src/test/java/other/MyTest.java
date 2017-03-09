@@ -46,30 +46,33 @@ public class MyTest extends JsonEntity {
         CNBlogItem cnBlog = new CNBlogItem();
         cnBlog.setHref("aa");
         BeanMap beanMap = BeanMap.create(cnBlog);
-        System.out.println(beanMap);
+        //System.out.println(beanMap);
         beanMap.put("title","bbb");
-        System.out.println(cnBlog.getTitle());
+        //System.out.println(cnBlog.getTitle());
 
         List<CNBlogItem> list = new ArrayList<>();
         list.add(cnBlog);
         blog.setItems(list);
 
         String json = JSON.toJSONString(cnBlog);
-        System.out.println(JSONPath.eval(JSON.parseObject(json),"$.href"));
+        //System.out.println(JSONPath.eval(JSON.parseObject(json),"$.href"));
 
         String blogJson = JSON.toJSONString(blog);
         Object object = JSONPath.eval(JSON.parseObject(blogJson),"$.items");
-        List<CNBlogItem> list2 = JSONArray.parseArray(object.toString(),CNBlogItem.class);
-        System.out.println(object);
-        System.out.println(list2);
+        JSONArray array = (JSONArray) object;
+        System.out.println(JSONPath.eval(array.get(0),"$.title"));
 
-        new ConfigurationBuilder().forPackages("com.github.gin.agama");
+        List<CNBlogItem> list2 = JSONArray.parseArray(object.toString(),CNBlogItem.class);
+        //System.out.println(object);
+        //System.out.println(list2);
+
+/*        new ConfigurationBuilder().forPackages("com.github.gin.agama");
         Reflections reflections = new Reflections();
         Set<Class<? extends AgamaEntity>> set =  reflections.getSubTypesOf(AgamaEntity.class);
         System.out.println(set);
 
         Set<Class<?>> set1 = reflections.getTypesAnnotatedWith(Xpath.class);
-        System.out.println(set1);
+        System.out.println(set1);*/
 
         System.out.println(MyTest.class.getSuperclass());
     }

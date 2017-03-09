@@ -1,4 +1,4 @@
-package com.github.gin.agama.serekuta;
+package com.github.gin.agama.site.serekuta;
 
 import java.util.List;
 

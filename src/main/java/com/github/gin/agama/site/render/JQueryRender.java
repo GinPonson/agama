@@ -1,6 +1,7 @@
-package com.github.gin.agama.site;
+package com.github.gin.agama.site.render;
 
 import com.github.gin.agama.entity.AgamaEntity;
+import com.github.gin.agama.site.Page;
 
 /**
  * Created by FSTMP on 2017/3/2.

@@ -14,9 +14,9 @@ import com.github.gin.agama.processer.PageProcess;
 import com.github.gin.agama.scheduler.DuplicateUrlScheduler;
 import com.github.gin.agama.scheduler.FIFOUrlScheduler;
 import com.github.gin.agama.scheduler.Scheduler;
-import com.github.gin.agama.site.JsonRender;
-import com.github.gin.agama.site.Render;
-import com.github.gin.agama.site.XpathRender;
+import com.github.gin.agama.site.render.JsonRender;
+import com.github.gin.agama.site.render.Render;
+import com.github.gin.agama.site.render.XpathRender;
 import com.github.gin.agama.util.ReflectUtils;
 
 import java.lang.reflect.Field;

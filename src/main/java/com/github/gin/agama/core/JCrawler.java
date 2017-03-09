@@ -2,7 +2,6 @@ package com.github.gin.agama.core;
 
 import com.github.gin.agama.Closeable;
 import com.github.gin.agama.entity.AgamaEntity;
-import com.github.gin.agama.exception.AgamaException;
 import com.github.gin.agama.site.Request;
 import org.junit.Assert;
 import org.slf4j.Logger;
@@ -15,13 +14,11 @@ public class JCrawler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JCrawler.class);
 
-    private Status THREAD_STATUS = Status.STOPPED;
-
     private Set<Request> startRequests = new HashSet<>();
 
-    private CountDownLatch cdl;
-
     private Class<? extends AgamaEntity> prey;
+
+    private CountDownLatch cdl;
 
     private List<Worker> workers;
 
@@ -32,6 +29,7 @@ public class JCrawler {
     }
 
     public JCrawler prey(Class<? extends AgamaEntity> prey) {
+        Assert.assertNull("Prey should be only one !", this.prey);
         this.prey = prey;
         return this;
     }
@@ -54,7 +52,11 @@ public class JCrawler {
     }
 
     public void run() {
-        Assert.assertNotNull("Prey could not be null !",prey);
+        Assert.assertNotNull("Prey could not be null !", prey);
+        if (context == null) {
+            context = CrawlerContext.create().build();
+        }
+
         if (!this.startRequests.isEmpty()) {
             this.startRequests.forEach(request -> context.getScheduler().push(request));
         }
@@ -81,20 +83,11 @@ public class JCrawler {
         context.getCloseables().forEach(Closeable::close);
     }
 
-    private void checkIfStarted() {
-        if (THREAD_STATUS == Status.STOPPED) {
-            THREAD_STATUS = Status.PREPARED;
-        }
-        if (THREAD_STATUS == Status.STARTED) {
-            throw new AgamaException("thread started !!!");
-        }
-    }
-
-    public void singleComplete() {
+    void singleComplete() {
         this.cdl.countDown();
     }
 
-    public void addRetryRequest(Request request) {
+    public void addRequest(Request request) {
         context.getScheduler().push(request);
     }
 
@@ -102,9 +95,6 @@ public class JCrawler {
         return prey;
     }
 
-    public int getThreadStatus() {
-        return THREAD_STATUS.getValue();
-    }
 
     private enum Status {
         STOPPED(0), PREPARED(1), STARTED(2), SHUTDOWN(3);

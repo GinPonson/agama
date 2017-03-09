@@ -3,27 +3,27 @@ package com.github.gin.agama.core;
 public class CrawlerConfig {
 
     /**
-     * 每次抓取默认间隔时间
+     *  crawl interval
      */
     private int interval = 3000;
 
     /**
-     * 空队列等待时间
+     *  time wait for request
      */
     private int waitTime = 3000;
 
     /**
-     * 重试次数
+     *  retry times
      */
     private int retryTime = 5;
 
     /**
-     * 爬虫线程数量
+     *  amount of crawler
      */
     private int threadNum = 1;
 
     /**
-     * 是否加载ajax内容
+     *  if use selenium load the page
      */
     private boolean useAjax = false;
 

@@ -1,6 +1,6 @@
 package com.github.gin.agama.util;
 
-import com.github.gin.agama.exception.AgamaException;
+import com.github.gin.agama.AgamaException;
 
 import java.util.Collection;
 import java.util.Map;

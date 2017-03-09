@@ -2,7 +2,7 @@ package com.github.gin.agama.core;
 
 import com.github.gin.agama.entity.AgamaEntity;
 import com.github.gin.agama.site.Page;
-import com.github.gin.agama.site.Render;
+import com.github.gin.agama.site.render.Render;
 import com.github.gin.agama.site.Request;
 import com.github.gin.agama.util.AgamaUtils;
 import org.slf4j.Logger;
@@ -17,7 +17,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * Created by FSTMP on 2017/3/7.
+ * Created by GinPonson on 2017/3/7.
  */
 public class Worker implements Runnable {
 
@@ -35,7 +35,7 @@ public class Worker implements Runnable {
 
     private CrawlerContext context;
 
-    public Worker(JCrawler jCrawler, CrawlerContext context) {
+    Worker(JCrawler jCrawler, CrawlerContext context) {
         this.jCrawler = jCrawler;
         this.context = context;
     }
@@ -81,7 +81,7 @@ public class Worker implements Runnable {
 
                     request.setPriority(999);
                     request.setIsRetryRequest(true);
-                    jCrawler.addRetryRequest(request);
+                    jCrawler.addRequest(request);
 
                     lineUp(_1_MINUTE);
                 } else {

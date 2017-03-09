@@ -1,10 +1,11 @@
-package com.github.gin.agama.site;
+package com.github.gin.agama.site.render;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPath;
 import com.github.gin.agama.annotation.Json;
 import com.github.gin.agama.entity.AgamaEntity;
+import com.github.gin.agama.site.Page;
 import com.github.gin.agama.site.converter.TypeConverter;
 import com.github.gin.agama.util.ReflectUtils;
 

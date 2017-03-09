@@ -1,4 +1,4 @@
-package com.github.gin.agama.exception;
+package com.github.gin.agama;
 
 /**
  * Created by FSTMP on 2016/10/21.
