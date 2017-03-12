@@ -3,11 +3,15 @@ package com.github.gin.agama.site.render;
 import com.github.gin.agama.entity.AgamaEntity;
 import com.github.gin.agama.site.Page;
 
+import java.util.List;
+
 /**
  * Created by FSTMP on 2016/10/27.
  */
 public interface Render {
 
-    AgamaEntity inject(Page page, Class<? extends AgamaEntity> clazz);
+    List<AgamaEntity> renderToList(Page page, Class<? extends AgamaEntity> clazz) ;
+
+    AgamaEntity renderToBean(Page page, Class<? extends AgamaEntity> clazz);
 
 }

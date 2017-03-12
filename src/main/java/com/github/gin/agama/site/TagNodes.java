@@ -33,4 +33,8 @@ public class TagNodes extends ArrayList<TagNode>{
         return attrs;
     }
 
+    public String getFirstNodeText(){
+        return this.isEmpty() ? "" : this.get(0).getText().toString();
+    }
+
 }

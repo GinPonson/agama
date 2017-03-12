@@ -1,36 +1,42 @@
 package cloud;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.github.gin.agama.annotation.Json;
+import com.github.gin.agama.core.CrawlerContext;
+import com.github.gin.agama.core.JCrawler;
 import com.github.gin.agama.entity.AgamaEntity;
 import com.github.gin.agama.entity.JsonEntity;
 
 import java.util.Date;
 
+import static jodd.Jodd.JSON;
+
 /**
  * Created by FSTMP on 2017/3/8.
  */
+@Json("$.fans_list")
 public class YunUser extends JsonEntity {
     public long id;
 
-    @JSONField(name = "avatar_url")
+    @Json("$.avatar_url")
     private String avatarUrl;
 
-    @JSONField(name = "follow_time")
+    @Json("$.follow_time")
     private Date followTime;
 
-    @JSONField(name = "fans_uname")
+    @Json("$.fans_uname")
     private String username;
 
-    @JSONField(name = "uk")
+    @Json("$.fans_uk")
     private long uk;
 
-    @JSONField(name = "follow_count")
+    @Json("$.follow_count")
     private int followCount;
 
-    @JSONField(name = "fans_count")
+    @Json("$.fans_count")
     private int fansCount;
 
-    @JSONField(name = "pubshare_count")
+    @Json("$.pubshare_count")
     private int pubshareCount;
 
     private Date updateTime;
@@ -145,5 +151,14 @@ public class YunUser extends JsonEntity {
 
     public void setPubshareCount(int pubshareCount) {
         this.pubshareCount = pubshareCount;
+    }
+
+
+    public static void main (String[] args){
+        JCrawler.create()
+                .crawl("http://pan.baidu.com/pcloud/friend/getfanslist?query_uk=2889076181&limit=20&start=0&bdstoken=null&channel=chunlei&clienttype=0&web=1&logid=MTQ3NDAzNjQwNzg3OTAuNzM1MzMxMDUyMDczMjYxNA==")
+                .prey(YunUser.class)
+                .context(CrawlerContext.create().build())
+                .run();
     }
 }

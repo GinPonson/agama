@@ -1,12 +1,16 @@
 package cnblog;
 
+import com.github.gin.agama.annotation.Download;
+import com.github.gin.agama.annotation.Url;
 import com.github.gin.agama.annotation.Xpath;
-import com.github.gin.agama.entity.AgamaEntity;
+import com.github.gin.agama.core.JCrawler;
+import com.github.gin.agama.entity.XpathEntity;
 
 /**
  * Created by FSTMP on 2016/10/20.
  */
-public class CNBlogItem extends AgamaEntity {
+@Xpath("//div[@id='post_list']/div[@class='post_item']")
+public class CNBlogItem extends XpathEntity {
 
     @Xpath("//a[@class='titlelnk']")
     private String title;
@@ -28,6 +32,13 @@ public class CNBlogItem extends AgamaEntity {
 
     @Xpath("//span[@class='article_comment']")
     private String comment;
+
+    @Download(dist = "D:\\test\\${poster}.jpg")
+    @Url(src = "//img/@src")
+    private String photo;
+
+    @Url(src ="//a[@class='titlelnk']/@href",click = true)
+    private CNBlogDetail cnBlogDetail;
 
     public String getTitle() {
         return title;
@@ -83,5 +94,30 @@ public class CNBlogItem extends AgamaEntity {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+    public CNBlogDetail getCnBlogDetail() {
+        return cnBlogDetail;
+    }
+
+    public void setCnBlogDetail(CNBlogDetail cnBlogDetail) {
+        this.cnBlogDetail = cnBlogDetail;
+    }
+
+    public static void main(String[] args) {
+        JCrawler.create()
+                //.redis("192.168.153.131:6379")
+                .crawl("http://www.cnblogs.com/")
+                .prey(CNBlogItem.class)
+                //.processBy(new CNBlogProcess())
+                .run();
     }
 }

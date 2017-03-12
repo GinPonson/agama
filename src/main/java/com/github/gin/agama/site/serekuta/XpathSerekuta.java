@@ -9,7 +9,7 @@ import com.github.gin.agama.util.XpathUtils;
 import com.github.gin.agama.site.TextNode;
 import org.htmlcleaner.TagNode;
 
-public class XpathSerekuta implements Serekuta{
+public class XpathSerekuta {
 	
     private TagNodes tagNodes;
 	
@@ -20,7 +20,6 @@ public class XpathSerekuta implements Serekuta{
 		this.domain = baseUri;
 	}
 
-    @Override
     public XpathSerekuta find(String nodeExp) {
         TagNodes nodes = new TagNodes();
         for(TagNode tagNode : tagNodes){
@@ -31,12 +30,10 @@ public class XpathSerekuta implements Serekuta{
         return new XpathSerekuta(nodes,domain);
     }
 
-    @Override
     public String text() {
         return tagNodes.text();
     }
 
-    @Override
     public List<String> texts() {
         List<String> list = new ArrayList<>();
         for(TagNode tagNode : tagNodes){
@@ -45,7 +42,11 @@ public class XpathSerekuta implements Serekuta{
         return list;
     }
 
-    public List<String> list(){
+    public static String html(TagNode tagNode){
+	    return XpathUtils.getHtmlText(tagNode).toString();
+    }
+
+    public static List<String> htmls(TagNodes tagNodes){
         List<String> list = new ArrayList<>();
         for(TagNode tagNode : tagNodes){
             list.add(XpathUtils.getHtmlText(tagNode).toString());
@@ -53,7 +54,6 @@ public class XpathSerekuta implements Serekuta{
         return list;
     }
 
-    @Override
     public String attr(String attr) {
         if("href".equals(attr) || "src".equals(attr))
             return UrlUtils.toAsbLink(domain, tagNodes.attr(attr));
@@ -61,7 +61,6 @@ public class XpathSerekuta implements Serekuta{
             return tagNodes.attr(attr);
     }
 
-    @Override
     public List<String> attrs(String attr) {
         List<String> attrs = new ArrayList<>();
         for(TagNode tagNode : tagNodes){
@@ -77,21 +76,18 @@ public class XpathSerekuta implements Serekuta{
         return attrs;
     }
 
-    @Override
     public XpathSerekuta first() {
         TagNodes nodes = new TagNodes();
         nodes.add(tagNodes.get(0));
         return new XpathSerekuta(nodes,domain);
     }
 
-    @Override
     public XpathSerekuta last() {
         TagNodes nodes = new TagNodes();
         nodes.add(tagNodes.get(tagNodes.size()-1));
         return new XpathSerekuta(nodes,domain);
     }
 
-    @Override
     public XpathSerekuta parent(){
         TagNodes nodes = new TagNodes();
         for(TagNode tagNode : tagNodes){

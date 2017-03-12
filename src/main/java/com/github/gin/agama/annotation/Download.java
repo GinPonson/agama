@@ -3,12 +3,11 @@ package com.github.gin.agama.annotation;
 import java.lang.annotation.*;
 
 /**
- * Created by GinPonson on 3/7/2017.
+ * Created by GinPonson on 2017/3/11.
  */
 @Documented
-@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Text {
-
-    boolean value() default true;
+@Target(ElementType.FIELD)
+public @interface Download {
+    String dist();
 }

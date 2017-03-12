@@ -2,12 +2,13 @@ package com.github.gin.agama.core;
 
 import com.github.gin.agama.entity.AgamaEntity;
 import com.github.gin.agama.site.Page;
-import com.github.gin.agama.site.render.Render;
 import com.github.gin.agama.site.Request;
+import com.github.gin.agama.site.render.Render;
 import com.github.gin.agama.util.AgamaUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -42,6 +43,7 @@ public class Worker implements Runnable {
 
     @Override
     public void run() {
+        ContextHolder.setContext(this.context);
         while (true) {
             Request request = context.getScheduler().poll();
 
@@ -58,18 +60,18 @@ public class Worker implements Runnable {
                 Page page = context.getDownloader().download(request);
 
                 if (AgamaUtils.isNotBlank(page.getRawText())) {
-                    //pageProcess.process(page);
-
-                    //addScheduleRequest(page.getRequests());
-
                     Render render = context.getRenderMap().get(jCrawler.getPrey().getSuperclass());
-                    AgamaEntity entity = render.inject(page, jCrawler.getPrey());
+                    List<AgamaEntity> entityList = render.renderToList(page, jCrawler.getPrey());
 
-                    context.getPipeline().process(entity);
+                    for(AgamaEntity entity : entityList){
+                        //pageProcess.process(page);
+                        context.getPipeline().process(entity);
+                    }
                 }
 
                 interval();
             } catch (Exception e) {
+                e.printStackTrace();
                 AtomicInteger retriedTime = retryMap.computeIfAbsent(
                         request.getUrl(),
                         k -> new AtomicInteger()
@@ -77,7 +79,7 @@ public class Worker implements Runnable {
 
                 int time = retriedTime.incrementAndGet();
                 if (time <= context.getConfigure().getRetryTime()) {
-                    LOGGER.info("Crawling the page error ,now trying reconnect [{}] times,", time);
+                    LOGGER.info("Crawling the page error,now trying reconnect [{}] times,", time);
 
                     request.setPriority(999);
                     request.setIsRetryRequest(true);

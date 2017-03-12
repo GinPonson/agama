@@ -1,50 +1,89 @@
 package com.github.gin.agama.site.render;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPath;
+import com.github.gin.agama.annotation.Download;
 import com.github.gin.agama.annotation.Json;
+import com.github.gin.agama.annotation.Url;
 import com.github.gin.agama.entity.AgamaEntity;
 import com.github.gin.agama.site.Page;
+import com.github.gin.agama.site.TagNodes;
 import com.github.gin.agama.site.converter.TypeConverter;
+import com.github.gin.agama.util.AgamaUtils;
 import com.github.gin.agama.util.ReflectUtils;
+import com.github.gin.agama.util.UrlUtils;
+import com.github.gin.agama.util.XpathUtils;
+import org.apache.commons.io.FileUtils;
+import org.reflections.ReflectionUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import static org.reflections.ReflectionUtils.getAllFields;
+import static org.reflections.ReflectionUtils.getFields;
 import static org.reflections.ReflectionUtils.withAnnotation;
 
 /**
  * Created by FSTMP on 2016/10/27.
  */
-public class JsonRender implements Render {
+public class JsonRender extends AbstractRender{
 
     @Override
-    public AgamaEntity inject(Page page, Class<? extends AgamaEntity> clazz) {
-        AgamaEntity entity = ReflectUtils.newInstance(clazz);
+    public List<AgamaEntity> renderToList(Page page, Class<? extends AgamaEntity> clazz) {
+        List<AgamaEntity> result = new ArrayList<>();
 
-        /*String json = page.getRawText();
+        String rootJsonStr = page.getRawText();
+        JSONObject rootJson = JSONObject.parseObject(rootJsonStr);
+
+        //如果类带@Json注解，则只处理某段json
         if (clazz.isAnnotationPresent(Json.class)) {
             String jsonPath = clazz.getAnnotation(Json.class).value();
+            Object segmentJson = JSONPath.eval(rootJson, jsonPath);
 
-            JSONObject jsonObject = JSONObject.parseObject(json);
-            json = JSONPath.eval(jsonObject, jsonPath).toString();
+            if (ReflectUtils.haveSuperType(segmentJson.getClass(), List.class)) {
+                //处理json数组
+                JSONArray jsonArray = (JSONArray) segmentJson;
 
-            List<? extends AgamaEntity> subEntityList = JSONArray.parseArray(json, clazz);
-            System.out.print("a");
-        }*/
+                //为了统一使用JsonPath解析
+                for (Object json : jsonArray) {
+                    page = new Page(page.getUrl(), JSON.toJSONString(json));
+                    AgamaEntity agamaEntity = renderToBean(page, clazz);
+                    result.add(agamaEntity);
+                }
+            } else {
+                //处理Json Object
+                page = new Page(page.getUrl(), JSON.toJSONString(segmentJson));
+                AgamaEntity agamaEntity = renderToBean(page, clazz);
+                result.add(agamaEntity);
+            }
+        } else {
+            //处理全段Json
+            result.add(renderToBean(page, clazz));
+        }
+        return result;
+    }
+
+    @Override
+    public AgamaEntity renderToBean(Page page, Class<? extends AgamaEntity> clazz) {
+        AgamaEntity entity = ReflectUtils.newInstance(clazz);
+
+        String rootJsonStr = page.getRawText();
+        JSONObject rootJson = JSONObject.parseObject(rootJsonStr);
 
         Set<Field> fieldSet = getAllFields(clazz, withAnnotation(Json.class));
-
         for (Field field : fieldSet) {
             String jsonPath = field.getAnnotation(Json.class).value();
 
-            Class<?> fieldClass = field.getType();
-            boolean isList = ReflectUtils.haveSuperType(fieldClass, List.class);
-
+            boolean isList = ReflectUtils.haveSuperType(field.getType(), List.class);
             if (isList) {
                 //获取list的泛型
                 Type type = field.getGenericType();
@@ -52,22 +91,52 @@ public class JsonRender implements Render {
 
                 boolean isAgamaEntity = ReflectUtils.haveSuperType(genericClass, AgamaEntity.class);
                 if (isAgamaEntity) {
-                    JSONObject jsonObject = JSONObject.parseObject(page.getRawText());
-                    Object segment = JSONPath.eval(jsonObject, jsonPath);
-                    List<?> subEntityList = JSONArray.parseArray(segment.toString(), genericClass);
+                    Class<? extends AgamaEntity> $genericClass = (Class<? extends AgamaEntity>) genericClass;
+
+                    Object segmentJson = JSONPath.eval(rootJson, jsonPath);
+                    List<AgamaEntity> subEntityList = new ArrayList<>();
+                    if (ReflectUtils.haveSuperType(segmentJson.getClass(), List.class)) {
+                        JSONArray jsonArray = (JSONArray) segmentJson;
+
+                        for (Object object : jsonArray) {
+                            page = new Page(page.getUrl(), JSON.toJSONString(object));
+                            subEntityList.add(renderToBean(page, $genericClass));
+                        }
+                    }
 
                     ReflectUtils.setValue(field.getName(), entity, subEntityList);
                 }
             } else {
                 //处理普通类型
-                JSONObject jsonObject = JSONObject.parseObject(page.getRawText());
-                Object segment = JSONPath.eval(jsonObject, jsonPath);
+                Object segment = JSONPath.eval(rootJson, jsonPath);
 
                 Object data = TypeConverter.convert(segment.toString(), field.getType());
                 ReflectUtils.setValue(field.getName(), entity, data);
             }
         }
+        renderUrl(page, entity);
+
+        download(page,entity);
 
         return entity;
     }
+
+    private void renderUrl(Page page, AgamaEntity entity) {
+        String rootJsonStr = page.getRawText();
+        JSONObject rootJson = JSONObject.parseObject(rootJsonStr);
+
+        Set<Field> urlFieldSet = getFields(entity.getClass(), withAnnotation(Url.class));
+        for (Field field : urlFieldSet) {
+            String url = field.getAnnotation(Url.class).src();
+
+            Object segment = JSONPath.eval(rootJson, url);
+            if (AgamaUtils.isNotBlank(segment)) {
+                String domain = UrlUtils.getDomain(page.getUrl());
+                String dataText = UrlUtils.toAsbLink(domain, segment.toString());
+                Object data = TypeConverter.convert(dataText, field.getType());
+                ReflectUtils.setValue(field.getName(), entity, data);
+            }
+        }
+    }
+
 }

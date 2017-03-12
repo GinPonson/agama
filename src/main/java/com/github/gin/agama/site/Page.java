@@ -1,36 +1,38 @@
 package com.github.gin.agama.site;
 
 public class Page {
-	
-	private String rawText;
 
-	private String url;
+    private String rawText;
+
+    private String url;
 
     private String contentType;
 
     private String charset;
 
-    public Page() {}
+    public Page() {
+    }
 
-    public Page(String rawText) {
+    public Page(String url, String rawText) {
+        this.url = url;
         this.rawText = rawText;
     }
 
     public String getRawText() {
-		return rawText;
-	}
+        return rawText;
+    }
 
-	public void setRawText(String rawText) {
-		this.rawText = rawText;
-	}
+    public void setRawText(String rawText) {
+        this.rawText = rawText;
+    }
 
     public String getUrl() {
-		return url;
-	}
+        return url;
+    }
 
-	public void setUrl(String url) {
-		this.url = url;
-	}
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
     public String getContentType() {
         return contentType;

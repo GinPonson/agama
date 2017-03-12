@@ -13,6 +13,10 @@ public class AgamaUtils {
         return string != null && !string.trim().equals("");
     }
 
+    public static boolean isNotBlank(Object object){
+        return object != null && !object.toString().trim().equals("");
+    }
+
     public static boolean isBlank(String string){
         return string == null || string.trim().equals("");
     }
