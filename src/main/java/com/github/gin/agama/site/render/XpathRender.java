@@ -44,6 +44,7 @@ public class XpathRender extends AbstractRender {
         //格式化html以便xpath操作,因为有些标签是不对称的
         TagNode rootTagNode = HTML_CLEANER.clean(page.getRawText());
 
+        //如果类带@Xpath注解，则只处理某段html
         if (clazz.isAnnotationPresent(Xpath.class)) {
             String xpath = clazz.getAnnotation(Xpath.class).value();
             TagNodes segmentNodes = XpathUtils.evaluate(rootTagNode, xpath);
@@ -72,10 +73,7 @@ public class XpathRender extends AbstractRender {
             String xpath = field.getAnnotation(Xpath.class).value();
             TagNodes nodes = XpathUtils.evaluate(pageTagNode, xpath);
 
-            Class<?> fieldClas = field.getType();
-            //boolean isArray = fieldClas.isArray();
-            boolean isList = ReflectUtils.haveSuperType(fieldClas, List.class);
-
+            boolean isList = ReflectUtils.haveSuperType(field.getType(), List.class);
             if (isList) {
                 Type type = field.getGenericType();
                 Class<?> genericClass = ReflectUtils.getGenericClass(type, 0);
@@ -103,6 +101,7 @@ public class XpathRender extends AbstractRender {
                 } else {
                     dataText = nodes.getFirstNodeText().trim();
                 }
+
                 Object data = TypeConverter.convert(dataText, field.getType());
                 ReflectUtils.setValue(field.getName(), entity, data);
             }
