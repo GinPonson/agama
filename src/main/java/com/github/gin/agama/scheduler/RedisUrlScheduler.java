@@ -61,6 +61,11 @@ public class RedisUrlScheduler implements Scheduler , Closeable {
     }
 
     @Override
+    public int left() {
+        return requestRScoredSortedSet.size();
+    }
+
+    @Override
     public void close() {
         redisson.shutdown();
     }

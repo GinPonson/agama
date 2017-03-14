@@ -8,4 +8,5 @@ public interface Scheduler {
 	
 	Request poll();
 
+	int left();
 }

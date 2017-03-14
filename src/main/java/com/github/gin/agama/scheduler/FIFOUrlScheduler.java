@@ -24,4 +24,9 @@ public class FIFOUrlScheduler implements Scheduler {
     public Request poll() {
         return requestQueue.poll();
     }
+
+    @Override
+    public int left() {
+        return requestQueue.size();
+    }
 }

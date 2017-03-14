@@ -1,40 +1,49 @@
 package com.github.gin.agama.site;
 
+import com.github.gin.agama.site.serekuta.XpathSerekuta;
 import org.htmlcleaner.TagNode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
-public class TagNodes extends ArrayList<TagNode>{
+public class TagNodes extends ArrayList<TagNode> {
 
-    public TagNodes(){}
+    public TagNodes() {
+    }
 
     public TagNodes(TagNode... tagNodes) {
         super(Arrays.asList(tagNodes));
     }
 
-    public String text(){
-        String text = "";
-        for(TagNode tagNode : this){
-            text += tagNode.getText().toString();
+    public String text() {
+        StringBuilder sb = new StringBuilder();
+        for (TagNode tagNode : this) {
+            sb.append(tagNode.getText() + " ");
         }
-        return text;
+        return sb.toString().trim();
     }
 
     public String attr(String attr) {
-        String attrs = "";
-        for(TagNode tagNode : this){
-            if(tagNode instanceof TextNode){
-                attrs += tagNode.getText().toString();
+        StringBuilder sb = new StringBuilder();
+        for (TagNode tagNode : this) {
+            if (tagNode instanceof TextNode) {
+                sb.append(tagNode.getText() + " ");
             } else {
-                attrs += tagNode.getAttributeByName(attr);
+                sb.append(tagNode.getAttributeByName(attr) + " ");
             }
         }
-        return attrs;
+        return sb.toString().trim();
     }
 
-    public String getFirstNodeText(){
+    public String getFirstNodeText() {
         return this.isEmpty() ? "" : this.get(0).getText().toString();
+    }
+
+    @Override
+    public String toString() {
+        List<String> list = XpathSerekuta.htmls(this);
+        return Arrays.toString(XpathSerekuta.htmls(this).toArray());
     }
 
 }

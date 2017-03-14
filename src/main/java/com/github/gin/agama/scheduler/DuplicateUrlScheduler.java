@@ -39,6 +39,11 @@ public class DuplicateUrlScheduler implements Scheduler{
 	public Request poll() {
 		return scheduler.poll();
 	}
+
+	@Override
+	public int left() {
+		return scheduler.left();
+	}
 	/*
 	public int getLeftRequestSize(){
 		return requestQueue.size();
