@@ -33,7 +33,7 @@ public class CNBlogItem extends XpathEntity {
     @Xpath("//span[@class='article_comment']")
     private String comment;
 
-    @Download(dist = "D:\\test\\${poster}.jpg")
+    //@Download(dist = "D:\\test\\${poster}.jpg")
     @Url(src = "//img/@src")
     private String photo;
 

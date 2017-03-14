@@ -92,14 +92,19 @@ public class XpathRender extends AbstractRender {
                     ReflectUtils.setValue(field.getName(), entity, subEntityList);
                 }
             } else {
-                //不需要解析集合的情况
                 String dataText = "";
+                //是否带有@Html，@Html表示文本带html标签
                 if (field.isAnnotationPresent(Html.class)) {
                     if (!nodes.isEmpty()) {
                         dataText = XpathUtils.getHtmlText(nodes.get(0)).toString().trim();
                     }
                 } else {
                     dataText = nodes.getFirstNodeText().trim();
+                }
+
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Render field name : {}, field type : {}, filed raw value : {}",
+                            field.getName(), field.getType(), dataText);
                 }
 
                 Object data = TypeConverter.convert(dataText, field.getType());
@@ -113,7 +118,7 @@ public class XpathRender extends AbstractRender {
         return entity;
     }
 
-    public void renderUrl(Page page,AgamaEntity entity){
+    private void renderUrl(Page page, AgamaEntity entity) {
         TagNode pageTagNode = HTML_CLEANER.clean(page.getRawText());
 
         Set<Field> urlFieldSet = getFields(entity.getClass(), withAnnotation(Url.class));
@@ -121,30 +126,11 @@ public class XpathRender extends AbstractRender {
             String src = field.getAnnotation(Url.class).src();
             TagNodes urlNodes = XpathUtils.evaluate(pageTagNode, src);
             String nodeText = urlNodes.getFirstNodeText().trim();
-            String url = "";
-            if (AgamaUtils.isNotBlank(nodeText)) {
-                String domain = UrlUtils.getDomain(page.getUrl());
-                url = UrlUtils.toAsbLink(domain, nodeText);
-            }
 
-            boolean isXpathEntity = ReflectUtils.haveSuperType(field.getType(),XpathEntity.class);
-            boolean click = field.getAnnotation(Url.class).click();
-            if(click && isXpathEntity){
-                //TODO
-                //新开一个线程??
-                Downloader downloader = ContextHolder.getContext().getDownloader();
-                try {
-                    Page subpage = downloader.download(new Request(url));
-                    AgamaEntity agamaEntity = renderToBean(subpage, (Class<? extends AgamaEntity>) field.getType());
+            String domain = UrlUtils.getDomain(page.getUrl());
+            String url = UrlUtils.toAsbLink(domain, nodeText);
 
-                    ReflectUtils.setValue(field.getName(), entity, agamaEntity);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                Object data = TypeConverter.convert(url, field.getType());
-                ReflectUtils.setValue(field.getName(), entity, data);
-            }
+            renderSubRequest(entity, field, url);
         }
     }
 

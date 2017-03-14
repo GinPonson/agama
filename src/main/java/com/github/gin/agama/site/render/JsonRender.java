@@ -35,7 +35,7 @@ import static org.reflections.ReflectionUtils.withAnnotation;
 /**
  * Created by FSTMP on 2016/10/27.
  */
-public class JsonRender extends AbstractRender{
+public class JsonRender extends AbstractRender {
 
     @Override
     public List<AgamaEntity> renderToList(Page page, Class<? extends AgamaEntity> clazz) {
@@ -116,7 +116,7 @@ public class JsonRender extends AbstractRender{
         }
         renderUrl(page, entity);
 
-        download(page,entity);
+        download(page, entity);
 
         return entity;
     }
@@ -127,15 +127,14 @@ public class JsonRender extends AbstractRender{
 
         Set<Field> urlFieldSet = getFields(entity.getClass(), withAnnotation(Url.class));
         for (Field field : urlFieldSet) {
-            String url = field.getAnnotation(Url.class).src();
+            String src = field.getAnnotation(Url.class).src();
 
-            Object segment = JSONPath.eval(rootJson, url);
-            if (AgamaUtils.isNotBlank(segment)) {
-                String domain = UrlUtils.getDomain(page.getUrl());
-                String dataText = UrlUtils.toAsbLink(domain, segment.toString());
-                Object data = TypeConverter.convert(dataText, field.getType());
-                ReflectUtils.setValue(field.getName(), entity, data);
-            }
+            Object segment = JSONPath.eval(rootJson, src);
+            String segmentStr = AgamaUtils.isNotBlank(segment) ? segment.toString() : "";
+            String domain = UrlUtils.getDomain(page.getUrl());
+            String url = UrlUtils.toAsbLink(domain, segmentStr);
+
+            renderSubRequest(entity, field, url);
         }
     }
 

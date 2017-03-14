@@ -1,98 +1,96 @@
 package com.github.gin.agama.site.serekuta;
 
+import com.github.gin.agama.site.TagNodes;
+import com.github.gin.agama.site.TextNode;
+import com.github.gin.agama.util.XpathUtils;
+import org.htmlcleaner.HtmlCleaner;
+import org.htmlcleaner.TagNode;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.gin.agama.site.TagNodes;
-import com.github.gin.agama.util.UrlUtils;
-import com.github.gin.agama.util.XpathUtils;
-import com.github.gin.agama.site.TextNode;
-import org.htmlcleaner.TagNode;
+public class XpathSerekuta implements Serekuta {
 
-public class XpathSerekuta {
-	
     private TagNodes tagNodes;
-	
-	private String domain;
-	
-	public XpathSerekuta(TagNodes tagNodes, String baseUri) {
-		this.tagNodes = tagNodes;
-		this.domain = baseUri;
-	}
 
-    public XpathSerekuta find(String nodeExp) {
+    public XpathSerekuta(String html) {
+        HtmlCleaner htmlCleaner = new HtmlCleaner();
+        this.tagNodes = new TagNodes(htmlCleaner.clean(html));
+    }
+
+    public XpathSerekuta(TagNodes tagNodes) {
+        this.tagNodes = tagNodes;
+    }
+
+
+    @Override
+    public Serekuta select(String css) {
         TagNodes nodes = new TagNodes();
         for(TagNode tagNode : tagNodes){
             if(!(tagNode instanceof TextNode)){
-                nodes.addAll(XpathUtils.evaluate(tagNode, nodeExp));
+                nodes.addAll(XpathUtils.evaluate(tagNode, css));
             }
         }
-        return new XpathSerekuta(nodes,domain);
+        return new XpathSerekuta(nodes);
     }
 
+    @Override
+    public Serekuta find(String nodeExp) {
+        return select(nodeExp);
+    }
+
+    @Override
     public String text() {
-        return tagNodes.text();
+        return tagNodes.getFirstNodeText();
     }
 
-    public List<String> texts() {
-        List<String> list = new ArrayList<>();
-        for(TagNode tagNode : tagNodes){
-            list.add(tagNode.getText().toString());
-        }
-        return list;
-    }
-
-    public static String html(TagNode tagNode){
-	    return XpathUtils.getHtmlText(tagNode).toString();
-    }
-
-    public static List<String> htmls(TagNodes tagNodes){
-        List<String> list = new ArrayList<>();
-        for(TagNode tagNode : tagNodes){
-            list.add(XpathUtils.getHtmlText(tagNode).toString());
-        }
-        return list;
-    }
-
+    @Override
     public String attr(String attr) {
-        if("href".equals(attr) || "src".equals(attr))
-            return UrlUtils.toAsbLink(domain, tagNodes.attr(attr));
-        else
-            return tagNodes.attr(attr);
+        return tagNode instanceof TextNode ?
+                tagNode.getText().toString() :
+                tagNode.getAttributeByName(attr);
     }
 
-    public List<String> attrs(String attr) {
-        List<String> attrs = new ArrayList<>();
-        for(TagNode tagNode : tagNodes){
-            String attribute = "";
-            if(tagNode instanceof TextNode){
-                attribute = tagNode.getText().toString() ;
-            } else {
-                attribute = tagNode.getAttributeByName(attr);
-            }
-            if("href".equals(attr) || "src".equals(attr))
-                attrs.add(UrlUtils.toAsbLink(domain,attribute));
+    @Override
+    public Serekuta first() {
+        Serekuta serekuta = null;
+        List<TagNode> childTagList = tagNode.getChildTagList();
+        if(!childTagList.isEmpty()){
+            serekuta = new XpathSerekuta(html(childTagList.get(0)));
         }
-        return attrs;
+
+        return serekuta;
     }
 
-    public XpathSerekuta first() {
-        TagNodes nodes = new TagNodes();
-        nodes.add(tagNodes.get(0));
-        return new XpathSerekuta(nodes,domain);
-    }
-
-    public XpathSerekuta last() {
-        TagNodes nodes = new TagNodes();
-        nodes.add(tagNodes.get(tagNodes.size()-1));
-        return new XpathSerekuta(nodes,domain);
-    }
-
-    public XpathSerekuta parent(){
-        TagNodes nodes = new TagNodes();
-        for(TagNode tagNode : tagNodes){
-            nodes.add(tagNode.getParent());
+    @Override
+    public Serekuta last() {
+        Serekuta serekuta = null;
+        List<TagNode> childTagList = tagNode.getChildTagList();
+        if(!childTagList.isEmpty()){
+            serekuta = new XpathSerekuta(html(childTagList.get(childTagList.size()-1)));
         }
-        return new XpathSerekuta(nodes,domain);
+        return serekuta;
+    }
+
+    @Override
+    public Serekuta parent() {
+        Serekuta serekuta = null;
+        TagNode parentTagNode = tagNode.getParent();
+        if(parentTagNode != null){
+            serekuta = new XpathSerekuta(html(tagNode.getParent()));
+        }
+        return serekuta;
+    }
+
+    public static String html(TagNode tagNode) {
+        return XpathUtils.getHtmlText(tagNode).toString();
+    }
+
+    public static List<String> htmls(TagNodes tagNodes) {
+        List<String> list = new ArrayList<>();
+        for (TagNode tagNode : tagNodes) {
+            list.add(html(tagNode));
+        }
+        return list;
     }
 }
