@@ -1,15 +1,11 @@
 package cloud;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import com.github.gin.agama.annotation.Json;
 import com.github.gin.agama.core.CrawlerContext;
 import com.github.gin.agama.core.JCrawler;
-import com.github.gin.agama.entity.AgamaEntity;
-import com.github.gin.agama.entity.JsonEntity;
+import com.github.gin.agama.site.bean.JsonEntity;
 
 import java.util.Date;
-
-import static jodd.Jodd.JSON;
 
 /**
  * Created by FSTMP on 2017/3/8.

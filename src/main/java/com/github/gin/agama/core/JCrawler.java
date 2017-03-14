@@ -1,7 +1,7 @@
 package com.github.gin.agama.core;
 
 import com.github.gin.agama.Closeable;
-import com.github.gin.agama.entity.AgamaEntity;
+import com.github.gin.agama.site.bean.AgamaEntity;
 import com.github.gin.agama.site.Request;
 import org.junit.Assert;
 import org.slf4j.Logger;
@@ -94,22 +94,5 @@ public class JCrawler {
     public Class<? extends AgamaEntity> getPrey() {
         return prey;
     }
-
-
-    private enum Status {
-        STOPPED(0), PREPARED(1), STARTED(2), SHUTDOWN(3);
-
-        int statusNum;
-
-        Status(int statusNum) {
-            this.statusNum = statusNum;
-        }
-
-        public int getValue() {
-            return statusNum;
-        }
-
-    }
-
 
 }

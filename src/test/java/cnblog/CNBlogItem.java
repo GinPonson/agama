@@ -4,7 +4,7 @@ import com.github.gin.agama.annotation.Download;
 import com.github.gin.agama.annotation.Url;
 import com.github.gin.agama.annotation.Xpath;
 import com.github.gin.agama.core.JCrawler;
-import com.github.gin.agama.entity.XpathEntity;
+import com.github.gin.agama.site.bean.XpathEntity;
 
 /**
  * Created by FSTMP on 2016/10/20.

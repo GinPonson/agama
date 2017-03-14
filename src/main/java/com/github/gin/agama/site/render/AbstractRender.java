@@ -2,17 +2,12 @@ package com.github.gin.agama.site.render;
 
 
 import com.github.gin.agama.annotation.Download;
-import com.github.gin.agama.annotation.Url;
-import com.github.gin.agama.entity.AgamaEntity;
+import com.github.gin.agama.site.bean.AgamaEntity;
 import com.github.gin.agama.site.Page;
-import com.github.gin.agama.site.TagNodes;
-import com.github.gin.agama.site.converter.TypeConverter;
 import com.github.gin.agama.util.AgamaUtils;
 import com.github.gin.agama.util.ReflectUtils;
 import com.github.gin.agama.util.UrlUtils;
-import com.github.gin.agama.util.XpathUtils;
 import org.apache.commons.io.FileUtils;
-import org.htmlcleaner.TagNode;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +15,6 @@ import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.Set;
 
-import static com.github.gin.agama.site.render.XpathRender.HTML_CLEANER;
 import static org.reflections.ReflectionUtils.getFields;
 import static org.reflections.ReflectionUtils.withAnnotation;
 

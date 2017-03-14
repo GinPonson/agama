@@ -1,6 +1,6 @@
 package com.github.gin.agama.core;
 
-import com.github.gin.agama.entity.AgamaEntity;
+import com.github.gin.agama.site.bean.AgamaEntity;
 import com.github.gin.agama.site.Page;
 import com.github.gin.agama.site.Request;
 import com.github.gin.agama.site.render.Render;

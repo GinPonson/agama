@@ -5,26 +5,13 @@ import cnblog.CNBlogItem;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONPath;
-import com.github.gin.agama.annotation.Xpath;
-import com.github.gin.agama.entity.AgamaEntity;
-import com.github.gin.agama.entity.JsonEntity;
-import com.google.common.io.Files;
-import com.google.common.io.Resources;
+import com.github.gin.agama.site.bean.JsonEntity;
 import net.sf.cglib.beans.BeanMap;
 import org.junit.Test;
-import org.reflections.ReflectionUtils;
-import org.reflections.Reflections;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by FSTMP on 2017/2/28.

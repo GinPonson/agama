@@ -1,6 +1,6 @@
 package com.github.gin.agama.site;
 
-import com.github.gin.agama.entity.AgamaEntity;
+import com.github.gin.agama.site.bean.AgamaEntity;
 
 import java.util.ArrayList;
 import java.util.List;

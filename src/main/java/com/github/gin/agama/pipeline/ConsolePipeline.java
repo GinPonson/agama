@@ -1,9 +1,7 @@
 package com.github.gin.agama.pipeline;
 
 import com.alibaba.fastjson.JSON;
-import com.github.gin.agama.entity.AgamaEntity;
-
-import java.util.Collection;
+import com.github.gin.agama.site.bean.AgamaEntity;
 
 public class ConsolePipeline implements Pipeline<AgamaEntity> {
 

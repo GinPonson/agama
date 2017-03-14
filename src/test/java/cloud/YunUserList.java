@@ -3,7 +3,7 @@ package cloud;
 import com.github.gin.agama.annotation.Json;
 import com.github.gin.agama.core.CrawlerContext;
 import com.github.gin.agama.core.JCrawler;
-import com.github.gin.agama.entity.JsonEntity;
+import com.github.gin.agama.site.bean.JsonEntity;
 
 import java.util.List;
 

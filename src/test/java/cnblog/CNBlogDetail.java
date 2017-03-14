@@ -1,7 +1,7 @@
 package cnblog;
 
 import com.github.gin.agama.annotation.Xpath;
-import com.github.gin.agama.entity.XpathEntity;
+import com.github.gin.agama.site.bean.XpathEntity;
 
 /**
  * Created by GinPonson on 2017/3/12.
