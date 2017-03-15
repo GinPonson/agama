@@ -1,7 +1,7 @@
 package com.github.gin.agama.core;
 
 import com.github.gin.agama.Closeable;
-import com.github.gin.agama.site.bean.AgamaEntity;
+import com.github.gin.agama.site.entity.AgamaEntity;
 import com.github.gin.agama.site.Request;
 import org.junit.Assert;
 import org.slf4j.Logger;

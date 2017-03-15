@@ -19,7 +19,7 @@ public class TagNodes extends ArrayList<TagNode> {
     public String text() {
         StringBuilder sb = new StringBuilder();
         for (TagNode tagNode : this) {
-            sb.append(tagNode.getText() + " ");
+            sb.append(tagNode.getText()).append(" ");
         }
         return sb.toString().trim();
     }
@@ -28,9 +28,9 @@ public class TagNodes extends ArrayList<TagNode> {
         StringBuilder sb = new StringBuilder();
         for (TagNode tagNode : this) {
             if (tagNode instanceof TextNode) {
-                sb.append(tagNode.getText() + " ");
+                sb.append(tagNode.getText()).append(" ");
             } else {
-                sb.append(tagNode.getAttributeByName(attr) + " ");
+                sb.append(tagNode.getAttributeByName(attr)).append(" ");
             }
         }
         return sb.toString().trim();

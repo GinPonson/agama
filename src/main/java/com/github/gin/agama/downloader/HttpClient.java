@@ -1,4 +1,4 @@
-package com.github.gin.agama.client;
+package com.github.gin.agama.downloader;
 
 import com.github.gin.agama.UserAgent;
 import com.github.gin.agama.proxy.Proxys;
@@ -14,9 +14,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.Authenticator;
 import java.net.HttpURLConnection;
-import java.net.PasswordAuthentication;
 import java.net.URL;
 import java.util.Map.Entry;
 import java.util.zip.GZIPInputStream;

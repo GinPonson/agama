@@ -1,4 +1,4 @@
-package com.github.gin.agama.site.bean;
+package com.github.gin.agama.site.entity;
 
 import java.io.Serializable;
 

@@ -3,7 +3,7 @@ package cnblog;
 import com.github.gin.agama.core.ContextHolder;
 import com.github.gin.agama.pipeline.Pipeline;
 import com.github.gin.agama.site.Request;
-import com.github.gin.agama.site.bean.AgamaEntity;
+import com.github.gin.agama.site.entity.AgamaEntity;
 
 /**
  * Created by GinPonson on 3/14/2017.

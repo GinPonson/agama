@@ -1,7 +1,7 @@
 package cnblog;
 
 import com.github.gin.agama.annotation.Xpath;
-import com.github.gin.agama.site.bean.XpathEntity;
+import com.github.gin.agama.site.entity.XpathEntity;
 
 import java.util.List;
 

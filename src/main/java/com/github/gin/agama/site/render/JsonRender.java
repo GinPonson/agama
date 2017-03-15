@@ -6,7 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONPath;
 import com.github.gin.agama.annotation.Json;
 import com.github.gin.agama.annotation.Url;
-import com.github.gin.agama.site.bean.AgamaEntity;
+import com.github.gin.agama.site.entity.AgamaEntity;
 import com.github.gin.agama.site.Page;
 import com.github.gin.agama.site.converter.TypeConverter;
 import com.github.gin.agama.util.AgamaUtils;

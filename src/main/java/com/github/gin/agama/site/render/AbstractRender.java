@@ -7,7 +7,7 @@ import com.github.gin.agama.core.ContextHolder;
 import com.github.gin.agama.downloader.Downloader;
 import com.github.gin.agama.site.Page;
 import com.github.gin.agama.site.Request;
-import com.github.gin.agama.site.bean.AgamaEntity;
+import com.github.gin.agama.site.entity.AgamaEntity;
 import com.github.gin.agama.site.converter.TypeConverter;
 import com.github.gin.agama.util.AgamaUtils;
 import com.github.gin.agama.util.ReflectUtils;

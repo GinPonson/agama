@@ -5,7 +5,7 @@ import cnblog.CNBlogItem;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONPath;
-import com.github.gin.agama.site.bean.JsonEntity;
+import com.github.gin.agama.site.entity.JsonEntity;
 import net.sf.cglib.beans.BeanMap;
 import org.junit.Test;
 

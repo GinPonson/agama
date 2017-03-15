@@ -1,10 +1,8 @@
 package com.github.gin.agama.downloader;
 
 import java.io.IOException;
-import java.net.Proxy;
 import java.nio.charset.Charset;
 
-import com.github.gin.agama.client.HttpClient;
 import com.github.gin.agama.site.Request;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

@@ -4,7 +4,7 @@ import com.github.gin.agama.core.CrawlerConfig;
 import com.github.gin.agama.core.CrawlerContext;
 import com.github.gin.agama.core.JCrawler;
 import com.github.gin.agama.scheduler.FIFOUrlScheduler;
-import com.github.gin.agama.site.bean.XpathEntity;
+import com.github.gin.agama.site.entity.XpathEntity;
 
 /**
  * Created by GinPonson on 3/14/2017.
