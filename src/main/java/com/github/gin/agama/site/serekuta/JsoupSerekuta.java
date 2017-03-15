@@ -57,4 +57,8 @@ public class JsoupSerekuta implements Serekuta {
         return elements.outerHtml();
     }
 
+    public Elements getElements(){
+        return elements;
+    }
+
 }

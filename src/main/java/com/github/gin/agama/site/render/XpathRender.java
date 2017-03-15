@@ -107,6 +107,8 @@ public class XpathRender extends AbstractRender {
         }
         renderUrl(page, entity);
 
+        renderJs(page, entity);
+
         download(page, entity);
 
         return entity;

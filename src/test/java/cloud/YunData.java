@@ -9,32 +9,31 @@ import java.util.Date;
 /**
  * Created by GinPonson on 10/28/2016.
  */
-@Json("feedata.records")
 public class YunData extends AgamaEntity{
 
     private int id;
 
-    @JSONField(name = "shareid")
+    @Json("$.shareid")
     private long shareId;
 
-    @JSONField(name = "data_id")
+    @Json("$.data_id")
     private long dataId;
 
-    @JSONField(name = "title")
+    @Json("$.title")
     private String shareName;
 
-    @JSONField(name = "uk")
+    @Json("$.uk")
     private long uk;
 
-    @JSONField(name = "desc")
+    @Json("$.desc")
     private String description;
 
     private Date updateTime;
 
-    @JSONField(name = "feed_time")
+    @Json("$.feed_time")
     private Date shareTime;
 
-    @JSONField(name = "avatar_url")
+    @Json("$.avatar_url")
     private String picture;
 
     private int version;
