@@ -1,5 +1,6 @@
 package cnblog;
 
+import com.github.gin.agama.annotation.Download;
 import com.github.gin.agama.annotation.Url;
 import com.github.gin.agama.annotation.Xpath;
 import com.github.gin.agama.core.JCrawler;
@@ -32,7 +33,7 @@ public class CNBlogItem extends XpathEntity {
     @Xpath("//span[@class='article_comment']")
     private String comment;
 
-    //@Download(dist = "D:\\test\\${poster}.jpg")
+    @Download(dist = "D:\\test\\${poster}.jpg")
     @Url(src = "//img/@src")
     private String photo;
 
@@ -113,10 +114,8 @@ public class CNBlogItem extends XpathEntity {
 
     public static void main(String[] args) {
         JCrawler.create()
-                //.redis("192.168.153.131:6379")
                 .crawl("http://www.cnblogs.com/")
                 .prey(CNBlogItem.class)
-                //.processBy(new CNBlogProcess())
                 .run();
     }
 }

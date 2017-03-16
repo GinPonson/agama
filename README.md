@@ -8,11 +8,12 @@ agamga是一个轻量高效的Java爬虫框架。
 - [x] 支持Redis实现分布式抓取
 - [x] 支持抓取Ajax加载的页面
 - [x] 支持解析Json形式的Api数据
+- [x] 支持抓取js变量
 
 # 使用
 ```java
-@Xpath("//div[@class='post_item']")
-public class CNBlog extends AgamaEntity {
+@Xpath("//div[@id='post_list']/div[@class='post_item']")
+public class CNBlogItem extends XpathEntity {
 
     @Xpath("//a[@class='titlelnk']")
     private String title;
@@ -26,14 +27,12 @@ public class CNBlog extends AgamaEntity {
     @Xpath("//a[@class='titlelnk']/@href")
     private String href;
 
-    @Xpath("//span[@class='article_view']")
-    private String read;
+    @Download(dist = "D:\\test\\${poster}.jpg")
+    @Url(src = "//img/@src")
+    private String photo;
 
-    @Xpath("//span[@class='diggnum']")
-    private String diggnum;
-
-    @Xpath("//span[@class='article_comment']")
-    private String comment;
+    @Url(src ="//a[@class='titlelnk']/@href",click = true)
+    private CNBlogDetail cnBlogDetail;
 
     public String getTitle() {
         return title;
@@ -63,61 +62,43 @@ public class CNBlog extends AgamaEntity {
         return href;
     }
 
-    public void setHref(String href) {
-        this.href = href;
+    public String getPhoto() {
+        return photo;
     }
 
-    public String getRead() {
-        return read;
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 
-    public void setRead(String read) {
-        this.read = read;
+    public CNBlogDetail getCnBlogDetail() {
+        return cnBlogDetail;
     }
 
-    public String getDiggnum() {
-        return diggnum;
-    }
-
-    public void setDiggnum(String diggnum) {
-        this.diggnum = diggnum;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-}
-
-```
-
-```java
-public class CNBlogProcess implements PageProcess {
-
-    @Override
-    public void process(Page page) {
-        page.addRequests(
-                page.getRender()
-                        .renderToHtml()
-                        .xpath("//div[@class='pager']/a")
-                        .attrs("href")
-        );
-
-        page.getResultItems().add(
-                page.getRender()
-                        .renderToHtml()
-                        .toEntityList(CNBlog.class)
-        );
+    public void setCnBlogDetail(CNBlogDetail cnBlogDetail) {
+        this.cnBlogDetail = cnBlogDetail;
     }
 
     public static void main(String[] args) {
         JCrawler.create()
                 .crawl("http://www.cnblogs.com/")
-                .processBy(new CNBlogProcess())
+                .prey(CNBlogItem.class)
                 .run();
+    }
+}
+```
+
+```java
+public class CNBlogDetail extends XpathEntity {
+
+    @Xpath("//div[@id='post_detail']")
+    private String body;
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
     }
 }
 ```
@@ -126,7 +107,7 @@ public class CNBlogProcess implements PageProcess {
 - [ ] 支持智能过滤html标签
 - [ ] 支持Jquery注解
 - [ ] 支持url的正则抓取
-- [ ] 支持代理池
+- [X] 支持代理池(静态)
 - [ ] 支持自动登录
 - [ ] 支持定时器
 - [ ] 支持与Spring结合开发
