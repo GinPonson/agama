@@ -1,5 +1,8 @@
 package com.github.gin.agama.site.converter;
 
+/**
+ * @author  GinPonson
+ */
 public class DoubleConverter implements Converter{
 
 	@Override

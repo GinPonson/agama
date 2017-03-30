@@ -9,6 +9,9 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.*;
 import java.util.Set;
 
+/**
+ * @author  GinPonson
+ */
 public class ReflectUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ReflectUtils.class);

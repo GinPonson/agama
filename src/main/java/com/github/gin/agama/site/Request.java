@@ -3,6 +3,9 @@ package com.github.gin.agama.site;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author  GinPonson
+ */
 public class Request {
 
 	private Map<String,String> headers = new HashMap<>();

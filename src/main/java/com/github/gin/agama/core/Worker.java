@@ -1,5 +1,8 @@
 package com.github.gin.agama.core;
 
+import com.github.gin.agama.downloader.Downloader;
+import com.github.gin.agama.pipeline.Pipeline;
+import com.github.gin.agama.scheduler.Scheduler;
 import com.github.gin.agama.site.entity.AgamaEntity;
 import com.github.gin.agama.site.Page;
 import com.github.gin.agama.site.Request;
@@ -45,33 +48,35 @@ public class Worker implements Runnable {
     public void run() {
         ContextHolder.setContext(this.context);
         while (true) {
-            Request request = context.getScheduler().poll();
+            Scheduler scheduler = context.getScheduler();
+            Downloader downloader = context.getDownloader();
+            Pipeline pipeline = context.getPipeline();
 
+            Request request = scheduler.poll();
             if (request == null) {
                 waitRequest();
 
-                request = context.getScheduler().poll();
+                request = scheduler.poll();
                 if (request == null) {
                     jCrawler.singleComplete();
                     break;
                 }
             }
             try {
-                Page page = context.getDownloader().download(request);
+                Page page = downloader.download(request);
 
                 if (AgamaUtils.isNotBlank(page.getRawText())) {
-                    Render render = context.getRenderMap().get(jCrawler.getPrey().getSuperclass());
+                    Render render = context.getRender(jCrawler.getPrey());
                     List<AgamaEntity> entityList = render.renderToList(page, jCrawler.getPrey());
 
                     for(AgamaEntity entity : entityList){
-                        //pageProcess.process(page);
-                        context.getPipeline().process(entity);
+                        pipeline.process(entity);
                     }
                 }
 
                 interval();
             } catch (Exception e) {
-                e.printStackTrace();
+                LOGGER.error("Exception stack :", e);
                 AtomicInteger retriedTime = retryMap.computeIfAbsent(
                         request.getUrl(),
                         k -> new AtomicInteger()
@@ -79,16 +84,14 @@ public class Worker implements Runnable {
 
                 int time = retriedTime.incrementAndGet();
                 if (time <= context.getConfigure().getRetryTime()) {
-                    LOGGER.info("Crawling the page error,now trying reconnect [{}] times,", time);
-
                     request.setPriority(999);
                     request.setIsRetryRequest(true);
-                    jCrawler.addRequest(request);
-
                     lineUp(_1_MINUTE);
+
+                    LOGGER.info("Crawling the page error,now trying reconnect [{}] times,", time);
+                    jCrawler.addRequest(request);
                 } else {
-                    LOGGER.error("Error reason : {} ", e.getMessage());
-                    e.printStackTrace();
+                    LOGGER.error("Fail to reconnect !");
                 }
             }
 

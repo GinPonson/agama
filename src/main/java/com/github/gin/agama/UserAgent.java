@@ -11,7 +11,7 @@ import java.nio.charset.Charset;
 import java.util.Collections;
 
 /**
- * Created by GinPonson on 3/1/2017.
+ * @author  GinPonson
  */
 public class UserAgent {
 

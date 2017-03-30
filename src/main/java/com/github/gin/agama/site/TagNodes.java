@@ -7,10 +7,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * @author  GinPonson
+ */
 public class TagNodes extends ArrayList<TagNode> {
 
-    public TagNodes() {
-    }
+    public TagNodes() {}
 
     public TagNodes(TagNode... tagNodes) {
         super(Arrays.asList(tagNodes));
@@ -42,7 +44,6 @@ public class TagNodes extends ArrayList<TagNode> {
 
     @Override
     public String toString() {
-        List<String> list = XpathSerekuta.htmls(this);
         return Arrays.toString(XpathSerekuta.htmls(this).toArray());
     }
 

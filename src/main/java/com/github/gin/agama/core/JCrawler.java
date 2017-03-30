@@ -32,9 +32,6 @@ public class JCrawler {
     }
 
     public JCrawler prey(Class<? extends AgamaEntity> prey) {
-        if(prey != null) {
-            throw new AgamaException("Prey should be only one !");
-        }
         this.prey = prey;
         return this;
     }
@@ -87,7 +84,7 @@ public class JCrawler {
         } catch (InterruptedException e) {
             LOGGER.error("error msg:",e);
         }
-        context.getCloseables().forEach(Closeable::close);
+        context.getCloseableList().forEach(Closeable::close);
     }
 
     void singleComplete() {

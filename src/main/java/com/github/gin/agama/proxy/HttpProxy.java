@@ -6,6 +6,9 @@ import java.net.PasswordAuthentication;
 import java.net.Proxy;
 import java.net.SocketAddress;
 
+/**
+ * @author  GinPonson
+ */
 public class HttpProxy extends Proxy{
 	
 	private String host;

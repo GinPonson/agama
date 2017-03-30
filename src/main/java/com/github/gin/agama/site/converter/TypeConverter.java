@@ -4,6 +4,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author  GinPonson
+ */
 public class TypeConverter {
 
 	public static final Map<Class<?>,Converter> TYPE_HOLDER = new HashMap<>();

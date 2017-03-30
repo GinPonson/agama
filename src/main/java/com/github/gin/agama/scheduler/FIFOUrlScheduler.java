@@ -7,7 +7,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
- * Created by FSTMP on 2017/2/20.
+ * @author  GinPonson
  */
 public class FIFOUrlScheduler implements Scheduler {
 

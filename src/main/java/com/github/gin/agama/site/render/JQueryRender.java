@@ -6,7 +6,7 @@ import com.github.gin.agama.site.Page;
 import java.util.List;
 
 /**
- * Created by FSTMP on 2017/3/2.
+ * @author  GinPonson
  */
 public class JQueryRender implements Render {
 

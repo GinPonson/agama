@@ -1,7 +1,7 @@
 package com.github.gin.agama;
 
 /**
- * Created by GinPonson on 2017/3/11.
+ * @author  GinPonson
  */
 public class RenderException extends RuntimeException {
 

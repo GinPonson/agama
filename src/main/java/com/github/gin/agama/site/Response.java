@@ -1,5 +1,8 @@
 package com.github.gin.agama.site;
 
+/**
+ * @author  GinPonson
+ */
 public class Response {
 	
 	private int responseCode;

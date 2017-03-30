@@ -9,6 +9,9 @@ import org.htmlcleaner.TagNode;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author  GinPonson
+ */
 public class XpathSerekuta implements Serekuta {
 
     private TagNodes tagNodes;

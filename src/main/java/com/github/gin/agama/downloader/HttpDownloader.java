@@ -13,6 +13,9 @@ import com.github.gin.agama.site.Page;
 import com.github.gin.agama.site.Response;
 import com.github.gin.agama.util.UrlUtils;
 
+/**
+ * @author  GinPonson
+ */
 public class HttpDownloader implements Downloader{
 
 	@Override

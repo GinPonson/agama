@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Created by GinPonson on 12/6/2016.
+ * @author  GinPonson
  */
 public class AgamaUtils {
     public static boolean isNotBlank(String string){

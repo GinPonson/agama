@@ -1,8 +1,10 @@
 package com.github.gin.agama.site.render;
 
 /**
- * Created by GinPonson on 3/13/2017.
+ * @author  GinPonson
  */
 public enum RenderType {
     Xpath,Json
+
+
 }

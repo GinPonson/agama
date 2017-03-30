@@ -7,7 +7,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
 /**
- * Created by FSTMP on 2017/2/20.
+ * @author  GinPonson
  */
 public class PriorityUrlScheduler implements Scheduler{
 

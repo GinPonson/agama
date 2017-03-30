@@ -3,7 +3,7 @@ package com.github.gin.agama.annotation;
 import java.lang.annotation.*;
 
 /**
- * Created by FSTMP on 2017/3/2.
+ * @author  GinPonson
  */
 @Documented
 @Target(ElementType.FIELD)

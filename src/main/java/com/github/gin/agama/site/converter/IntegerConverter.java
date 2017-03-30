@@ -1,5 +1,8 @@
 package com.github.gin.agama.site.converter;
 
+/**
+ * @author  GinPonson
+ */
 public class IntegerConverter implements Converter{
 
 	@Override

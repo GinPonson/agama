@@ -1,7 +1,7 @@
 package com.github.gin.agama;
 
 /**
- * Created by FSTMP on 2017/2/20.
+ * @author  GinPonson
  */
 public interface Closeable {
 

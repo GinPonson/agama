@@ -5,6 +5,9 @@ import com.github.gin.agama.site.Request;
 
 import java.io.IOException;
 
+/**
+ * @author  GinPonson
+ */
 public interface Downloader {
 	Page download(Request req) throws IOException;
 }

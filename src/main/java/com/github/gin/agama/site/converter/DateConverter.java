@@ -5,6 +5,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+
+/**
+ * @author  GinPonson
+ */
 public class DateConverter implements Converter{
 
 	@Override

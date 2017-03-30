@@ -26,11 +26,15 @@ import java.util.Set;
 import static org.reflections.ReflectionUtils.getFields;
 import static org.reflections.ReflectionUtils.withAnnotation;
 
+
+/**
+ * @author  GinPonson
+ */
 public class XpathRender extends AbstractRender {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XpathRender.class);
 
-    public static final HtmlCleaner HTML_CLEANER = new HtmlCleaner();
+    private static final HtmlCleaner HTML_CLEANER = new HtmlCleaner();
 
     @Override
     public List<AgamaEntity> renderToList(Page page, Class<? extends AgamaEntity> clazz) {
@@ -58,15 +62,24 @@ public class XpathRender extends AbstractRender {
 
     @Override
     public AgamaEntity renderToBean(Page page, Class<? extends AgamaEntity> clazz) {
+        AgamaEntity entity = ReflectUtils.newInstance(clazz);
+        renderField(page, entity);
+        renderUrl(page, entity);
+        renderJs(page, entity);
+        download(page, entity);
+
+        return entity;
+    }
+
+    public void renderField(Page page, AgamaEntity entity){
         TagNode pageTagNode = HTML_CLEANER.clean(page.getRawText());
 
-        AgamaEntity entity = ReflectUtils.newInstance(clazz);
-        Set<Field> xpathFieldSet = getFields(clazz, withAnnotation(Xpath.class));
+        Set<Field> xpathFieldSet = getFields(entity.getClass(), withAnnotation(Xpath.class));
         for (Field field : xpathFieldSet) {
-            //1、根据xpath解析html
             String xpath = field.getAnnotation(Xpath.class).value();
             TagNodes nodes = XpathUtils.evaluate(pageTagNode, xpath);
 
+            //如果字段是List集合，就进行填充
             boolean isList = ReflectUtils.haveSuperType(field.getType(), List.class);
             if (isList) {
                 Type type = field.getGenericType();
@@ -105,13 +118,6 @@ public class XpathRender extends AbstractRender {
                 ReflectUtils.setValue(field.getName(), entity, data);
             }
         }
-        renderUrl(page, entity);
-
-        renderJs(page, entity);
-
-        download(page, entity);
-
-        return entity;
     }
 
     private void renderUrl(Page page, AgamaEntity entity) {

@@ -6,7 +6,7 @@ import com.github.gin.agama.site.Page;
 import java.util.List;
 
 /**
- * Created by FSTMP on 2016/10/27.
+ * @author  GinPonson
  */
 public interface Render {
 

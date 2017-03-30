@@ -14,6 +14,10 @@ import org.w3c.dom.NodeList;
 
 import java.util.Map;
 
+
+/**
+ * @author  GinPonson
+ */
 public class XpathUtils {
 
     public static Document toW3cDom(TagNode tagNode) {
@@ -37,7 +41,7 @@ public class XpathUtils {
         return tagNodes;
     }
 
-    public static TagNode[] toTagNdes(Object[] args) {
+    private static TagNode[] toTagNdes(Object[] args) {
         TagNode[] tagNodes = new TagNode[args.length];
         for (int i = 0; i < args.length; i++) {
             Object arg = args[i];

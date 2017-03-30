@@ -19,7 +19,9 @@ import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.Map;
 
-
+/**
+ * @author  GinPonson
+ */
 public abstract class PhantomDownloader implements Downloader{
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(PhantomDownloader.class);

@@ -4,9 +4,6 @@ import com.github.gin.agama.Closeable;
 import com.github.gin.agama.downloader.DefaultPhantomDownloader;
 import com.github.gin.agama.downloader.Downloader;
 import com.github.gin.agama.downloader.HttpDownloader;
-import com.github.gin.agama.site.entity.AgamaEntity;
-import com.github.gin.agama.site.entity.JsonEntity;
-import com.github.gin.agama.site.entity.XpathEntity;
 import com.github.gin.agama.pipeline.ConsolePipeline;
 import com.github.gin.agama.pipeline.Pipeline;
 import com.github.gin.agama.processer.DefaultPageProcess;
@@ -14,10 +11,15 @@ import com.github.gin.agama.processer.PageProcess;
 import com.github.gin.agama.scheduler.DuplicateUrlScheduler;
 import com.github.gin.agama.scheduler.FIFOUrlScheduler;
 import com.github.gin.agama.scheduler.Scheduler;
+import com.github.gin.agama.site.entity.AgamaEntity;
+import com.github.gin.agama.site.entity.JsonEntity;
 import com.github.gin.agama.site.render.JsonRender;
 import com.github.gin.agama.site.render.Render;
+import com.github.gin.agama.site.render.RenderType;
 import com.github.gin.agama.site.render.XpathRender;
 import com.github.gin.agama.util.ReflectUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -26,9 +28,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author  GinPonson
+ * @author GinPonson
  */
 public class CrawlerContext {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CrawlerContext.class);
 
     private CrawlerConfig configure;
 
@@ -40,9 +44,9 @@ public class CrawlerContext {
 
     private Scheduler scheduler;
 
-    private Map<Class<? extends AgamaEntity>,Render> renderMap;
+    private Map<RenderType, Render> renderMap;
 
-    private List<Closeable> closeables;
+    private List<Closeable> closeableList;
 
     private CrawlerContext() {
         this.configure = new CrawlerConfig();
@@ -77,7 +81,7 @@ public class CrawlerContext {
         return this;
     }
 
-    public CrawlerContext build(){
+    public CrawlerContext build() {
         if (downloader == null) {
             if (configure.isUseAjax()) {
                 downloader = new DefaultPhantomDownloader();
@@ -94,16 +98,16 @@ public class CrawlerContext {
         if (scheduler == null) {
             scheduler = new DuplicateUrlScheduler(new FIFOUrlScheduler());
         }
-        closeables = new ArrayList<>();
-        for(Field field : CrawlerContext.class.getDeclaredFields()){
-            if(ReflectUtils.haveSuperType(field.getClass(),Closeable.class)){
-                closeables.add((Closeable) ReflectUtils.getValue(field.getName(),this));
+        closeableList = new ArrayList<>();
+        for (Field field : CrawlerContext.class.getDeclaredFields()) {
+            if (ReflectUtils.haveSuperType(field.getClass(), Closeable.class)) {
+                closeableList.add((Closeable) ReflectUtils.getValue(field.getName(), this));
             }
         }
 
         renderMap = new HashMap<>();
-        renderMap.put(JsonEntity.class,new JsonRender());
-        renderMap.put(XpathEntity.class,new XpathRender());
+        renderMap.put(RenderType.Json, new JsonRender());
+        renderMap.put(RenderType.Xpath, new XpathRender());
 
         return this;
     }
@@ -128,15 +132,19 @@ public class CrawlerContext {
         return scheduler;
     }
 
-    public List<Closeable> getCloseables() {
-        return closeables;
+    public List<Closeable> getCloseableList() {
+        return closeableList;
     }
 
-    public Map<Class<? extends AgamaEntity>, Render> getRenderMap() {
+    public Map<RenderType, Render> getRenderMap() {
         return renderMap;
     }
 
-    public void setRenderMap(Map<Class<? extends AgamaEntity>, Render> renderMap) {
-        this.renderMap = renderMap;
+    public Render getRender(Class<? extends AgamaEntity> prey) {
+        Render render = renderMap.get(RenderType.Xpath);
+        if(ReflectUtils.haveSuperType(prey, JsonEntity.class)){
+            render = renderMap.get(RenderType.Json);
+        }
+        return render;
     }
 }

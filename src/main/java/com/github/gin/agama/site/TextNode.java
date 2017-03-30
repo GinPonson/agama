@@ -2,6 +2,10 @@ package com.github.gin.agama.site;
 
 import org.htmlcleaner.TagNode;
 
+
+/**
+ * @author  GinPonson
+ */
 public class TextNode extends TagNode{
 
     private Object text;

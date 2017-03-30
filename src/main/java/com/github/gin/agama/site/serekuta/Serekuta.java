@@ -1,5 +1,8 @@
 package com.github.gin.agama.site.serekuta;
 
+/**
+ * @author  GinPonson
+ */
 public interface Serekuta {
 
     Serekuta select(String css);

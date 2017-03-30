@@ -3,7 +3,7 @@ package com.github.gin.agama.processer;
 import com.github.gin.agama.site.Page;
 
 /**
- * Created by FSTMP on 2017/2/22.
+ * @author  GinPonson
  */
 public class DefaultPageProcess implements PageProcess {
 

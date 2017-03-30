@@ -17,7 +17,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Created by FSTMP on 2017/2/20.
+ * @author  GinPonson
  */
 public class RedisUrlScheduler implements Scheduler , Closeable {
 

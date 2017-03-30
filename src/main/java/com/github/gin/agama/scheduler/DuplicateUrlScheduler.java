@@ -10,6 +10,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.PriorityBlockingQueue;
 
+/**
+ * @author  GinPonson
+ */
 public class DuplicateUrlScheduler implements Scheduler{
 
 	private Set<String> urls = setFromMap(new ConcurrentHashMap<String, Boolean>());

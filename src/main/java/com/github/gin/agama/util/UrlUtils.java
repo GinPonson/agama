@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * @author  GinPonson
+ */
 public class UrlUtils {
     //正则：charset开头，任意空格，=，任意空格，任意'或""，组合(非空格 or 非; or 非' or 非"的任意个字符)
     private static final Pattern PATTERN_FOR_CHARSET = Pattern.compile("charset\\s*=\\s*['\"]*([^\\s;'\"]*)");

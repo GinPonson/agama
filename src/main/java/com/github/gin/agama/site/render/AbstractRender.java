@@ -42,7 +42,7 @@ import static org.reflections.ReflectionUtils.getFields;
 import static org.reflections.ReflectionUtils.withAnnotation;
 
 /**
- * Created by GinPonson on 2017/3/11.
+ * @author  GinPonson
  */
 public abstract class AbstractRender implements Render {
 
