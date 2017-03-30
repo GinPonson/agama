@@ -1,7 +1,7 @@
 package com.github.gin.agama.core;
 
 /**
- * Created by GinPonson on 2017/3/12.
+ * @author  GinPonson
  */
 public class ContextHolder {
 

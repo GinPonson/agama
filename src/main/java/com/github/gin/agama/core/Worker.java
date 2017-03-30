@@ -18,7 +18,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * Created by GinPonson on 2017/3/7.
+ * @author  GinPonson
  */
 public class Worker implements Runnable {
 

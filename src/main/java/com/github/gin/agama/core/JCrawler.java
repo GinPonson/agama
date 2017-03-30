@@ -1,15 +1,18 @@
 package com.github.gin.agama.core;
 
+import com.github.gin.agama.AgamaException;
 import com.github.gin.agama.Closeable;
-import com.github.gin.agama.site.entity.AgamaEntity;
 import com.github.gin.agama.site.Request;
-import org.junit.Assert;
+import com.github.gin.agama.site.entity.AgamaEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 
+/**
+ * @author  GinPonson
+ */
 public class JCrawler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JCrawler.class);
@@ -29,7 +32,9 @@ public class JCrawler {
     }
 
     public JCrawler prey(Class<? extends AgamaEntity> prey) {
-        Assert.assertNull("Prey should be only one !", this.prey);
+        if(prey != null) {
+            throw new AgamaException("Prey should be only one !");
+        }
         this.prey = prey;
         return this;
     }
@@ -52,7 +57,9 @@ public class JCrawler {
     }
 
     public void run() {
-        Assert.assertNotNull("Prey could not be null !", prey);
+        if(prey != null) {
+            throw new AgamaException("Prey could not be null !");
+        }
         if (context == null) {
             context = CrawlerContext.create().build();
         }
@@ -78,7 +85,7 @@ public class JCrawler {
         try {
             cdl.await();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            LOGGER.error("error msg:",e);
         }
         context.getCloseables().forEach(Closeable::close);
     }

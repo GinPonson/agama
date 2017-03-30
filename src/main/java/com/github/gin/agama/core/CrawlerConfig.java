@@ -1,5 +1,8 @@
 package com.github.gin.agama.core;
 
+/**
+ * @author  GinPonson
+ */
 public class CrawlerConfig {
 
     /**

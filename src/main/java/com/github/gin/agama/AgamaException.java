@@ -1,11 +1,12 @@
 package com.github.gin.agama;
 
 /**
- * Created by FSTMP on 2016/10/21.
+ * @author  GinPonson
  */
 public class AgamaException extends RuntimeException {
 
     public AgamaException() {
+        super();
     }
 
     public AgamaException(String message) {

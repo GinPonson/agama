@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by GinPonson on 3/8/2017.
+ * @author  GinPonson
  */
 public class CrawlerContext {
 
