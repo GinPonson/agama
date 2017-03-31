@@ -114,10 +114,12 @@ public class JsonRender extends AbstractRender {
 
             Object segment = JSONPath.eval(rootJson, src);
             String segmentStr = AgamaUtils.isNotBlank(segment) ? segment.toString() : "";
-            String domain = UrlUtils.getDomain(page.getUrl());
-            String url = UrlUtils.toAsbLink(domain, segmentStr);
+            if(AgamaUtils.isNotBlank(segmentStr)) {
+                String domain = UrlUtils.getDomain(page.getUrl());
+                String url = UrlUtils.toAsbLink(domain, segmentStr);
 
-            renderSubRequest(entity, field, url);
+                renderSubRequest(entity, field, url);
+            }
         }
     }
 

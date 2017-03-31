@@ -74,9 +74,17 @@ public abstract class AbstractRender implements Render {
             try {
                 Object ad = ReflectUtils.getValue(field.getName(), entity);
                 if (AgamaUtils.isNotBlank(ad)) {
+                    String suffix = ".jpg";
+                    String reLink = UrlUtils.toReLink(ad.toString());
+                    if(reLink.lastIndexOf(".") != -1){
+                        suffix = reLink.substring(
+                                reLink.lastIndexOf("."),
+                                reLink.length()
+                                );
+                    }
                     URL url = new URL(ad.toString());
                     //新开一个线程??
-                    FileUtils.copyURLToFile(url, new File(dist));
+                    FileUtils.copyURLToFile(url, new File(dist+suffix));
                 }
             } catch (IOException e) {
                 e.printStackTrace();

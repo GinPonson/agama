@@ -2,6 +2,7 @@ package com.github.gin.agama.site.render;
 
 
 import com.github.gin.agama.annotation.Html;
+import com.github.gin.agama.annotation.Regex;
 import com.github.gin.agama.annotation.Url;
 import com.github.gin.agama.annotation.Xpath;
 import com.github.gin.agama.site.entity.AgamaEntity;
@@ -9,6 +10,7 @@ import com.github.gin.agama.site.Page;
 import com.github.gin.agama.site.TagNodes;
 import com.github.gin.agama.site.converter.TypeConverter;
 import com.github.gin.agama.site.serekuta.XpathSerekuta;
+import com.github.gin.agama.util.AgamaUtils;
 import com.github.gin.agama.util.ReflectUtils;
 import com.github.gin.agama.util.UrlUtils;
 import com.github.gin.agama.util.XpathUtils;
@@ -22,6 +24,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.reflections.ReflectionUtils.getFields;
 import static org.reflections.ReflectionUtils.withAnnotation;
@@ -94,6 +98,15 @@ public class XpathRender extends AbstractRender {
                     if (!nodes.isEmpty()) {
                         dataText = XpathUtils.getHtmlText(nodes.get(0)).toString().trim();
                     }
+                } else if(field.isAnnotationPresent(Regex.class)) {
+                    String regex = field.getAnnotation(Regex.class).regex();
+                    int group = field.getAnnotation(Regex.class).group();
+
+                    Pattern pattern = Pattern.compile(regex);
+                    Matcher matcher = pattern.matcher(nodes.getFirstNodeText().trim());
+                    if (matcher.find()) {
+                        dataText = matcher.group(group);
+                    }
                 } else {
                     dataText = nodes.getFirstNodeText().trim();
                 }
@@ -118,10 +131,12 @@ public class XpathRender extends AbstractRender {
             TagNodes urlNodes = XpathUtils.evaluate(pageTagNode, src);
             String nodeText = urlNodes.getFirstNodeText().trim();
 
-            String domain = UrlUtils.getDomain(page.getUrl());
-            String url = UrlUtils.toAsbLink(domain, nodeText);
+            if(AgamaUtils.isNotBlank(nodeText)){
+                String domain = UrlUtils.getDomain(page.getUrl());
+                String url = UrlUtils.toAsbLink(domain, nodeText);
 
-            renderSubRequest(entity, field, url);
+                renderSubRequest(entity, field, url);
+            }
         }
     }
 

@@ -23,7 +23,7 @@ public class CrawlerConfig {
     /**
      *  amount of crawler
      */
-    private int threadNum = 1;
+    private int threadNum = 2;
 
     /**
      *  if use selenium load the page

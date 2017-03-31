@@ -4,11 +4,14 @@ import java.lang.annotation.*;
 
 /**
  * @author  GinPonson
- * Created on 2017/3/31.
+ * Created on 3/31/2017.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface Prey {
-    String matchUrl () default "";
+@Target(ElementType.FIELD)
+public @interface Regex {
+
+    String regex();
+
+    int group();
 }

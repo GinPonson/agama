@@ -1,10 +1,12 @@
-package cnblog;
+package other;
 
 import com.github.gin.agama.site.serekuta.JsoupSerekuta;
 import com.github.gin.agama.site.serekuta.Serekuta;
 import com.github.gin.agama.site.serekuta.XpathSerekuta;
 
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by FSTMP on 2017/3/14.
@@ -26,5 +28,11 @@ public class TestSelector {
         Serekuta serekuta1 = new XpathSerekuta(html);
         System.out.println(serekuta1.select("//li"));
 
+        Pattern pattern = Pattern.compile("\\(([\\d]*)\\)");
+        Matcher matcher = pattern.matcher("阅读(159)");
+        if (matcher.find()) {
+            String patternStr = matcher.group(1);
+            System.out.println(patternStr);
+        }
     }
 }

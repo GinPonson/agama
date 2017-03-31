@@ -66,8 +66,9 @@ public class Worker implements Runnable {
                 Page page = downloader.download(request);
 
                 if (AgamaUtils.isNotBlank(page.getRawText())) {
-                    Render render = context.getRender(jCrawler.getPrey());
-                    List<AgamaEntity> entityList = render.renderToList(page, jCrawler.getPrey());
+                    Class<? extends AgamaEntity> prey = jCrawler.getPrey(request.getUrl());
+                    Render render = context.getRender(prey);
+                    List<AgamaEntity> entityList = render.renderToList(page, prey);
 
                     for(AgamaEntity entity : entityList){
                         pipeline.process(entity);

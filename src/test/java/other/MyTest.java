@@ -1,7 +1,6 @@
 package other;
 
 import cnblog.CNBlog;
-import cnblog.CNBlogItem;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONPath;
@@ -30,16 +29,16 @@ public class MyTest extends JsonEntity {
     @Test
     public void test() throws IOException {
         CNBlog blog = new CNBlog();
-        CNBlogItem cnBlog = new CNBlogItem();
+        CNBlog cnBlog = new CNBlog();
         cnBlog.setHref("aa");
         BeanMap beanMap = BeanMap.create(cnBlog);
         //System.out.println(beanMap);
         beanMap.put("title","bbb");
         //System.out.println(cnBlog.getTitle());
 
-        List<CNBlogItem> list = new ArrayList<>();
+        List<CNBlog> list = new ArrayList<>();
         list.add(cnBlog);
-        blog.setItems(list);
+        //blog.setItems(list);
 
         String json = JSON.toJSONString(cnBlog);
         //System.out.println(JSONPath.eval(JSON.parseObject(json),"$.href"));
@@ -49,7 +48,7 @@ public class MyTest extends JsonEntity {
         JSONArray array = (JSONArray) object;
         System.out.println(JSONPath.eval(array.get(0),"$.title"));
 
-        List<CNBlogItem> list2 = JSONArray.parseArray(object.toString(),CNBlogItem.class);
+        List<CNBlog> list2 = JSONArray.parseArray(object.toString(), CNBlog.class);
         //System.out.println(object);
         //System.out.println(list2);
 

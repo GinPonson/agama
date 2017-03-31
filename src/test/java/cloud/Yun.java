@@ -2,6 +2,7 @@ package cloud;
 
 import com.github.gin.agama.annotation.JS;
 import com.github.gin.agama.annotation.Json;
+import com.github.gin.agama.annotation.Prey;
 import com.github.gin.agama.core.CrawlerContext;
 import com.github.gin.agama.core.JCrawler;
 import com.github.gin.agama.site.Request;
@@ -12,6 +13,7 @@ import java.util.List;
 /**
  * Created by GinPonson on 3/15/2017.
  */
+@Prey(matchUrl = "http://pan.baidu.com/wap/share/home")
 public class Yun extends XpathEntity{
 
     @JS(var = "window",jsonpath = "$.yunData.feedata.records")

@@ -2,8 +2,10 @@ package com.github.gin.agama.core;
 
 import com.github.gin.agama.AgamaException;
 import com.github.gin.agama.Closeable;
+import com.github.gin.agama.annotation.Prey;
 import com.github.gin.agama.site.Request;
 import com.github.gin.agama.site.entity.AgamaEntity;
+import com.github.gin.agama.util.UrlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,7 +13,7 @@ import java.util.*;
 import java.util.concurrent.CountDownLatch;
 
 /**
- * @author  GinPonson
+ * @author GinPonson
  */
 public class JCrawler {
 
@@ -19,7 +21,7 @@ public class JCrawler {
 
     private Set<Request> startRequests = new HashSet<>();
 
-    private Class<? extends AgamaEntity> prey;
+    private Map<String, Class<? extends AgamaEntity>> preyMap = new HashMap<>();
 
     private CountDownLatch cdl;
 
@@ -32,7 +34,20 @@ public class JCrawler {
     }
 
     public JCrawler prey(Class<? extends AgamaEntity> prey) {
-        this.prey = prey;
+        if (prey.isAnnotationPresent(Prey.class)) {
+            String matchUrl = prey.getAnnotation(Prey.class).matchUrl();
+            preyMap.put(matchUrl, prey);
+        }
+        return this;
+    }
+
+    public JCrawler preys(Class<? extends AgamaEntity>... preys) {
+        for (Class<? extends AgamaEntity> prey : preys) {
+            if (prey.isAnnotationPresent(Prey.class)) {
+                String matchUrl = prey.getAnnotation(Prey.class).matchUrl();
+                preyMap.put(matchUrl, prey);
+            }
+        }
         return this;
     }
 
@@ -54,7 +69,7 @@ public class JCrawler {
     }
 
     public void run() {
-        if(prey != null) {
+        if (preyMap.isEmpty()) {
             throw new AgamaException("Prey could not be null !");
         }
         if (context == null) {
@@ -82,7 +97,7 @@ public class JCrawler {
         try {
             cdl.await();
         } catch (InterruptedException e) {
-            LOGGER.error("error msg:",e);
+            LOGGER.error("error msg:", e);
         }
         context.getCloseableList().forEach(Closeable::close);
     }
@@ -95,8 +110,13 @@ public class JCrawler {
         context.getScheduler().push(request);
     }
 
-    public Class<? extends AgamaEntity> getPrey() {
-        return prey;
+    public Class<? extends AgamaEntity> getPrey(String url) {
+        for(Map.Entry<String,Class<? extends AgamaEntity>> entry : preyMap.entrySet()){
+            if(UrlUtils.matchUrl(entry.getKey(),url)){
+                return entry.getValue();
+            }
+        }
+        return null;
     }
 
 }

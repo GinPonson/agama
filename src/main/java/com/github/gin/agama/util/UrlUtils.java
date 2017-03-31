@@ -9,6 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * URL的各种工具
  * @author  GinPonson
  */
 public class UrlUtils {
@@ -49,6 +50,15 @@ public class UrlUtils {
         return null;
     }
 
+    public static String toReLink(String url){
+        Matcher matcher = PATTERN_FOR_DOMAIN.matcher(url);
+        if (matcher.find()) {
+            String domain = matcher.group(2);
+            return domain;
+        }
+        return null;
+    }
+
     /**
      * 将相对地址转成绝对地址
      *
@@ -81,6 +91,12 @@ public class UrlUtils {
     }
 
     private static final Pattern PATTERN_FOR_PARAM = Pattern.compile("\\$\\{([\\w]*)}");
+
+    /**
+     * 获取需要填充的参数
+     * @param url
+     * @return
+     */
     public static List<String> getParam(String url) {
         List<String> list = new ArrayList<>();
         Matcher matcher = PATTERN_FOR_PARAM.matcher(url);
@@ -95,10 +111,15 @@ public class UrlUtils {
         return list;
     }
 
+    public static boolean matchUrl(String matchUrl, String url) {
+        return url.contains(matchUrl);
+    }
+
     public static void main(String[] args) {
         System.out.println(toAsbLink("http://bilibili.com", "/video/bangumi-two-2.html"));
         System.out.println(getParam("D:\\aa\\${bbb}\\cc\\${dd}\\${gg}"));
         System.out.println("D:\\aa\\${bbb}\\${dd}");
-    }
+        System.out.println(getDomain("http://pic.cnblogs.com/face/u325852.jpg?id=18155157"));
 
+    }
 }
