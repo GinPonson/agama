@@ -60,17 +60,6 @@ public class XpathRender extends AbstractRender {
         return result;
     }
 
-    @Override
-    public AgamaEntity renderToBean(Page page, Class<? extends AgamaEntity> clazz) {
-        AgamaEntity entity = ReflectUtils.newInstance(clazz);
-        renderField(page, entity);
-        renderUrl(page, entity);
-        renderJs(page, entity);
-        download(page, entity);
-
-        return entity;
-    }
-
     public void renderField(Page page, AgamaEntity entity){
         TagNode pageTagNode = HTML_CLEANER.clean(page.getRawText());
 
@@ -120,7 +109,7 @@ public class XpathRender extends AbstractRender {
         }
     }
 
-    private void renderUrl(Page page, AgamaEntity entity) {
+    public void renderUrl(Page page, AgamaEntity entity) {
         TagNode pageTagNode = HTML_CLEANER.clean(page.getRawText());
 
         Set<Field> urlFieldSet = getFields(entity.getClass(), withAnnotation(Url.class));

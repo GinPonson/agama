@@ -24,7 +24,7 @@ import static org.reflections.ReflectionUtils.getFields;
 import static org.reflections.ReflectionUtils.withAnnotation;
 
 /**
- * @author  GinPonson
+ * @author GinPonson
  */
 public class JsonRender extends AbstractRender {
 
@@ -63,14 +63,11 @@ public class JsonRender extends AbstractRender {
         return result;
     }
 
-    @Override
-    public AgamaEntity renderToBean(Page page, Class<? extends AgamaEntity> clazz) {
-        AgamaEntity entity = ReflectUtils.newInstance(clazz);
-
+    public void renderField(Page page, AgamaEntity entity) {
         String rootJsonStr = page.getRawText();
         JSONObject rootJson = JSONObject.parseObject(rootJsonStr);
 
-        Set<Field> fieldSet = getAllFields(clazz, withAnnotation(Json.class));
+        Set<Field> fieldSet = getAllFields(entity.getClass(), withAnnotation(Json.class));
         for (Field field : fieldSet) {
             String jsonPath = field.getAnnotation(Json.class).value();
 
@@ -105,14 +102,9 @@ public class JsonRender extends AbstractRender {
                 ReflectUtils.setValue(field.getName(), entity, data);
             }
         }
-        renderUrl(page, entity);
-
-        download(page, entity);
-
-        return entity;
     }
 
-    private void renderUrl(Page page, AgamaEntity entity) {
+    public void renderUrl(Page page, AgamaEntity entity) {
         String rootJsonStr = page.getRawText();
         JSONObject rootJson = JSONObject.parseObject(rootJsonStr);
 

@@ -48,6 +48,21 @@ public abstract class AbstractRender implements Render {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XpathRender.class);
 
+    @Override
+    public AgamaEntity renderToBean(Page page, Class<? extends AgamaEntity> clazz) {
+        AgamaEntity entity = ReflectUtils.newInstance(clazz);
+        renderField(page, entity);
+        renderUrl(page, entity);
+        renderJs(page, entity);
+        download(page, entity);
+
+        return entity;
+    }
+
+    public abstract void renderField(Page page, AgamaEntity entity);
+
+    public abstract void renderUrl(Page page, AgamaEntity entity);
+
     public void download(Page page, AgamaEntity entity) {
         Set<Field> downField = getFields(entity.getClass(), withAnnotation(Download.class));
         for (Field field : downField) {
@@ -70,7 +85,6 @@ public abstract class AbstractRender implements Render {
         }
     }
 
-
     public void renderSubRequest(AgamaEntity entity, Field field, String url) {
         if (!AgamaUtils.isNotBlank(url.trim())) {
             return;
@@ -79,8 +93,6 @@ public abstract class AbstractRender implements Render {
         boolean isAgamaEntity = ReflectUtils.haveSuperType(field.getType(), AgamaEntity.class);
         boolean click = field.getAnnotation(Url.class).click();
         if (click && isAgamaEntity) {
-            //TODO
-            //新开一个线程??
             Downloader downloader = ContextHolder.getContext().getDownloader();
             try {
                 Page subpage = downloader.download(new Request(url));
@@ -113,8 +125,7 @@ public abstract class AbstractRender implements Render {
             String script = element.html();
             try {
                 context.evaluateString(scope, script, "", 1, null);
-            } catch (Exception e)
-            {
+            } catch (Exception e){
 
             }
         }
@@ -152,14 +163,14 @@ public abstract class AbstractRender implements Render {
                         if (isAgamaEntity) {
                             Class<? extends AgamaEntity> $genericClass = (Class<? extends AgamaEntity>) genericClass;
 
-                            //Object segmentJson = JSONPath.eval(src, jsonPath);
                             List<AgamaEntity> subEntityList = new ArrayList<>();
                             if (ReflectUtils.haveSuperType(src.getClass(), List.class)) {
                                 JSONArray jsonArray = (JSONArray) src;
 
                                 for (Object object : jsonArray) {
                                     page = new Page(page.getUrl(), JSON.toJSONString(object));
-                                    subEntityList.add(renderToBean1(page, $genericClass));
+                                    JsonRender render = new JsonRender();
+                                    subEntityList.add(render.renderToBean(page, $genericClass));
                                 }
                             }
 
@@ -185,54 +196,6 @@ public abstract class AbstractRender implements Render {
                 }
             }
         }
-    }
-
-    public AgamaEntity renderToBean1(Page page, Class<? extends AgamaEntity> clazz) {
-        AgamaEntity entity = ReflectUtils.newInstance(clazz);
-
-        String rootJsonStr = page.getRawText();
-        JSONObject rootJson = JSONObject.parseObject(rootJsonStr);
-
-        Set<Field> fieldSet = getAllFields(clazz, withAnnotation(Json.class));
-        for (Field field : fieldSet) {
-            String jsonPath = field.getAnnotation(Json.class).value();
-
-            boolean isList = ReflectUtils.haveSuperType(field.getType(), List.class);
-            if (isList) {
-                //获取list的泛型
-                Type type = field.getGenericType();
-                Class<?> genericClass = ReflectUtils.getGenericClass(type, 0);
-
-                boolean isAgamaEntity = ReflectUtils.haveSuperType(genericClass, AgamaEntity.class);
-                if (isAgamaEntity) {
-                    Class<? extends AgamaEntity> $genericClass = (Class<? extends AgamaEntity>) genericClass;
-
-                    Object segmentJson = JSONPath.eval(rootJson, jsonPath);
-                    List<AgamaEntity> subEntityList = new ArrayList<>();
-                    if (ReflectUtils.haveSuperType(segmentJson.getClass(), List.class)) {
-                        JSONArray jsonArray = (JSONArray) segmentJson;
-
-                        for (Object object : jsonArray) {
-                            page = new Page(page.getUrl(), JSON.toJSONString(object));
-                            subEntityList.add(renderToBean(page, $genericClass));
-                        }
-                    }
-
-                    ReflectUtils.setValue(field.getName(), entity, subEntityList);
-                }
-            } else {
-                //处理普通类型
-                Object segment = JSONPath.eval(rootJson, jsonPath);
-
-                Object data = TypeConverter.convert(segment.toString(), field.getType());
-                ReflectUtils.setValue(field.getName(), entity, data);
-            }
-        }
-        //renderUrl(page, entity);
-
-        //download(page, entity);
-
-        return entity;
     }
 
 }

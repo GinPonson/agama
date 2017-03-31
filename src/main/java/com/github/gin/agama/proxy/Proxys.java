@@ -20,6 +20,8 @@ public class Proxys {
 
     private static List<Proxy> proxyList = new ArrayList<>();
 
+    private static boolean enable;
+
     static {
         URL url = Resources.getResource("Proxy.json");
         try {
@@ -28,14 +30,21 @@ public class Proxys {
             for (int i = 0; i < proxys.size(); i++) {
                 String[] array = proxys.getString(i).split("@");
                 if (array.length == 2) {
-                    String[] userpwd = array[0].split(":");
-                    String username = userpwd[0].trim();
-                    String password = userpwd[1].trim();
+                    String[] userPwd = array[0].split(":");
+                    String username = userPwd[0].trim();
+                    String password = userPwd[1].trim();
 
-                    String[] hostport = array[1].split(":");
-                    String host = hostport[0].trim();
-                    int port = Integer.valueOf(hostport[1].trim());
+                    String[] hostPort = array[1].split(":");
+                    String host = hostPort[0].trim();
+                    int port = Integer.valueOf(hostPort[1].trim());
                     proxyList.add(new HttpProxy(Proxy.Type.HTTP, host, port, username, password));
+                }
+
+                if(array.length == 1) {
+                    String[] hostPort = array[0].split(":");
+                    String host = hostPort[0].trim();
+                    int port = Integer.valueOf(hostPort[1].trim());
+                    proxyList.add(new HttpProxy(Proxy.Type.HTTP, host, port));
                 }
             }
         } catch (IOException e) {
@@ -48,7 +57,7 @@ public class Proxys {
     }
 
     public static Proxy getProxy() {
-        if (proxyList.isEmpty()) {
+        if (proxyList.isEmpty() || !isEnable()) {
             return Proxy.NO_PROXY;
         } else {
             Collections.shuffle(proxyList);
@@ -56,4 +65,11 @@ public class Proxys {
         }
     }
 
+    public static boolean isEnable() {
+        return enable;
+    }
+
+    public static void setEnable(boolean enable) {
+        Proxys.enable = enable;
+    }
 }

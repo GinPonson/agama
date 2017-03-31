@@ -8,6 +8,7 @@ import com.github.gin.agama.pipeline.ConsolePipeline;
 import com.github.gin.agama.pipeline.Pipeline;
 import com.github.gin.agama.processer.DefaultPageProcess;
 import com.github.gin.agama.processer.PageProcess;
+import com.github.gin.agama.proxy.Proxys;
 import com.github.gin.agama.scheduler.DuplicateUrlScheduler;
 import com.github.gin.agama.scheduler.FIFOUrlScheduler;
 import com.github.gin.agama.scheduler.Scheduler;
@@ -108,6 +109,8 @@ public class CrawlerContext {
         renderMap = new HashMap<>();
         renderMap.put(RenderType.Json, new JsonRender());
         renderMap.put(RenderType.Xpath, new XpathRender());
+
+        Proxys.setEnable(configure.isEnableProxy());
 
         return this;
     }

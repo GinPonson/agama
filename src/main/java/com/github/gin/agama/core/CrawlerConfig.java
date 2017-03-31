@@ -28,7 +28,9 @@ public class CrawlerConfig {
     /**
      *  if use selenium load the page
      */
-    private boolean useAjax = false;
+    private boolean useAjax ;
+
+    private boolean enableProxy;
 
     public int getInterval() {
         return interval;
@@ -72,6 +74,15 @@ public class CrawlerConfig {
 
     public CrawlerConfig setUseAjax(boolean useAjax) {
         this.useAjax = useAjax;
+        return this;
+    }
+
+    public boolean isEnableProxy() {
+        return enableProxy;
+    }
+
+    public CrawlerConfig setEnableProxy(boolean enableProxy) {
+        this.enableProxy = enableProxy;
         return this;
     }
 }

@@ -4,6 +4,8 @@ import com.github.gin.agama.site.serekuta.JsoupSerekuta;
 import com.github.gin.agama.site.serekuta.Serekuta;
 import com.github.gin.agama.site.serekuta.XpathSerekuta;
 
+import java.util.Optional;
+
 /**
  * Created by FSTMP on 2017/3/14.
  */
@@ -23,5 +25,6 @@ public class TestSelector {
 
         Serekuta serekuta1 = new XpathSerekuta(html);
         System.out.println(serekuta1.select("//li"));
+
     }
 }

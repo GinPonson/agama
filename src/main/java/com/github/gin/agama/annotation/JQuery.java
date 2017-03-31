@@ -6,8 +6,8 @@ import java.lang.annotation.*;
  * @author  GinPonson
  */
 @Documented
-@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
+@Target(value = {ElementType.TYPE, ElementType.FIELD})
 public @interface JQuery {
 
     String value();
