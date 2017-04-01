@@ -19,6 +19,7 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.11</version>
+            <scope>test</scope>
         </dependency>
 
         <!--jsoup  -->
@@ -33,6 +34,14 @@
             <artifactId>htmlcleaner</artifactId>
             <version>2.16</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/net.sourceforge.htmlunit/htmlunit -->
+        <dependency>
+            <groupId>net.sourceforge.htmlunit</groupId>
+            <artifactId>htmlunit</artifactId>
+            <version>2.25</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.mozilla</groupId>

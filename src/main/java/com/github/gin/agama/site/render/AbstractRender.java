@@ -84,6 +84,7 @@ public abstract class AbstractRender implements Render {
                     }
                     URL url = new URL(ad.toString());
                     //新开一个线程??
+                    //没有使用代理!
                     FileUtils.copyURLToFile(url, new File(dist+suffix));
                 }
             } catch (IOException e) {

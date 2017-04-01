@@ -10,12 +10,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.Authenticator;
 import java.net.HttpURLConnection;
+import java.net.PasswordAuthentication;
 import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.Map.Entry;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
@@ -35,7 +44,6 @@ public class HttpClient {
         URL url = new URL(req.getUrl());
         if (UrlUtils.isHttps(req.getUrl())) {
             conn = (HttpsURLConnection) url.openConnection(Proxys.getProxy());
-
         } else {
             conn = (HttpURLConnection) url.openConnection(Proxys.getProxy());
         }
@@ -47,6 +55,7 @@ public class HttpClient {
 
         conn.setRequestProperty("Cookie", getCookies(req));
         conn.setRequestMethod(req.getMethod());
+
         conn.connect();
 
         Response response = new Response();
