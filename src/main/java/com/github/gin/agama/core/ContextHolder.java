@@ -11,7 +11,6 @@ public class ContextHolder {
         threadLocal.set(context);
     }
 
-
     public static CrawlerContext getContext() {
         return threadLocal.get();
     }

@@ -27,7 +27,7 @@ public abstract class HtmlUnitDownloader implements Downloader {
 
     @Override
     public Page download(Request req) throws IOException {
-        LOGGER.info(Thread.currentThread().getName() + "crawling the page : {}", req.getUrl());
+        LOGGER.info(" {} downloading the page : {}",Thread.currentThread().getName(), req.getUrl());
 
         WebClient webClient = new WebClient();
 
@@ -47,8 +47,7 @@ public abstract class HtmlUnitDownloader implements Downloader {
             webClient.getCookieManager().addCookie(cookie);
         }
 
-        //webClient.getOptions().setCssEnabled(false);
-        //webClient.getOptions().setJavaScriptEnabled(false);
+        webClient.getOptions().setCssEnabled(false);
         webClient.getOptions().setThrowExceptionOnScriptError(false);
 
         HtmlPage htmlPage = webClient.getPage(req.getUrl());

@@ -84,11 +84,7 @@ public class CrawlerContext {
 
     public CrawlerContext build() {
         if (downloader == null) {
-            if (configure.isUseAjax()) {
-                downloader = new DefaultPhantomDownloader();
-            } else {
-                downloader = new HttpDownloader();
-            }
+            downloader = new HttpDownloader();
         }
         if (pageProcess == null) {
             pageProcess = new DefaultPageProcess();

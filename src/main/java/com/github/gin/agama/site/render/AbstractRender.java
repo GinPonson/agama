@@ -187,9 +187,9 @@ public abstract class AbstractRender implements Render {
                         }
                     } else {
                         //处理普通类型
-                        Object segment = JSONPath.eval(src, jsonPath);
+                        //Object segment = JSONPath.eval(src, jsonPath);
 
-                        Object data = TypeConverter.convert(segment.toString(), jsField.getType());
+                        Object data = TypeConverter.convert(src.toString(), jsField.getType());
                         ReflectUtils.setValue(jsField.getName(), entity, data);
                     }
 

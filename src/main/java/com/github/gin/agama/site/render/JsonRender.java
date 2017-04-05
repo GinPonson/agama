@@ -12,6 +12,8 @@ import com.github.gin.agama.site.converter.TypeConverter;
 import com.github.gin.agama.util.AgamaUtils;
 import com.github.gin.agama.util.ReflectUtils;
 import com.github.gin.agama.util.UrlUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
@@ -27,6 +29,8 @@ import static org.reflections.ReflectionUtils.withAnnotation;
  * @author GinPonson
  */
 public class JsonRender extends AbstractRender {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(XpathRender.class);
 
     @Override
     public List<AgamaEntity> renderToList(Page page, Class<? extends AgamaEntity> clazz) {
@@ -98,8 +102,14 @@ public class JsonRender extends AbstractRender {
                 //处理普通类型
                 Object segment = JSONPath.eval(rootJson, jsonPath);
 
-                Object data = TypeConverter.convert(segment.toString(), field.getType());
-                ReflectUtils.setValue(field.getName(), entity, data);
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Render field name : {}, field type : {}, filed raw value : {}",
+                            field.getName(), field.getType(), segment);
+                }
+                if(AgamaUtils.isNotBlank(segment)) {
+                    Object data = TypeConverter.convert(segment.toString(), field.getType());
+                    ReflectUtils.setValue(field.getName(), entity, data);
+                }
             }
         }
     }

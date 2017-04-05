@@ -1,10 +1,9 @@
 package cloud;
 
-import com.github.gin.agama.annotation.JS;
-import com.github.gin.agama.annotation.Json;
-import com.github.gin.agama.annotation.Prey;
+import com.github.gin.agama.annotation.*;
 import com.github.gin.agama.core.CrawlerContext;
 import com.github.gin.agama.core.JCrawler;
+import com.github.gin.agama.downloader.DefaultHtmlUnitDownloader;
 import com.github.gin.agama.site.Request;
 import com.github.gin.agama.site.entity.XpathEntity;
 
@@ -19,12 +18,23 @@ public class Yun extends XpathEntity{
     @JS(var = "window",jsonpath = "$.yunData.feedata.records")
     private List<YunData> yunDatas ;
 
+    @JS(var = "window",jsonpath = "$.yunData.feedata.total_count")
+    private Integer totalCount;
+
     public List<YunData> getYunDatas() {
         return yunDatas;
     }
 
     public void setYunDatas(List<YunData> yunDatas) {
         this.yunDatas = yunDatas;
+    }
+
+    public Integer getTotalCount() {
+        return totalCount;
+    }
+
+    public void setTotalCount(Integer totalCount) {
+        this.totalCount = totalCount;
     }
 
     public static void main (String[] args){

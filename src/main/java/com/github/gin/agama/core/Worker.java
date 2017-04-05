@@ -2,6 +2,7 @@ package com.github.gin.agama.core;
 
 import com.github.gin.agama.downloader.Downloader;
 import com.github.gin.agama.pipeline.Pipeline;
+import com.github.gin.agama.processer.PageProcess;
 import com.github.gin.agama.scheduler.Scheduler;
 import com.github.gin.agama.site.entity.AgamaEntity;
 import com.github.gin.agama.site.Page;
@@ -21,7 +22,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * @author  GinPonson
+ * @author GinPonson
  */
 public class Worker implements Runnable {
 
@@ -33,7 +34,9 @@ public class Worker implements Runnable {
 
     private Lock lock = new ReentrantLock();
 
-    private Condition condition = lock.newCondition();
+    private Condition waitCondition = lock.newCondition();
+
+    private Condition retryCondition = lock.newCondition();
 
     private JCrawler jCrawler;
 
@@ -51,9 +54,11 @@ public class Worker implements Runnable {
             Scheduler scheduler = context.getScheduler();
             Downloader downloader = context.getDownloader();
             Pipeline pipeline = context.getPipeline();
+            PageProcess pageProcess = context.getPageProcess();
 
             Request request = scheduler.poll();
             if (request == null) {
+                //等待请求
                 waitRequest();
 
                 request = scheduler.poll();
@@ -70,42 +75,44 @@ public class Worker implements Runnable {
                     Render render = context.getRender(prey);
                     List<AgamaEntity> entityList = render.renderToList(page, prey);
 
-                    for(AgamaEntity entity : entityList){
-                        pipeline.process(entity);
-                    }
+                    pageProcess.process(page, entityList);
+                    pipeline.process(entityList);
                 }
 
                 interval();
             } catch (Exception e) {
-                LOGGER.error("Exception stack :", e);
+                LOGGER.error(" Exception stack :", e);
                 AtomicInteger retriedTime = retryMap.computeIfAbsent(
                         request.getUrl(),
                         k -> new AtomicInteger()
                 );
 
                 int time = retriedTime.incrementAndGet();
-                if (time <= context.getConfigure().getRetryTime()) {
+                if (time <= context.getConfigure().getRetryTimes()) {
                     request.setPriority(999);
                     request.setIsRetryRequest(true);
-                    lineUp(_1_MINUTE);
+                    waitRetry();
 
-                    LOGGER.info("Crawling the page error,now trying reconnect [{}] times,", time);
+                    LOGGER.info(" Crawling the page error,now trying reconnect [{}] times,", time);
                     jCrawler.addRequest(request);
                 } else {
-                    LOGGER.error("Fail to reconnect !");
+                    LOGGER.error(" Fail to retry download the page !");
                 }
             }
 
             signalCondition();
-
         }
     }
 
+
+    /**
+     *  等待请求
+     */
     private void waitRequest() {
         lock.lock();
         try {
             long waitTime = context.getConfigure().getWaitTime();
-            condition.await(waitTime, TimeUnit.MILLISECONDS);
+            waitCondition.await(waitTime, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
@@ -113,6 +120,21 @@ public class Worker implements Runnable {
         }
     }
 
+    /**
+     * 唤醒等待请求的线程
+     */
+    private void signalCondition() {
+        lock.lock();
+        try {
+            waitCondition.signal();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * 爬虫爬取间隔
+     */
     private void interval() {
         try {
             long interval = context.getConfigure().getInterval();
@@ -122,20 +144,18 @@ public class Worker implements Runnable {
         }
     }
 
-    private void lineUp(long time) {
-        try {
-            Thread.sleep(time);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void signalCondition() {
+    /**
+     * 等待重试请求
+     */
+    private void waitRetry() {
         lock.lock();
         try {
-            condition.signal();
+            retryCondition.await(_1_MINUTE, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         } finally {
             lock.unlock();
         }
     }
+
 }

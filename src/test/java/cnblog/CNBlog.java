@@ -36,12 +36,12 @@ public class CNBlog extends XpathEntity {
     @Xpath("//span[@class='article_comment']")
     private String comment;
 
-    //@Download(dist = "D:\\test\\${poster}")
+    @Download(dist = "D:\\test\\${poster}")
     @Url(src = "//img/@src")
     private String photo;
 
-   /* @Url(src ="//a[@class='titlelnk']/@href",click = true)
-    private CNBlogDetail cnBlogDetail;*/
+    @Url(src ="//a[@class='titlelnk']/@href",click = true)
+    private CNBlogDetail cnBlogDetail;
 
     public String getTitle() {
         return title;
@@ -107,23 +107,18 @@ public class CNBlog extends XpathEntity {
         this.photo = photo;
     }
 
-    /*public CNBlogDetail getCnBlogDetail() {
+    public CNBlogDetail getCnBlogDetail() {
         return cnBlogDetail;
     }
 
     public void setCnBlogDetail(CNBlogDetail cnBlogDetail) {
         this.cnBlogDetail = cnBlogDetail;
-    }*/
+    }
 
     public static void main(String[] args) {
         JCrawler.create()
                 .crawl("http://www.cnblogs.com/")
                 .prey(CNBlog.class)
-                .context(
-                        CrawlerContext.create()
-                                .useConfig(new CrawlerConfig().setEnableProxy(true))
-                                .build()
-                )
                 .run();
     }
 }

@@ -1,35 +1,35 @@
 package com.github.gin.agama.core;
 
 /**
+ * 爬虫的基本设置
  * @author  GinPonson
  */
 public class CrawlerConfig {
 
     /**
-     *  crawl interval
+     *  线程等待请求的时间
+     *  默认等待15s，超时没有请求则认为完成
+     */
+    private int waitTime = 15000;
+
+    /**
+     *  单个爬虫爬取的间隔
      */
     private int interval = 3000;
 
     /**
-     *  time wait for request
+     *  请求失败的重试次数
      */
-    private int waitTime = 3000;
+    private int retryTimes = 5;
 
     /**
-     *  retry times
-     */
-    private int retryTime = 5;
-
-    /**
-     *  amount of crawler
+     *  爬虫线程的数量
      */
     private int threadNum = 2;
 
     /**
-     *  if use selenium load the page
+     *  否启用代理，代理设置在Proxy.json
      */
-    private boolean useAjax ;
-
     private boolean enableProxy;
 
     public int getInterval() {
@@ -59,22 +59,12 @@ public class CrawlerConfig {
         return this;
     }
 
-    public int getRetryTime() {
-        return retryTime;
+    public int getRetryTimes() {
+        return retryTimes;
     }
 
-    public CrawlerConfig setRetryTime(int retryTime) {
-        this.retryTime = retryTime;
-        return this;
-    }
-
-    public boolean isUseAjax() {
-        return useAjax;
-    }
-
-    public CrawlerConfig setUseAjax(boolean useAjax) {
-        this.useAjax = useAjax;
-        return this;
+    public void setRetryTimes(int retryTimes) {
+        this.retryTimes = retryTimes;
     }
 
     public boolean isEnableProxy() {

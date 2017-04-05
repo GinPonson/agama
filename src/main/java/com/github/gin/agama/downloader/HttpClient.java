@@ -25,12 +25,13 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 
 /**
- * @author  GinPonson
+ * @author GinPonson
  */
 public class HttpClient {
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpClient.class);
@@ -38,7 +39,7 @@ public class HttpClient {
     private HttpURLConnection conn = null;
 
     public Response execute(Request req) throws IOException {
-        LOGGER.info("[{}] downloading the page : {}",
+        LOGGER.info(" {} downloading the page : {}",
                 Thread.currentThread().getName(), req.getUrl());
 
         URL url = new URL(req.getUrl());
@@ -53,8 +54,20 @@ public class HttpClient {
             conn.setRequestProperty(header.getKey(), header.getValue());
         }
 
-        conn.setRequestProperty("Cookie", getCookies(req));
+        String cookies = getCookies(req);
+        if (AgamaUtils.isNotBlank(cookies)) {
+            conn.setRequestProperty("Cookie", getCookies(req));
+        }
         conn.setRequestMethod(req.getMethod());
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(" <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+            LOGGER.debug(" {} {}", conn.getRequestMethod(), conn.getURL().toString());
+            for (Entry<String, List<String>> entry : conn.getRequestProperties().entrySet()) {
+                LOGGER.debug(" {}: {}", entry.getKey(), entry.getValue());
+            }
+            LOGGER.debug(" <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+        }
 
         conn.connect();
 
@@ -102,7 +115,6 @@ public class HttpClient {
                 if (baos != null)
                     baos.close();
             } catch (IOException e) {
-                LOGGER.error("Close error ! error message : {}", e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -125,7 +137,6 @@ public class HttpClient {
                 input = conn.getInputStream();
             }
         } catch (IOException e) {
-            LOGGER.error("Error message : {}", e.getMessage());
             e.printStackTrace();
         }
         return input;

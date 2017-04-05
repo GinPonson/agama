@@ -15,6 +15,7 @@ import com.github.gin.agama.util.UrlUtils;
 
 /**
  * @author  GinPonson
+ * @see com.github.gin.agama.downloader.Downloader
  */
 public class HttpDownloader implements Downloader{
 

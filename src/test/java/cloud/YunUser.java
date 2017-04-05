@@ -1,6 +1,7 @@
 package cloud;
 
 import com.github.gin.agama.annotation.Json;
+import com.github.gin.agama.annotation.Prey;
 import com.github.gin.agama.core.CrawlerContext;
 import com.github.gin.agama.core.JCrawler;
 import com.github.gin.agama.site.entity.JsonEntity;
@@ -11,6 +12,7 @@ import java.util.Date;
  * Created by FSTMP on 2017/3/8.
  */
 @Json("$.fans_list")
+@Prey(matchUrl = "http://pan.baidu.com/pcloud/friend/getfanslist")
 public class YunUser extends JsonEntity {
     public long id;
 

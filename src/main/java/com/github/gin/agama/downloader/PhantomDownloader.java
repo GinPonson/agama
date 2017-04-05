@@ -36,7 +36,7 @@ public abstract class PhantomDownloader implements Downloader{
                 System.setProperty("phantomjs.binary.path", binaryPath);
 
                 if(LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("phantomjs.binary.path : {}", binaryPath);
+                    LOGGER.debug(" phantomjs.binary.path : {}", binaryPath);
                 }
             }
         }
@@ -46,7 +46,7 @@ public abstract class PhantomDownloader implements Downloader{
 
 	@Override
     public Page download(Request req) {
-		LOGGER.info(Thread.currentThread().getName() + "crawling the page : {}" , req.getUrl());
+        LOGGER.info(" {} downloading the page : {}",Thread.currentThread().getName(), req.getUrl());
 
         Proxy proxy = Proxys.getProxy();
         if(proxy instanceof HttpProxy){
@@ -78,7 +78,7 @@ public abstract class PhantomDownloader implements Downloader{
 
             driver.quit();
         } catch (IllegalStateException e){
-            LOGGER.error("PhantomJSDriver have some trouble:{}," +
+            LOGGER.error(" PhantomJSDriver have some trouble:{}," +
                     "please check if phantomjs in your PATH.",e.getMessage());
             e.printStackTrace();
         }

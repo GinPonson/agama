@@ -15,7 +15,7 @@ import java.util.concurrent.CountDownLatch;
 /**
  * @author GinPonson
  */
-public class JCrawler {
+public class JCrawler extends Thread{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JCrawler.class);
 
@@ -37,6 +37,8 @@ public class JCrawler {
         if (prey.isAnnotationPresent(Prey.class)) {
             String matchUrl = prey.getAnnotation(Prey.class).matchUrl();
             preyMap.put(matchUrl, prey);
+        } else {
+            throw new AgamaException(prey.getName() +" must have an annotation @Prey");
         }
         return this;
     }
@@ -46,6 +48,8 @@ public class JCrawler {
             if (prey.isAnnotationPresent(Prey.class)) {
                 String matchUrl = prey.getAnnotation(Prey.class).matchUrl();
                 preyMap.put(matchUrl, prey);
+            } else {
+                throw new AgamaException(prey.getName() +" must have an annotation @Prey");
             }
         }
         return this;
@@ -91,6 +95,11 @@ public class JCrawler {
         }
 
         shutdown();
+    }
+
+    @Override
+    public synchronized void start() {
+        super.start();
     }
 
     private void shutdown() {

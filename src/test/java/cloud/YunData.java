@@ -1,6 +1,5 @@
 package cloud;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import com.github.gin.agama.annotation.Json;
 import com.github.gin.agama.site.entity.AgamaEntity;
 
