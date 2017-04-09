@@ -3,9 +3,11 @@ package com.github.gin.agama.proxy;
 import com.alibaba.fastjson.JSONArray;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
+import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.Proxy;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -23,9 +25,9 @@ public class Proxys {
     private static boolean enable;
 
     static {
-        URL url = Resources.getResource("Proxy.json");
+        InputStream in = Proxys.class.getResourceAsStream("/Proxy.json");
         try {
-            String json = Files.toString(new File(url.getPath()), Charset.defaultCharset());
+            String json = IOUtils.toString(in,Charset.defaultCharset());
             JSONArray proxys = JSONArray.parseArray(json);
             for (int i = 0; i < proxys.size(); i++) {
                 String[] array = proxys.getString(i).split("@");

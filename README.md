@@ -9,7 +9,6 @@ agamga是一个轻量高效的Java爬虫框架。
 - [x] 支持抓取Ajax加载的页面
 - [x] 支持解析Json形式的Api数据
 - [x] 支持抓取js变量
-- [X] 支持代理池(静态)
 
 # 使用
 ```java
@@ -106,9 +105,11 @@ public class CNBlogDetail extends XpathEntity {
 
 # TODO
 - [ ] 支持Jquery注解
-- [ ] 支持自动登录
-- [ ] 支持定时器
-- [ ] 支持与Spring结合开发
+- [X] 支持代理池(静态)
+- [X] 支持自动登录(结合HtmlUnit/Selenium)
+- [X] 支持定时器(结合Spring)
+- [X] 支持与Spring结合开发
+- [X] 图片下载
 
 # 项目依赖
 jsoup、htmlcleaner、selenium、redisson、fastjson
