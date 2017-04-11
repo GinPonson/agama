@@ -29,8 +29,18 @@ public class JCrawler extends Thread{
 
     private CrawlerContext context;
 
+    public JCrawler() {}
+
+    public JCrawler(String name) {
+        super(name);
+    }
+
     public static JCrawler create() {
         return new JCrawler();
+    }
+
+    public static JCrawler create(String name) {
+        return new JCrawler(name);
     }
 
     public JCrawler prey(Class<? extends AgamaEntity> prey) {
@@ -72,6 +82,7 @@ public class JCrawler extends Thread{
         return this;
     }
 
+    @Override
     public void run() {
         if (preyMap.isEmpty()) {
             throw new AgamaException("Prey could not be null !");
@@ -90,7 +101,7 @@ public class JCrawler extends Thread{
         for (int i = 0; i < context.getConfigure().getThreadNum(); i++) {
             Worker worker = new Worker(this, context);
             workers.add(worker);
-            Thread thread = new Thread(worker, "CrawlWorker" + i);
+            Thread thread = new Thread(worker, this.getName() + "CrawlWorker" + i);
             thread.start();
         }
 

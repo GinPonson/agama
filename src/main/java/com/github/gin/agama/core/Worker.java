@@ -50,12 +50,12 @@ public class Worker implements Runnable {
     @Override
     public void run() {
         ContextHolder.setContext(this.context);
-        while (true) {
-            Scheduler scheduler = context.getScheduler();
-            Downloader downloader = context.getDownloader();
-            Pipeline pipeline = context.getPipeline();
-            PageProcess pageProcess = context.getPageProcess();
+        Scheduler scheduler = context.getScheduler();
+        Downloader downloader = context.getDownloader();
+        Pipeline pipeline = context.getPipeline();
+        PageProcess pageProcess = context.getPageProcess();
 
+        while (true) {
             Request request = scheduler.poll();
             if (request == null) {
                 //等待请求
@@ -63,6 +63,7 @@ public class Worker implements Runnable {
 
                 request = scheduler.poll();
                 if (request == null) {
+                    LOGGER.info(" No request in scheduler,this thread will quit! ");
                     jCrawler.singleComplete();
                     break;
                 }
