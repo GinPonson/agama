@@ -6,6 +6,8 @@
     <artifactId>agama</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
+    <packaging>jar</packaging>
+
     <name>agama</name>
     <url>http://maven.apache.org</url>
 
@@ -14,14 +16,6 @@
     </properties>
 
     <dependencies>
-        <!-- 单元测试 -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
-            <scope>test</scope>
-        </dependency>
-
         <!--jsoup  -->
         <dependency>
             <groupId>org.jsoup</groupId>
@@ -35,13 +29,11 @@
             <version>2.16</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/net.sourceforge.htmlunit/htmlunit -->
         <dependency>
             <groupId>net.sourceforge.htmlunit</groupId>
             <artifactId>htmlunit</artifactId>
             <version>2.25</version>
         </dependency>
-
 
         <dependency>
             <groupId>org.mozilla</groupId>
@@ -50,9 +42,15 @@
         </dependency>
 
         <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>20.0</version>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.9.10</version>
         </dependency>
 
         <!--selenium  -->
@@ -89,24 +87,6 @@
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.7.5</version>
             <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>1.2.6</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <version>0.9.10</version>
-        </dependency>
-
-        <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib</artifactId>
-            <version>3.2.4</version>
         </dependency>
 
         <dependency>
