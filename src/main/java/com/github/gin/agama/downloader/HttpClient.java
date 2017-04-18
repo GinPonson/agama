@@ -39,8 +39,7 @@ public class HttpClient {
     private HttpURLConnection conn = null;
 
     public Response execute(Request req) throws IOException {
-        LOGGER.info(" {} downloading the page : {}",
-                Thread.currentThread().getName(), req.getUrl());
+        LOGGER.info(" Downloading the page : {}", req.getUrl());
 
         URL url = new URL(req.getUrl());
         if (UrlUtils.isHttps(req.getUrl())) {

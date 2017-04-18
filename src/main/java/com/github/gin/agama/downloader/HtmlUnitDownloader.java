@@ -27,7 +27,7 @@ public abstract class HtmlUnitDownloader implements Downloader {
 
     @Override
     public Page download(Request req) throws IOException {
-        LOGGER.info(" {} downloading the page : {}",Thread.currentThread().getName(), req.getUrl());
+        LOGGER.info(" Downloading the page : {}", req.getUrl());
 
         WebClient webClient = new WebClient();
 

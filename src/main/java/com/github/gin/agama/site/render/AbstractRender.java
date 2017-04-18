@@ -46,7 +46,7 @@ import static org.reflections.ReflectionUtils.withAnnotation;
  */
 public abstract class AbstractRender implements Render {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(XpathRender.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractRender.class);
 
     @Override
     public AgamaEntity renderToBean(Page page, Class<? extends AgamaEntity> clazz) {

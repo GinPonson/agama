@@ -46,7 +46,7 @@ public abstract class PhantomDownloader implements Downloader{
 
 	@Override
     public Page download(Request req) {
-        LOGGER.info(" {} downloading the page : {}",Thread.currentThread().getName(), req.getUrl());
+        LOGGER.info(" Downloading the page : {}", req.getUrl());
 
         Proxy proxy = Proxys.getProxy();
         if(proxy instanceof HttpProxy){

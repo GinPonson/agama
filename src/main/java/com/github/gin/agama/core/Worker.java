@@ -12,6 +12,7 @@ import com.github.gin.agama.util.AgamaUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,8 +37,6 @@ public class Worker implements Runnable {
 
     private Condition waitCondition = lock.newCondition();
 
-    private Condition retryCondition = lock.newCondition();
-
     private JCrawler jCrawler;
 
     private CrawlerContext context;
@@ -51,7 +50,6 @@ public class Worker implements Runnable {
     public void run() {
         ContextHolder.setContext(this.context);
         Scheduler scheduler = context.getScheduler();
-        Downloader downloader = context.getDownloader();
         Pipeline pipeline = context.getPipeline();
         PageProcess pageProcess = context.getPageProcess();
 
@@ -69,45 +67,64 @@ public class Worker implements Runnable {
                 }
             }
             try {
-                Page page = downloader.download(request);
-
-                if (AgamaUtils.isNotBlank(page.getRawText())) {
+                Page page = download(request);
+                if (AgamaUtils.isNotBlank(page)) {
                     Class<? extends AgamaEntity> prey = jCrawler.getPrey(request.getUrl());
                     Render render = context.getRender(prey);
                     List<AgamaEntity> entityList = render.renderToList(page, prey);
 
                     pageProcess.process(page, entityList);
                     pipeline.process(entityList);
+                    Thread.sleep(context.getConfigure().getInterval());
                 }
-
-                interval();
             } catch (Exception e) {
                 LOGGER.error(" Exception stack :", e);
-                AtomicInteger retriedTime = retryMap.computeIfAbsent(
-                        request.getUrl(),
-                        k -> new AtomicInteger()
-                );
-
-                int time = retriedTime.incrementAndGet();
-                if (time <= context.getConfigure().getRetryTimes()) {
-                    request.setPriority(999);
-                    request.setIsRetryRequest(true);
-                    waitRetry();
-
-                    LOGGER.info(" Crawling the page error,now trying reconnect [{}] times,", time);
-                    jCrawler.addRequest(request);
-                } else {
-                    LOGGER.error(" Fail to retry download the page !");
-                }
             }
 
             signalCondition();
         }
     }
 
+    private Page download(Request request) {
+        Downloader downloader = context.getDownloader();
+        Page page = null;
+        try {
+            page = downloader.download(request);
+        } catch (Exception e) {
+            try {
+                LOGGER.error(" Download the page of [{}] error ," +
+                        " exception stack :", request.getUrl(), e);
+                AtomicInteger retriedTime = retryMap.computeIfAbsent(
+                        request.getUrl(),
+                        k -> new AtomicInteger()
+                );
+
+                int times = retriedTime.incrementAndGet();
+                if (times <= context.getConfigure().getRetryTimes()) {
+                    request.setPriority(999);
+                    request.setIsRetryRequest(true);
+
+                    //1分钟后重试请求
+                    LOGGER.info(" Retry download the page of [{}] after 1 minute...", request.getUrl());
+                    Thread.sleep(_1_MINUTE);
+
+                    LOGGER.info(" Now trying download the page of [{}] - [{}] times.",
+                            request.getUrl(), times);
+                    jCrawler.addRequest(request);
+                } else {
+                    LOGGER.error(" Fail to download the page of [{}]!", request.getUrl());
+                }
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+
+        }
+
+        return page;
+    }
 
     /**
-     *  等待请求
+     * 等待请求
      */
     private void waitRequest() {
         lock.lock();
@@ -128,32 +145,6 @@ public class Worker implements Runnable {
         lock.lock();
         try {
             waitCondition.signal();
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    /**
-     * 爬虫爬取间隔
-     */
-    private void interval() {
-        try {
-            long interval = context.getConfigure().getInterval();
-            Thread.sleep(interval);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 等待重试请求
-     */
-    private void waitRetry() {
-        lock.lock();
-        try {
-            retryCondition.await(_1_MINUTE, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         } finally {
             lock.unlock();
         }
