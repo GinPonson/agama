@@ -6,8 +6,9 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.util.Cookie;
 import com.github.gin.agama.UserAgent;
+import com.github.gin.agama.core.ContextHolder;
 import com.github.gin.agama.proxy.HttpProxy;
-import com.github.gin.agama.proxy.Proxys;
+import com.github.gin.agama.proxy.ProxyPool;
 import com.github.gin.agama.site.Page;
 import com.github.gin.agama.site.Request;
 import org.slf4j.Logger;
@@ -31,7 +32,8 @@ public abstract class HtmlUnitDownloader implements Downloader {
 
         WebClient webClient = new WebClient();
 
-        Proxy proxy = Proxys.getProxy();
+        ProxyPool proxyPool = ContextHolder.getContext().getProxyPool();
+        Proxy proxy = proxyPool.getProxy();
         if (proxy instanceof HttpProxy) {
             HttpProxy httpProxy = (HttpProxy) proxy;
             ProxyConfig proxyConfig = webClient.getOptions().getProxyConfig();

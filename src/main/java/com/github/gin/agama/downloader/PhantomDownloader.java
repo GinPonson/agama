@@ -1,8 +1,9 @@
 package com.github.gin.agama.downloader;
 
 import com.github.gin.agama.UserAgent;
+import com.github.gin.agama.core.ContextHolder;
 import com.github.gin.agama.proxy.HttpProxy;
-import com.github.gin.agama.proxy.Proxys;
+import com.github.gin.agama.proxy.ProxyPool;
 import com.github.gin.agama.site.Page;
 import com.github.gin.agama.site.Request;
 import com.github.gin.agama.util.AgamaUtils;
@@ -48,7 +49,8 @@ public abstract class PhantomDownloader implements Downloader{
     public Page download(Request req) {
         LOGGER.info(" Downloading the page : {}", req.getUrl());
 
-        Proxy proxy = Proxys.getProxy();
+        ProxyPool proxyPool = ContextHolder.getContext().getProxyPool();
+        Proxy proxy = proxyPool.getProxy();
         if(proxy instanceof HttpProxy){
             HttpProxy httpProxy = (HttpProxy) proxy;
             ArrayList<String> cliArgsCap = new ArrayList<>();

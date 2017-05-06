@@ -1,7 +1,9 @@
 package com.github.gin.agama.downloader;
 
 import com.github.gin.agama.UserAgent;
-import com.github.gin.agama.proxy.Proxys;
+import com.github.gin.agama.core.ContextHolder;
+import com.github.gin.agama.core.CrawlerConfig;
+import com.github.gin.agama.proxy.ProxyPool;
 import com.github.gin.agama.site.Request;
 import com.github.gin.agama.site.Response;
 import com.github.gin.agama.util.AgamaUtils;
@@ -10,21 +12,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.Authenticator;
 import java.net.HttpURLConnection;
-import java.net.PasswordAuthentication;
 import java.net.URL;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.zip.GZIPInputStream;
@@ -42,10 +35,11 @@ public class HttpClient {
         LOGGER.info(" Downloading the page : {}", req.getUrl());
 
         URL url = new URL(req.getUrl());
+        ProxyPool proxyPool = ContextHolder.getContext().getProxyPool();
         if (UrlUtils.isHttps(req.getUrl())) {
-            conn = (HttpsURLConnection) url.openConnection(Proxys.getProxy());
+            conn = (HttpsURLConnection) url.openConnection(proxyPool.getProxy());
         } else {
-            conn = (HttpURLConnection) url.openConnection(Proxys.getProxy());
+            conn = (HttpURLConnection) url.openConnection(proxyPool.getProxy());
         }
 
         conn.setRequestProperty("User-Agent", UserAgent.randomUserAgent());

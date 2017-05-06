@@ -1,14 +1,14 @@
 package com.github.gin.agama.core;
 
 import com.github.gin.agama.Closeable;
-import com.github.gin.agama.downloader.DefaultPhantomDownloader;
 import com.github.gin.agama.downloader.Downloader;
 import com.github.gin.agama.downloader.HttpDownloader;
 import com.github.gin.agama.pipeline.ConsolePipeline;
 import com.github.gin.agama.pipeline.Pipeline;
 import com.github.gin.agama.processer.DefaultPageProcess;
 import com.github.gin.agama.processer.PageProcess;
-import com.github.gin.agama.proxy.Proxys;
+import com.github.gin.agama.proxy.ProxyPool;
+import com.github.gin.agama.proxy.StaticProxyPool;
 import com.github.gin.agama.scheduler.DuplicateUrlScheduler;
 import com.github.gin.agama.scheduler.FIFOUrlScheduler;
 import com.github.gin.agama.scheduler.Scheduler;
@@ -48,6 +48,8 @@ public class CrawlerContext {
     private Map<RenderType, Render> renderMap;
 
     private List<Closeable> closeableList;
+
+    private ProxyPool proxyPool;
 
     private CrawlerContext() {
         this.configure = new CrawlerConfig();
@@ -95,6 +97,10 @@ public class CrawlerContext {
         if (scheduler == null) {
             scheduler = new DuplicateUrlScheduler(new FIFOUrlScheduler());
         }
+        if (proxyPool == null) {
+            proxyPool = new StaticProxyPool();
+            proxyPool.setEnable(configure.isEnableProxy());
+        }
         closeableList = new ArrayList<>();
         for (Field field : CrawlerContext.class.getDeclaredFields()) {
             if (ReflectUtils.haveSuperType(field.getClass(), Closeable.class)) {
@@ -105,8 +111,6 @@ public class CrawlerContext {
         renderMap = new HashMap<>();
         renderMap.put(RenderType.Json, new JsonRender());
         renderMap.put(RenderType.Xpath, new XpathRender());
-
-        Proxys.setEnable(configure.isEnableProxy());
 
         return this;
     }
@@ -131,6 +135,14 @@ public class CrawlerContext {
         return scheduler;
     }
 
+    public ProxyPool getProxyPool() {
+        return proxyPool;
+    }
+
+    public void setProxyPool(ProxyPool proxyPool) {
+        this.proxyPool = proxyPool;
+    }
+
     public List<Closeable> getCloseableList() {
         return closeableList;
     }
@@ -141,7 +153,7 @@ public class CrawlerContext {
 
     public Render getRender(Class<? extends AgamaEntity> prey) {
         Render render = renderMap.get(RenderType.Xpath);
-        if(ReflectUtils.haveSuperType(prey, JsonEntity.class)){
+        if (ReflectUtils.haveSuperType(prey, JsonEntity.class)) {
             render = renderMap.get(RenderType.Json);
         }
         return render;

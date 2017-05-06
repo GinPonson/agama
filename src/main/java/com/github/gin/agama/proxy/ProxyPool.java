@@ -1,33 +1,36 @@
 package com.github.gin.agama.proxy;
 
 import com.alibaba.fastjson.JSONArray;
-import com.google.common.io.Files;
-import com.google.common.io.Resources;
 import org.apache.commons.io.IOUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Proxy;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 /**
- * @author  GinPonson
+ * @author GinPonson
  */
-public class Proxys {
+public abstract class ProxyPool {
 
-    private static List<Proxy> proxyList = new ArrayList<>();
+    private List<Proxy> staticProxyList = new ArrayList<>();
 
-    private static boolean enable;
+    private List<Proxy> dynamicProxyList = new ArrayList<>();
 
-    static {
-        InputStream in = Proxys.class.getResourceAsStream("/Proxy.json");
+    private boolean enable;
+
+    private long refreshTime = 1000 * 60;
+
+    private long timeOut;
+
+    private List<Proxy> staticProxy(){
+        List<Proxy> proxyList = new ArrayList<>();
+        InputStream in = this.getClass().getResourceAsStream("/Proxy.json");
         try {
-            String json = IOUtils.toString(in,Charset.defaultCharset());
+            String json = IOUtils.toString(in, Charset.defaultCharset());
             JSONArray proxys = JSONArray.parseArray(json);
             for (int i = 0; i < proxys.size(); i++) {
                 String[] array = proxys.getString(i).split("@");
@@ -42,7 +45,7 @@ public class Proxys {
                     proxyList.add(new HttpProxy(Proxy.Type.HTTP, host, port, username, password));
                 }
 
-                if(array.length == 1) {
+                if (array.length == 1) {
                     String[] hostPort = array[0].split(":");
                     String host = hostPort[0].trim();
                     int port = Integer.valueOf(hostPort[1].trim());
@@ -52,14 +55,34 @@ public class Proxys {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return proxyList;
     }
 
-    public static void addProxy(Proxy httpProxy) {
-        proxyList.add(httpProxy);
-    }
+    public abstract List<Proxy> dynamicProxy();
 
-    public static Proxy getProxy() {
-        if (proxyList.isEmpty() || !isEnable()) {
+    public Proxy getProxy() {
+        if(!isEnable()) {
+            return Proxy.NO_PROXY;
+        }
+
+        if (timeOut - System.currentTimeMillis() < 0) {
+            dynamicProxyList.clear();
+        }
+
+        if(staticProxyList.isEmpty()){
+            dynamicProxyList.addAll(staticProxy());
+        }
+
+        if (dynamicProxyList.isEmpty()) {
+            dynamicProxyList.addAll(dynamicProxy());
+            this.timeOut = System.currentTimeMillis() + refreshTime;
+        }
+
+        List<Proxy> proxyList = new ArrayList<>();
+        proxyList.addAll(staticProxyList);
+        proxyList.addAll(dynamicProxyList);
+
+        if(proxyList.isEmpty()){
             return Proxy.NO_PROXY;
         } else {
             Collections.shuffle(proxyList);
@@ -67,11 +90,19 @@ public class Proxys {
         }
     }
 
-    public static boolean isEnable() {
+    public boolean isEnable() {
         return enable;
     }
 
-    public static void setEnable(boolean enable) {
-        Proxys.enable = enable;
+    public void setEnable(boolean enable) {
+        this.enable = enable;
+    }
+
+    public long getRefreshTime() {
+        return refreshTime;
+    }
+
+    public void setRefreshTime(long refreshTime) {
+        this.refreshTime = refreshTime;
     }
 }
